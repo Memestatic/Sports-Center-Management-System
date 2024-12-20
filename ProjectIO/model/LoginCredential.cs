@@ -9,8 +9,8 @@ public class LoginCredential
     public int loginId { get; set; }
 
     [Required]
-    [MaxLength(50)]
-    public string username { get; set; }
+    [EmailAddress]
+    public string email { get; set; }
 
     [Required]
     [MaxLength(50)]

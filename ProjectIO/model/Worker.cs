@@ -19,9 +19,6 @@ public class Worker
     [Required]
     public Gender gender { get; set; }
 
-    [Required]
-    [EmailAddress]
-    public string email { get; set; }
 
     [Required]
     [Phone]
