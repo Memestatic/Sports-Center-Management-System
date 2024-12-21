@@ -2,11 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("Workers")]
-public class Worker
+[Table("Users")]
+public class User
 {
     [Key]
-    public int workerId { get; set; }
+    public int userId { get; set; }
 
     [Required]
     [MaxLength(50)]
@@ -19,16 +19,9 @@ public class Worker
     [Required]
     public Gender gender { get; set; }
 
-
     [Required]
     [Phone]
     public string phone { get; set; }
-
-    [ForeignKey("functionId")]
-    public WorkerFunction function { get; set; }
-
-   
-
 
 
 }

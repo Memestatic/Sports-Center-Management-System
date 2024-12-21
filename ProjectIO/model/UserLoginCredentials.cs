@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("LoginCredentials")]
-public class LoginCredential
+[Table("UserLoginCredentials")]
+public class UserLoginCredential
 {
     [Key]
     public int loginId { get; set; }
@@ -16,5 +16,7 @@ public class LoginCredential
     [MaxLength(50)]
     public string password { get; set; }
 
+    [ForeignKey("userId")]
+    public User user { get; set; }
 
-} 
+}

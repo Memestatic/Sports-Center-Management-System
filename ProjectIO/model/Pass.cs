@@ -9,9 +9,13 @@ public class Pass
     public int passId { get; set; }
 
     [ForeignKey("passTypeId")]
-    public int passTypeId { get; set; }
+    public PassType passType { get; set; }
+
+    [ForeignKey("userId")]
+    public User user { get; set; }
 
     [Required]
     public int passEntriesLeft { get; set; }
+
 }
 }
