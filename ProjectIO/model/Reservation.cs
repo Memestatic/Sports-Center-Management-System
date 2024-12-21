@@ -1,24 +1,29 @@
-﻿namespace ProjectIO.model;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("Reservations")]
-public class Reservation
+namespace ProjectIO.model
 {
-    [Key]
-    public int reservationId { get; set; }
+    [Table("Reservations")]
+    public class Reservation
+    {
+        [Key]
+        public int reservationId { get; set; }
 
-    [ForeignKey("facilityId")]
-    public Facility facility { get; set; }
+        [ForeignKey("facilityId")]
+        public Facility facility { get; set; }
 
-    [ForeignKey("userId")]
-    public User user { get; set; }
+        [ForeignKey("userId")]
+        public User user { get; set; }
 
-    [Required]
-    public DateTime reservationDate { get; set; }
+        [Required]
+        public DateTime reservationDate { get; set; }
 
-    [Required]
-    public ReservationStatus reservationStatus { get; set; }
+        [Required]
+        public ReservationStatus reservationStatus { get; set; }
 
 
+    }
 }
+
+

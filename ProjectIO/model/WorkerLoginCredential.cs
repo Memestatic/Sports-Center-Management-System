@@ -1,22 +1,27 @@
-﻿namespace ProjectIO.model;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("WorkerLoginCredentials")]
-public class WorkerLoginCredential
+namespace ProjectIO.model
 {
-    [Key]
-    public int loginId { get; set; }
+    [Table("WorkerLoginCredentials")]
+    public class WorkerLoginCredential
+    {
+        [Key]
+        public int loginId { get; set; }
 
-    [Required]
-    [EmailAddress]
-    public string email { get; set; }
+        [Required]
+        [EmailAddress]
+        public string email { get; set; }
 
-    [Required]
-    [MaxLength(50)]
-    public string password { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string password { get; set; }
 
-    [ForeignKey("workerId")]
-    public Worker worker { get; set; }
+        [ForeignKey("workerId")]
+        public Worker worker { get; set; }
 
-} 
+    }
+
+}
+
