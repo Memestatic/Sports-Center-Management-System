@@ -23,5 +23,6 @@ public class ApplicationDbContext : DbContext
         // Konfiguracja tabeli Worker
         modelBuilder.Entity<Worker>()
             .HasKey(w => w.WorkerId);
+    }
 
 }
