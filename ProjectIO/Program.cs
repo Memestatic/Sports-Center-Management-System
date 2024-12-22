@@ -11,7 +11,9 @@ builder.Services.AddRazorPages();
 //to do testów z SQLServer - preferowane raczej
 builder.Services.AddDbContext<SportCenterContext>(options =>
 {
-    options.UseSqlServer("Server=VIVOBOOK_PRO;Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
+    // Computer name (default local database name)
+    String machineName = Environment.MachineName;
+    options.UseSqlServer($"Server={machineName};Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
 
 
