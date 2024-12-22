@@ -13,9 +13,9 @@ namespace ProjectIO.model
         public DbSet<SportsCenter> SportsCenters { get; set; }
         public DbSet<TrainingSession>  TrainingSessions { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserLoginCredential>  UserLoginCredentials { get; set; }
+        //public DbSet<UserLoginCredential>  UserLoginCredentials { get; set; }
         public DbSet<Worker> Workers { get; set; }
-        public DbSet<WorkerLoginCredential> WorkerLoginCredentials { get; set; }
+        //public DbSet<WorkerLoginCredential> WorkerLoginCredentials { get; set; }
         public DbSet<WorkerFunction> WorkerFunctions { get; set; }
         public DbSet<WorkerTrainingSession> WorkerTrainingSessions { get; set; }
 

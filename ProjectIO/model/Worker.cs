@@ -29,6 +29,14 @@ namespace ProjectIO.model
         [ForeignKey("functionId")]
         public WorkerFunction function { get; set; }
 
+        [Required]
+        [EmailAddress]
+        public string email { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string password { get; set; }
+
 
 
     }

@@ -25,6 +25,14 @@ namespace ProjectIO.model
         [Phone]
         public string phone { get; set; }
 
+        [Required]
+        [EmailAddress]
+        public string email { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string password { get; set; }
+
 
     }
 }

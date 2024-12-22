@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-//to do testów z SQLServer - preferowane raczej
+//to do testï¿½w z SQLServer - preferowane raczej
 builder.Services.AddDbContext<SportCenterContext>(options =>
 {
     // Computer name (default local database name)
