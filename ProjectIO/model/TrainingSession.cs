@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ProjectIO.model
 {
     [Table("TrainingSessions")]
-    public class TrainingSessions
+    public class TrainingSession
     {
         [Key]
         public int sessionId { get; set; }
