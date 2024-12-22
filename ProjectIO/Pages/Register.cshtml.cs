@@ -13,7 +13,7 @@ namespace ProjectIO.Pages
             _context = context;
         }
 
-        // Bindowanie danych bezpoœrednio do encji User
+        // Bindowanie danych bezpoï¿½rednio do encji User
         [BindProperty]
         public User Input { get; set; }
 
@@ -26,10 +26,10 @@ namespace ProjectIO.Pages
         {
             if (!ModelState.IsValid)
             {
-                return Page(); // Jeœli model jest niepoprawny, wróæ do formularza
+                return Page(); // Jeï¿½li model jest niepoprawny, wrï¿½ï¿½ do formularza
             }
 
-            // Dodanie u¿ytkownika do bazy danych
+            // Dodanie uï¿½ytkownika do bazy danych
             _context.Users.Add(Input);
             await _context.SaveChangesAsync();
 

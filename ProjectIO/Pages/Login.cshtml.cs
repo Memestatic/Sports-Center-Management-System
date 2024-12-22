@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
+using ProjectIO.model;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace ProjectIO.Pages
 {
@@ -13,26 +16,50 @@ namespace ProjectIO.Pages
             _context = context;
         }
 
-        // Bindowanie danych bezpoœrednio do encji User
+        // Model do bindowania danych z formularza
         [BindProperty]
-        public User Input { get; set; }
+        public LoginInputModel Input { get; set; }
+
+        // Komunikat o b³êdzie
+        public string ErrorMessage { get; set; }
 
         public void OnGet()
         {
+            // Wyczyszczenie komunikatu o b³êdzie przy za³adowaniu strony
+            ErrorMessage = string.Empty;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
             {
-                return Page(); // Jeœli model jest niepoprawny, wróæ do formularza
+                return Page(); // Jeœli dane s¹ niepoprawne, wróæ na stronê
             }
 
-            // Dodanie u¿ytkownika do bazy danych
-            _context.Users.Add(Input);
-            await _context.SaveChangesAsync();
+            // Wyszukiwanie u¿ytkownika w bazie danych
+            var user = _context.Users
+                .FirstOrDefault(u => u.email == Input.email && u.password == Input.password);
 
-            return RedirectToPage("/"); // Przekierowanie po sukcesie
+            if (user == null)
+            {
+                // Jeœli u¿ytkownik nie zosta³ znaleziony
+                ErrorMessage = "Invalid email or password.";
+                return Page();
+            }
+
+            // Jeœli u¿ytkownik zosta³ znaleziony, mo¿esz zapisaæ dane w sesji lub cookies
+            // Przekierowanie po zalogowaniu (np. na stronê g³ówn¹)
+            return RedirectToPage("/Index");
         }
+    }
+
+    public class LoginInputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string email { get; set; }
+
+        [Required]
+        public string password { get; set; }
     }
 }
