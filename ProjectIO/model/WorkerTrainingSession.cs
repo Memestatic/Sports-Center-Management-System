@@ -7,6 +7,8 @@ namespace ProjectIO.model
     [Table("WorkerTrainingSessions")]
     public class WorkerTrainingSession
     {
+        [Key]
+        public int workerTrainingSessionId { get; set; }
         public int workerId { get; set; }
         public int sessionId { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace ProjectIO.DBModel
+﻿/*namespace ProjectIO.DBModel
 {
     public class User
     {
@@ -8,4 +8,4 @@
 
         public string userPassword { get; set; }
     }
-}
+}*/

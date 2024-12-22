@@ -1,4 +1,5 @@
 ﻿@page
+@using ProjectIO.model
 @model ProjectIO.Pages.RegisterModel
 @{
 }
@@ -7,38 +8,49 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4 border p-5">
             <form method="post">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
                 <div class="form-group row p-2">
-                    <label for="firstName">First Name:</label>
-                    <input type="text" id="firstName" name="firstName" class="form-control" required />
+                    <label asp-for="Input.name">First Name:</label>
+                    <input type="text" asp-for="Input.name" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.name"></span>
                 </div>
+
                 <div class="form-group row p-2">
-                    <label for="lastName">Last Name:</label>
-                    <input type="text" id="lastName" name="lastName" class="form-control" required />
+                    <label asp-for="Input.surname">Last Name:</label>
+                    <input type="text" asp-for="Input.surname" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.surname"></span>
                 </div>
+
                 <div class="form-group row p-2">
-                    <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" class="form-control" required>
+                    <label asp-for="Input.gender">Gender:</label>
+                    <select asp-for="Input.gender" class="form-control">
                         <option value="" disabled selected>Choose...</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                        {
+                            <option value="@gender">@gender</option>
+                        }
                     </select>
+                    <span class="text-danger" asp-validation-for="Input.gender"></span>
                 </div>
+
+
                 <div class="form-group row p-2">
-                    <label for="date">Birth Date:</label>
-                    <input type="date" class="form-control" id="birthDate" name="birthDate" max="" required/>
+                    <label asp-for="Input.phone">Phone:</label>
+                    <input type="tel" asp-for="Input.phone" class="form-control" pattern="[0-9]{9}" placeholder="123456789" />
+                    <span class="text-danger" asp-validation-for="Input.phone"></span>
                 </div>
+
                 <div class="form-group row p-2">
-                    <label for="phone">Phone:</label>
-                    <input type="tel" id="phone" name="phone" class="form-control" pattern="[0-9]{9}" placeholder="123456789" required />
+                    <label asp-for="Input.email">Email:</label>
+                    <input type="email" asp-for="Input.email" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.email"></span>
                 </div>
+
                 <div class="form-group row p-2">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" class="form-control" required />
-                </div>
-                <div class="form-group row p-2">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" class="form-control" required />
+                    <label asp-for="Input.password">Password:</label>
+                    <input type="password" asp-for="Input.password" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.password"></span>
                 </div>
 
                 <!-- Checkbox for Terms and Conditions -->
