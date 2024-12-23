@@ -10,7 +10,7 @@ builder.Services.AddRazorPages();
 //to do testów z SQLServer - preferowane raczej
 builder.Services.AddDbContext<SportCenterContext>(options =>
 {
-    options.UseSqlServer("Server=LAPTOKMICHAL;Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
+    options.UseSqlServer("Server=DESKTOP-M3LTMBS;Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
 
 
@@ -24,7 +24,7 @@ void AddUser(SportCenterContext context, string userName, string userPassword)
     };
 
     context.Users.Add(user);
-    context.SaveChanges();
+ //   context.SaveChanges();
 
 }
 
@@ -36,7 +36,7 @@ AddUser(builder.Services.BuildServiceProvider().GetService<SportCenterContext>()
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SportCenterContext>();
-    context.Database.Migrate();
+   // context.Database.Migrate();
 }
 
 //niech jest zakomentowane bo problemy s¹
