@@ -14,16 +14,6 @@ namespace ProjectIO.model
         // Publiczna metoda statyczna umożliwiająca dostęp do Singletona
         public static User GetInstance()
         {
-            if (_instance == null)
-            {
-                lock (_lock) // Blok synchronizowany dla bezpieczeństwa wątkowego
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new User();
-                    }
-                }
-            }
 
             return _instance;
         }
@@ -38,6 +28,11 @@ namespace ProjectIO.model
             {
                 _instance = user;
             }
+        }
+
+        public static void EndInstance()
+        {
+            _instance = null;
         }
     }
 }
