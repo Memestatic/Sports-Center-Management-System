@@ -24,6 +24,9 @@ namespace ProjectIO.Pages
         [BindProperty]
         public int SelectedHour { get; set; }
 
+        [BindProperty]
+        public bool isUserLogged { get; set; }
+
 
         private readonly SportCenterContext _context;
 
@@ -38,6 +41,14 @@ namespace ProjectIO.Pages
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
             Facilities = _context.Facilities.ToList();
             Reservations = _context.Reservations.ToList();
+
+            if(CurrentUser.GetInstance() != null)
+            {
+                isUserLogged = true;
+            }
+            else {
+                isUserLogged = false;
+            }
 
             // Obs³uga wybranego oœrodka
             if (centerId.HasValue)
