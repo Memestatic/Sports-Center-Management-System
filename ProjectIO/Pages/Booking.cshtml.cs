@@ -78,10 +78,21 @@ namespace ProjectIO.Pages
 
         }
 
-        public void OnPost()
+        public IActionResult OnPost()
         {
-            Console.WriteLine("SelectedDay: " + SelectedDay);
+            var reservationDate = DateTime.Parse($"{SelectedDay} {SelectedHour}:00:00");
+            var reservation = new Reservation
+            {
+                facility = _context.Facilities.FirstOrDefault(f => f.facilityId == SelectedObjectId),
+                user = CurrentUser.GetInstance(),
+                reservationDate = reservationDate,
+                reservationStatus = ReservationStatus.Pending
+            };
 
+            _context.Reservations.Add(reservation);
+            _context.SaveChanges();
+
+            return RedirectToPage("/Booking", new { centerId = SelectedCenterId, objectId = SelectedObjectId });
         }
     }
 }

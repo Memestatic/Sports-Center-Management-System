@@ -33,7 +33,7 @@ namespace ProjectIO.Pages
             _context.Users.Add(Input);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/"); // Przekierowanie po sukcesie
+            return RedirectToPage("/Login"); // Przekierowanie po sukcesie
         }
 
     }
