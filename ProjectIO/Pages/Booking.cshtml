@@ -58,30 +58,26 @@
         <div class="calendar-container my-4">
             <div class="row g-3">
                 <!-- Kalendarz z dniami miesiąca -->
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <h3 class="text-center mb-3">Select a Day</h3>
-                    <div class="row row-cols-7 text-center">
-                        @for (int day = 1; day <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); day++)
-                        {
-                            <div class="col mb-2">
-                                <button class="btn btn-outline-primary w-100"
-                                        onclick="selectDay(@day)">
-                                    @day
-                                </button>
-                            </div>
-                        }
-                    </div>
+                    <label for="startDate">Start</label>
+                    <input id="startDate" class="form-control" type="date" onchange="selectDay(this)"/>
                 </div>
+
+                
 
                 <!-- Godziny dla wybranego dnia -->
                 <div class="col-md-4">
-                    <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">1</span></h3>
+                    <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">01</span></h3>
                     <ul class="list-group">
-                        @for (int hour = 9; hour <= 20; hour++) // Zakres godzin: 9:00 - 20:00
+                        @for (int hour = 9; hour <= 20; hour++)
                         {
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 @hour:00 - @hour:59
-                                <span class="badge bg-success">Available</span>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-success me-2">Available</span>
+                                    <button class="btn btn-primary btn-sm" onclick="reserveHour(@hour)">Rezerwuj</button>
+                                </div>
                             </li>
                         }
                     </ul>
@@ -92,11 +88,23 @@
 </div>
 
 <script>
-    function selectDay(day) {
-        // Ustaw wybrany dzień w sekcji godzin
-        document.getElementById("selected-day").textContent = day;
+    function selectDay(input) {
+        
+        // Odczytaj wybraną datę
+        const selectedDate = input.value;
 
-        // Możesz dodać dalszą logikę, np. odpytywanie serwera o godziny dla wybranego dnia
-        console.log("Selected day: " + day);
+        // Wyciągnij dzień z daty (format YYYY-MM-DD)
+        const day = selectedDate.split('-')[2];
+
+        // Możesz teraz przekazać ten dzień do swojej funkcji
+        console.log('Wybrany dzień:', day);
+    
+        // Zmieniamy wyświetlaną datę
+        document.getElementById('selected-day').textContent = day;
+    }
+
+    function reserveHour(hour) {
+        // Tutaj możesz dodać logikę rezerwacji godziny
+        alert("Rezerwacja godziny: " + hour + ":00");
     }
 </script>
