@@ -1,5 +1,102 @@
 ﻿@page
-@model ProjectIO.Pages.BookingModel
+@model BookingModel
 @{
     ViewData["Title"] = "Booking";
 }
+
+<h1 class="text-center my-4">Booking</h1>
+
+<div class="container">
+    @if (!Model.SelectedCenterId.HasValue)
+    {
+        <!-- Widok listy ośrodków -->
+        <h2 class="text-center mb-4">Available Sports Centers</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var center in Model.SportsCenters)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@center.centerName</h5>
+                            <div class="d-flex justify-content-center mt-3">
+                                <a class="btn btn-primary" asp-page="/Booking" asp-route-centerId="@center.centerId">View Facilities</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (!Model.SelectedObjectId.HasValue)
+    {
+        <!-- Widok obiektów sportowych dla wybranego ośrodka -->
+        <h2 class="text-center mb-4">Facilities in <span class="text-primary">@Model.SelectedCenterName</span></h2>
+        @if (Model.Facilities.Any())
+        {
+            <div class="list-group">
+                @foreach (var facility in Model.Facilities)
+                {
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                       asp-page="/Booking" asp-route-centerId="@Model.SelectedCenterId" asp-route-objectId="@facility.facilityId">
+                        @facility.facilityName
+                        <span class="badge bg-primary">View Calendar</span>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                No facilities available for this center.
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Widok kalendarza rezerwacji dla wybranego obiektu -->
+        <!-- Sekcja kalendarza -->
+        <div class="calendar-container my-4">
+            <div class="row g-3">
+                <!-- Kalendarz z dniami miesiąca -->
+                <div class="col-md-8">
+                    <h3 class="text-center mb-3">Select a Day</h3>
+                    <div class="row row-cols-7 text-center">
+                        @for (int day = 1; day <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); day++)
+                        {
+                            <div class="col mb-2">
+                                <button class="btn btn-outline-primary w-100"
+                                        onclick="selectDay(@day)">
+                                    @day
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Godziny dla wybranego dnia -->
+                <div class="col-md-4">
+                    <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">1</span></h3>
+                    <ul class="list-group">
+                        @for (int hour = 9; hour <= 20; hour++) // Zakres godzin: 9:00 - 20:00
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @hour:00 - @hour:59
+                                <span class="badge bg-success">Available</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function selectDay(day) {
+        // Ustaw wybrany dzień w sekcji godzin
+        document.getElementById("selected-day").textContent = day;
+
+        // Możesz dodać dalszą logikę, np. odpytywanie serwera o godziny dla wybranego dnia
+        console.log("Selected day: " + day);
+    }
+</script>
