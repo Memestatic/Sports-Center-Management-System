@@ -49,7 +49,7 @@ namespace ProjectIO.Pages
 
             // Jeœli u¿ytkownik zosta³ znaleziony, mo¿esz zapisaæ dane w sesji lub cookies
             // Przekierowanie po zalogowaniu (np. na stronê g³ówn¹)
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Booking");
         }
     }
 
