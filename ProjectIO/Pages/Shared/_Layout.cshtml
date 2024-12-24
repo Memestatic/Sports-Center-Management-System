@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ProjectIO.model
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,6 +14,10 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">Sport Center Management System</a>
+                @if (CurrentUser.GetInstance() != null)
+                {
+                    <span class="text-light">Hello, @CurrentUser.GetInstance().name</span>
+                }
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
