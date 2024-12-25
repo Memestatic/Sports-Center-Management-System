@@ -47,7 +47,7 @@ namespace ProjectIO.Pages
                 return Page();
             }
 
-            CurrentUser.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
+            CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
 
             return RedirectToPage("/Booking");
         }

@@ -43,7 +43,7 @@ namespace ProjectIO.Pages
             Facilities = _context.Facilities.ToList();
             Reservations = _context.Reservations.ToList();
 
-            if(CurrentUser.GetInstance() != null)
+            if(CurrentPerson.GetInstance() != null)
             {
                 isUserLogged = true;
             }
@@ -108,7 +108,7 @@ namespace ProjectIO.Pages
                     {
                         reservationId = 1, // Jeœli bazy danych u¿ywa klucza autoinkrementuj¹cego, ten numer zostanie nadpisany.
                         facility = Facilities[0],
-                        user = CurrentUser.GetInstance(),
+                        user = (User)CurrentPerson.GetInstance(),
                         reservationDate = new DateTime(2024, 12, 26, 10, 0, 0),
                         reservationStatus = ReservationStatus.Pending // Ustawienie statusu na "Oczekuj¹cy"
                     };
@@ -125,7 +125,7 @@ namespace ProjectIO.Pages
             var reservation = new Reservation
             {
                 facility = _context.Facilities.FirstOrDefault(f => f.facilityId == SelectedObjectId),
-                user = CurrentUser.GetInstance(),
+                user = (User)CurrentPerson.GetInstance(),
                 reservationDate = reservationDate,
                 reservationStatus = ReservationStatus.Pending
             };
