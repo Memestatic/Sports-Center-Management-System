@@ -60,23 +60,51 @@
                 <!-- Kalendarz z dniami miesiąca -->
                 <div class="col-md-4">
                     <h3 class="text-center mb-3">Select a Day</h3>
-                    <label for="startDate">Start</label>
-                    <input id="startDate" class="form-control" type="date" onchange="selectDay(this)"/>
+                    <form method="get" id="dateForm"> 
+                        <input type="hidden" name="centerId" value="@Model.SelectedCenterId" />
+                        <input type="hidden" name="objectId" value="@Model.SelectedObjectId" />
+                        <input id="startDate"
+                               class="form-control"
+                               type="date"
+                               name="SelectedDay"
+                               value="@Model.SelectedDay"
+                               onchange="document.getElementById('dateForm').submit();" 
+                               />
+                    </form>
                 </div>
 
                 
 
                 <!-- Godziny dla wybranego dnia -->
                 <div class="col-md-4">
-                    <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">01</span></h3>
+                    <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">@Model.SelectedDay</span></h3>
                     <ul class="list-group">
                         @for (int hour = 9; hour <= 20; hour++)
                         {
+							
+							// Generowanie klucza dla danej godziny
+                            var slotKey = $"{Model.SelectedDay} {hour:00}";
+                            bool isTaken = Model.TakenSlots.Contains(slotKey);
+
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 @hour:00 - @hour:59
                                 <div class="d-flex align-items-center">
-                                    <span class="badge bg-success me-2">Available</span>
-                                    <button class="btn btn-primary btn-sm" onclick="reserveHour(@hour)">Rezerwuj</button>
+                                    @if (isTaken)
+                                    {
+                                        <span class="badge bg-danger me-2">Unavailable</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success me-2">Available</span>
+                                        @if (Model.isUserLogged)
+                                        {
+                                            <form method="post">
+                                                <input type="hidden" name="SelectedDay" value="@Model.SelectedDay" />
+                                                <input type="hidden" name="SelectedHour" value="@hour" />
+                                                <button type="submit" class="btn btn-primary btn-sm">Reserve</button>
+                                            </form>
+                                        }
+                                    }
                                 </div>
                             </li>
                         }
@@ -93,6 +121,8 @@
         // Odczytaj wybraną datę
         const selectedDate = input.value;
 
+		alert(selectedDate);
+
         // Wyciągnij dzień z daty (format YYYY-MM-DD)
         const day = selectedDate.split('-')[2];
 
@@ -101,10 +131,5 @@
     
         // Zmieniamy wyświetlaną datę
         document.getElementById('selected-day').textContent = day;
-    }
-
-    function reserveHour(hour) {
-        // Tutaj możesz dodać logikę rezerwacji godziny
-        alert("Rezerwacja godziny: " + hour + ":00");
     }
 </script>
