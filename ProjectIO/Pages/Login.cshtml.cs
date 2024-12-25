@@ -53,13 +53,4 @@ namespace ProjectIO.Pages
         }
     }
 
-    public class LoginInputModel
-    {
-        [Required]
-        [EmailAddress]
-        public string email { get; set; }
-
-        [Required]
-        public string password { get; set; }
-    }
 }
