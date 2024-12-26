@@ -47,19 +47,10 @@ namespace ProjectIO.Pages
                 return Page();
             }
 
-            // Jeœli u¿ytkownik zosta³ znaleziony, mo¿esz zapisaæ dane w sesji lub cookies
-            // Przekierowanie po zalogowaniu (np. na stronê g³ówn¹)
-            return RedirectToPage("/Index");
+            CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
+
+            return RedirectToPage("/Booking");
         }
     }
 
-    public class LoginInputModel
-    {
-        [Required]
-        [EmailAddress]
-        public string email { get; set; }
-
-        [Required]
-        public string password { get; set; }
-    }
 }
