@@ -4,43 +4,150 @@
     ViewData["Title"] = "Home page";
 }
 
-<!-- Hero Section -->
-<div class="hero">
-    <div class="container text-center text-white">
-        <h1>Welcome to Sport Center Management System</h1>
-        <p class="lead">Manage your sports facilities effortlessly.</p>
-        <a href="/Booking" class="btn btn-primary btn-lg">Get Started</a>
+
+<!--Logo-->
+<div class="position-relative vh-100" style="max-height: 70vh">
+    <img src="~/assets/heroimage.png" class="img-fluid w-100 h-100" alt="Tło" style="object-fit: cover;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"></div>
+    <div class="position-absolute top-50 start-0 translate-middle-y text-white ps-5">
+        <h1 class="fw-bold display-3">EVERSPORT sports centre</h1>
+        <p class="fs-5 mt-3">
+            Discover the ultimate space to achieve your fitness goals and unlock your potential.
+        </p>
+        <a href="/Booking" class="btn btn-light btn-lg mt-4">Join us</a>
     </div>
 </div>
 
-<!-- Features Section -->
-<section class="features py-5">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Facility Booking</h5>
-                        <p class="card-text">Easily book and manage your sports facilities online.</p>
+
+<!--services we offer-->
+<div class="position-relative vh-100" style="background-color: rgba(39, 37, 41,1); max-height: 70vh">
+    <div class="position-relative top-50 start-50 translate-middle text-center text-white">
+        <div class="">
+            <h1 class="display-2">Explore our services</h1>
+        </div>
+        <section class="features py-5">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Facility Booking</h5>
+                                <p class="card-text">Easily book and manage your sports facilities online.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Membership Management</h5>
+                                <p class="card-text">Track and manage memberships with ease.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Event Scheduling</h5>
+                                <p class="card-text">Organize and promote events seamlessly.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Equipment rental</h5>
+                                <p class="card-text">Rent professional equipment for every sports field.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Membership Management</h5>
-                        <p class="card-text">Track and manage memberships with ease.</p>
+        </section>
+    </div>
+</div>
+
+
+
+
+<!--about us-->
+<div class="position-relative vh-100" style="max-height: 70vh">
+    <!-- Obraz tła -->
+    <img src="~/assets/img3.jpg" class="img-fluid w-100 h-100" alt="Tło" style="object-fit: cover;">
+
+    <!-- Maska przyciemnienia -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"></div>
+
+    <!-- Treść na zdjęciu -->
+    <div class="position-absolute top-50 start-0 translate-middle-y text-white ps-5">
+        <h1 class="fw-bold display-3">About us</h1>
+        <p class="fs-5 mt-3">
+            Learn more about our objects and community.
+        </p>
+        <a href="/Booking" class="btn btn-light btn-lg mt-4">Read more</a>
+    </div>
+</div>
+
+<!--find us here-->
+<div class="position-relative vh-100" style="background-color: rgba(33, 37, 41, 1); max-height: 70vh">
+    <!-- Nagłówek -->
+    <div class="text-center text-white py-3">
+        <h1 class="display-2">Find us here</h1>
+    </div>
+
+    <!-- Sekcja z kartami -->
+    <section class="features py-3">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center">
+                <!-- Pierwsza karta -->
+                <div class="col d-flex justify-content-center">
+                    <div class="card" style="width: 100%; max-width: 350px;">
+                        <img src="~/assets/loc1.png"
+                             class="card-img-top"
+                             alt="Our centre in Florida"
+                             style="object-fit: cover; height: 300px; width: 100%;">
+                        <div class="card-body">
+                            <h5 class="card-title">Our centre in Florida</h5>
+                            <p class="card-text">
+                                26-18 Werner Heights, Florida, NY 10921, United States
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Event Scheduling</h5>
-                        <p class="card-text">Organize and promote events seamlessly.</p>
+                <!-- Druga karta -->
+                <div class="col d-flex justify-content-center">
+                    <div class="card" style="width: 100%; max-width: 350px;">
+                        <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
+                             class="card-img-top"
+                             alt="Hollywood Sign on The Hill"
+                             style="object-fit: cover; height: 300px; width: 100%;">
+                        <div class="card-body">
+                            <h5 class="card-title">Addres 2</h5>
+                            <p class="card-text">
+                                Address here
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
+</div>
+
+
+<!--contact us here-->
+<div class="position-relative vh-100" style="max-height: 70vh">
+    <!-- Obraz tła -->
+    <img src="~/assets/ubc.jpg" class="img-fluid w-100 h-100" alt="Tło" style="object-fit: cover;">
+
+    <!-- Maska przyciemnienia -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"></div>
+
+    <!-- Treść na zdjęciu -->
+    <div class="position-absolute top-50 start-0 translate-middle-y text-white ps-5">
+        <h1 class="fw-bold display-3">Still not sure?</h1>
+        <p class="fs-5 mt-3">
+            Click here to send us a question.
+        </p>
+        <a href="/Booking" class="btn btn-light btn-lg mt-4">Contact us</a>
     </div>
-</section>
+</div>
