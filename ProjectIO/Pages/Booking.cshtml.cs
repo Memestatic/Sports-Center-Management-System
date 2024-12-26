@@ -11,7 +11,11 @@ namespace ProjectIO.Pages
         public List<Facility> Facilities { get; set; }
         public int? SelectedCenterId { get; set; }
         public string? SelectedCenterName { get; set; }
+        [BindProperty]
         public int? SelectedObjectId { get; set; }
+
+        public Facility selectedObject { get; set; }
+
         public string? SelectedObjectName { get; set; }
 
         public List<Reservation> Reservations { get; set; }
@@ -70,7 +74,7 @@ namespace ProjectIO.Pages
             // Obs³uga wybranego obiektu
             if (objectId.HasValue && Facilities.Any())
             {
-                var selectedObject = Facilities.FirstOrDefault(f => f.facilityId == objectId.Value);
+                selectedObject = Facilities.FirstOrDefault(f => f.facilityId == objectId.Value);
                 if (selectedObject != null)
                 {
                     SelectedObjectId = selectedObject.facilityId;
@@ -124,7 +128,7 @@ namespace ProjectIO.Pages
             var reservationDate = DateTime.Parse($"{SelectedDay} {SelectedHour}:00:00");
             var reservation = new Reservation
             {
-                facility = _context.Facilities.FirstOrDefault(f => f.facilityId == SelectedObjectId),
+                facility = Facilities.FirstOrDefault(f => f.facilityId == SelectedObjectId.Value),
                 user = (User)CurrentPerson.GetInstance(),
                 reservationDate = reservationDate,
                 reservationStatus = ReservationStatus.Pending
