@@ -11,11 +11,11 @@ builder.Services.AddRazorPages();
 //to do test�w z SQLServer - preferowane raczej
 builder.Services.AddDbContext<SportCenterContext>(options =>
 {
+
     // Computer name (default local database name)
     String machineName = Environment.MachineName;
     options.UseSqlServer($"Server={machineName};Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
-
 
 // Automatyczne zastosowanie migracji przy uruchomieniu aplikacji
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
