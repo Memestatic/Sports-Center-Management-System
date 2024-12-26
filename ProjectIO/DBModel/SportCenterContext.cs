@@ -1,11 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ProjectIO.DBModel
+namespace ProjectIO.model
 {
     public class SportCenterContext : DbContext
     {
         //nasze tabele jakie będą w bazie
+        public DbSet<Facility> Facilities { get; set; }
+        public DbSet<FacilityType> FacilityTypes { get; set; }
+        public DbSet<Pass> Passes { get; set; }
+        public DbSet<PassType> PassTypes { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<SportsCenter> SportsCenters { get; set; }
+        public DbSet<TrainingSession>  TrainingSessions { get; set; }
         public DbSet<User> Users { get; set; }
+        //public DbSet<UserLoginCredential>  UserLoginCredentials { get; set; }
+        public DbSet<Worker> Workers { get; set; }
+        //public DbSet<WorkerLoginCredential> WorkerLoginCredentials { get; set; }
+        public DbSet<WorkerFunction> WorkerFunctions { get; set; }
+        public DbSet<WorkerTrainingSession> WorkerTrainingSessions { get; set; }
 
         //do SQLServer
         public SportCenterContext(DbContextOptions options) : base(options)
@@ -13,30 +25,24 @@ namespace ProjectIO.DBModel
 
         }
 
-        //musi być zakomentowane jeśli używamy SQLServer
-        //do InMemoryDatabase
-        //public SportCenterContext()
-        //{
-
-        //}
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseInMemoryDatabase("MyDB");
-        //    //moglibyścy tutaj uzywać czegoś takiego że baza się tworzy wraz z życiem programu oraz usuwa jak się kończy
-        //    //trzeba dodać wtedy ...FrameworkCore.InMemory
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    userID = 1,
-                    userName = "admin",
-                    userPassword = "admin"
-                }
-            );
+            modelBuilder.Entity<WorkerTrainingSession>()
+            .HasKey(wts => new { wts.workerId, wts.sessionId }); 
+
+            modelBuilder.Entity<WorkerTrainingSession>()
+                .HasOne(wts => wts.Worker)
+                .WithMany()
+                .HasForeignKey(wts => wts.workerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkerTrainingSession>()
+                .HasOne(wts => wts.TrainingSession)
+                .WithMany()
+                .HasForeignKey(wts => wts.sessionId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
+
 
 
     }

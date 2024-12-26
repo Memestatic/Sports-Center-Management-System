@@ -1,71 +1,30 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using ProjectIO.DBModel;
+using ProjectIO.model;
+using System.Xml.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-//to do testów z SQLServer - preferowane raczej
+//to do testï¿½w z SQLServer - preferowane raczej
 builder.Services.AddDbContext<SportCenterContext>(options =>
 {
-    options.UseSqlServer("Server=DESKTOP-M3LTMBS;Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
+
+    // Computer name (default local database name)
+    String machineName = Environment.MachineName;
+    options.UseSqlServer($"Server={machineName};Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
-
-
-
-void AddUser(SportCenterContext context, string userName, string userPassword)
-{
-    var user = new User()
-    {
-        userName = userName,
-        userPassword = userPassword
-    };
-
-    context.Users.Add(user);
- //   context.SaveChanges();
-
-}
-
-AddUser(builder.Services.BuildServiceProvider().GetService<SportCenterContext>(), "paduch", "avr");
-AddUser(builder.Services.BuildServiceProvider().GetService<SportCenterContext>(), "drabol", "pic");
-AddUser(builder.Services.BuildServiceProvider().GetService<SportCenterContext>(), "gilu", "zilog");
 
 // Automatyczne zastosowanie migracji przy uruchomieniu aplikacji
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SportCenterContext>();
-   // context.Database.Migrate();
+    //context.Database.Migrate();
 }
 
-//niech jest zakomentowane bo problemy s¹
-//to do testów z InMemoryDatabase
-//using (var context = new SportCenterContext())
-//{
-//    var gabrys = new User()
-//    {
-//        userID = 1,
-//        userName = "drabol",
-//        userPassword = "gabriel"
-//    };
 
-//    var paduszek = new User()
-//    {
-//        userID = 2,
-//        userName = "paduszek",
-//        userPassword = "kocham esp"
-//    };
-
-//    context.Users.Add(gabrys);
-//    context.Users.Add(paduszek);
-//    context.SaveChanges();
-//    var allUsers = context.Users.ToList();
-//    context.Users.Remove(gabrys);
-//    context.SaveChanges();
-//    allUsers = context.Users.ToList();
-//}
-//uwaga - wszystko z baz¹ musi siê dziaæ przed t¹ linijk¹ var app = builder.Build();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
