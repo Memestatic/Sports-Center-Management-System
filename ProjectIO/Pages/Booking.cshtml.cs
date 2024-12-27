@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
+using System.Collections;
+using System.ComponentModel;
+using System.Globalization;
 using System.Reflection.Metadata;
 
 namespace ProjectIO.Pages
@@ -11,7 +14,11 @@ namespace ProjectIO.Pages
         public List<Facility> Facilities { get; set; }
         public int? SelectedCenterId { get; set; }
         public string? SelectedCenterName { get; set; }
+        [BindProperty]
         public int? SelectedObjectId { get; set; }
+
+        public Facility selectedObject { get; set; }
+
         public string? SelectedObjectName { get; set; }
 
         public List<Reservation> Reservations { get; set; }
@@ -38,7 +45,6 @@ namespace ProjectIO.Pages
 
         public void OnGet(int? centerId, int? objectId, string? selectedDay)
         {
-
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
             Facilities = _context.Facilities.ToList();
             Reservations = _context.Reservations.ToList();
@@ -70,11 +76,15 @@ namespace ProjectIO.Pages
             // Obs³uga wybranego obiektu
             if (objectId.HasValue && Facilities.Any())
             {
-                var selectedObject = Facilities.FirstOrDefault(f => f.facilityId == objectId.Value);
+                selectedObject = Facilities.FirstOrDefault(f => f.facilityId == objectId.Value);
                 if (selectedObject != null)
                 {
                     SelectedObjectId = selectedObject.facilityId;
                     SelectedObjectName = selectedObject.facilityName;
+
+                    HttpContext.Session.Remove("selectedObjectId");
+                    HttpContext.Session.SetInt32("selectedObjectId", (int) SelectedObjectId);
+                    
                 }
             }
 
@@ -84,7 +94,7 @@ namespace ProjectIO.Pages
                 Console.WriteLine("Nie ustawiono");
 
             // Obs³uga wybranego dnia
-            if (!string.IsNullOrEmpty(SelectedDay))
+            if (!string.IsNullOrEmpty(SelectedDay) && SelectedObjectId.HasValue)
             {
                 DateTime selectedDate;
                 if (DateTime.TryParse(SelectedDay, out selectedDate))
@@ -96,7 +106,7 @@ namespace ProjectIO.Pages
                             reservation.reservationDate.Date == selectedDate.Date &&
                             reservation.reservationStatus != ReservationStatus.Denied)
                         {
-                            string slot = $"{reservation.reservationDate:yyyy-MM-dd HH}";
+                            string slot = $"{reservation.facility.sportsCenter.centerId} {reservation.facility.facilityId} {reservation.reservationDate:yyyy-MM-dd HH}";
                             if (!TakenSlots.Contains(slot))
                             {
                                 TakenSlots.Add(slot);
@@ -107,25 +117,63 @@ namespace ProjectIO.Pages
                     var exampleReservation = new Reservation
                     {
                         reservationId = 1, // Jeœli bazy danych u¿ywa klucza autoinkrementuj¹cego, ten numer zostanie nadpisany.
-                        facility = Facilities[0],
+                        facility = Facilities.FirstOrDefault(f => f.facilityId == 1, null),
                         user = (User)CurrentPerson.GetInstance(),
                         reservationDate = new DateTime(2024, 12, 26, 10, 0, 0),
                         reservationStatus = ReservationStatus.Pending // Ustawienie statusu na "Oczekuj¹cy"
                     };
 
-                    string slot1 = $"{exampleReservation.reservationDate:yyyy-MM-dd HH}";
-                    TakenSlots.Add(slot1);
+                    if (exampleReservation.facility != null)
+                    {
+                        string slot1 = $"{exampleReservation.facility.sportsCenter.centerId} {exampleReservation.facility.facilityId} {exampleReservation.reservationDate:yyyy-MM-dd HH}";
+                        Console.WriteLine($"Slot1: {slot1}");
+                        TakenSlots.Add(slot1);
+                    }
                 }
             }
         }
 
         public IActionResult OnPost()
         {
-            var reservationDate = DateTime.Parse($"{SelectedDay} {SelectedHour}:00:00");
+            SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
+            Facilities = _context.Facilities.ToList();
+
+            // Upewnij siê, ¿e Facilities nie jest null
+            if (Facilities == null || !Facilities.Any())
+            {
+                return BadRequest("Facilities list is not available or empty.");
+            }
+
+            if (!DateTime.TryParseExact(
+                $"{SelectedDay} {SelectedHour}:00:00",
+                "yyyy-MM-dd HH:mm:ss",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var reservationDate))
+            {
+                return BadRequest("Invalid date or time format.");
+            }
+
+            int? selectedObjectId = HttpContext.Session.GetInt32("selectedObjectId");
+
+            var facility = Facilities.FirstOrDefault(f => f.facilityId == selectedObjectId);
+            if (facility == null)
+            {
+                return BadRequest("Facility not found.");
+            }
+
+            var currentPerson = (User)CurrentPerson.GetInstance();
+            if (currentPerson is not User user)
+            {
+                return Unauthorized();
+            }
+
+            _context.Users.Attach(currentPerson);
+
             var reservation = new Reservation
             {
-                facility = _context.Facilities.FirstOrDefault(f => f.facilityId == SelectedObjectId),
-                user = (User)CurrentPerson.GetInstance(),
+                facility = facility,
+                user = currentPerson,
                 reservationDate = reservationDate,
                 reservationStatus = ReservationStatus.Pending
             };
@@ -133,7 +181,8 @@ namespace ProjectIO.Pages
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
 
-            return RedirectToPage("/Booking", new { centerId = SelectedCenterId, objectId = SelectedObjectId });
+            return RedirectToPage("/Payment");
         }
+
     }
 }
