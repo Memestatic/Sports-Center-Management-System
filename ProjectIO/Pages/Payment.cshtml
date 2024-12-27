@@ -5,36 +5,59 @@
 
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4 border p-5">
-            <div class="text-center">
-                <img src="/assets/BLIK.png" alt="Logo" class="mb-3" style="width: 100px;">
-                <h3 class="mb-4">Płatność BLIK</h3>
+        <div class="col-md-6 col-lg-4 border p-5 text-center">
+            <div id="paymentContent">
+                <div class="text-center">
+                    <img src="/assets/BLIK.png" alt="Logo" class="mb-3" style="width: 100px;">
+                    <h3 class="mb-4">Płatność BLIK</h3>
+                </div>
+
+                <form id="paymentForm">
+                    <div class="form-group mb-3">
+                        <label for="paymentCode" class="form-label">Kod płatności (6 cyfr)</label>
+                        <input type="text" id="paymentCode" class="form-control" placeholder="Wpisz kod" maxlength="6" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Zapłać</button>
+                </form>
             </div>
 
-            <form id="paymentForm">
-                <div class="form-group mb-3">
-                    <label for="paymentCode" class="form-label">Kod płatności (6 cyfr)</label>
-                    <input type="text" id="paymentCode" class="form-control" placeholder="Wpisz kod" maxlength="6" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Zapłać</button>
-            </form>
+            <div id="loadingSpinner" class="spinner-border text-primary d-none mt-5" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
 
             <div id="paymentStatus" class="mt-3"></div>
         </div>
+        <div id="paymentStatus" class="mt-3"></div>
     </div>
 </div>
 
 <script>
-    document.getElementById('paymentForm').addEventListener('submit', function(event) {
-        event.preventDefault(); 
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
         const paymentCode = document.getElementById('paymentCode').value;
+        const paymentContent = document.getElementById('paymentContent');
+        const loadingSpinner = document.getElementById('loadingSpinner');
         const paymentStatus = document.getElementById('paymentStatus');
 
         if (paymentCode.length === 6 && !isNaN(paymentCode)) {
-            paymentStatus.innerHTML = '<div class="alert alert-success">Płatność zakończona sukcesem!</div>';
+            paymentContent.classList.add('d-none');
+            loadingSpinner.classList.remove('d-none');
+            paymentStatus.classList.add('d-none');
+
+            setTimeout(() => {
+                loadingSpinner.classList.add('d-none');
+                paymentStatus.classList.remove('d-none');
+                paymentStatus.innerHTML = '<div class="alert alert-success">Płatność zakończona sukcesem! Przekierowanie...</div>';
+
+                
+                setTimeout(() => {
+                    window.location.href = '/Booking';
+                }, 3000); 
+            }, 5000); 
         } else {
             paymentStatus.innerHTML = '<div class="alert alert-danger">Nieprawidłowy kod płatności.</div>';
         }
     });
+
 </script>
