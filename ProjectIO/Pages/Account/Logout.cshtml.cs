@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
 
-namespace ProjectIO.Pages
+namespace ProjectIO.Pages.Account
 {
     public class LogoutModel : PageModel
     {

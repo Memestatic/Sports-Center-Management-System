@@ -1,10 +1,11 @@
 ﻿@page
-@model ProjectIO.Pages.ClientPanelModel
+@model ProjectIO.Pages.Account.ClientPanelModel
+@using ProjectIO.model
 @{
 }
 
 <div class="container mt-4 mb-3">
-    <h1 class="mb-4">Client Panel</h1>
+    <h1 class="mb-4">Hello, @CurrentPerson.GetInstance().name!</h1>
     <div class="row">
         <!-- View Reservations -->
         <div class="col-md-4 d-flex align-items-stretch">
@@ -12,7 +13,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Your Reservations</h5>
                     <p class="card-text">Review details of your current and past reservations.</p>
-                    <a href="/UserReservationManager" class="btn btn-primary">See reservations</a>
+                    <a href="/Account/UserReservationManager" class="btn btn-primary">See reservations</a>
                 </div>
             </div>
         </div>

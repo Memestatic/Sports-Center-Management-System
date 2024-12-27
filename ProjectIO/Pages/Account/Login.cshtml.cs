@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
@@ -5,7 +6,7 @@ using ProjectIO.model;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace ProjectIO.Pages
+namespace ProjectIO.Pages.Account
 {
     public class LoginModel : PageModel
     {
@@ -38,18 +39,28 @@ namespace ProjectIO.Pages
 
             // Wyszukiwanie u¿ytkownika w bazie danych
             var user = _context.Users
-                .FirstOrDefault(u => u.email == Input.email && u.password == Input.password);
+                .FirstOrDefault(u => u.email == Input.email);
 
             if (user == null)
             {
                 // Jeœli u¿ytkownik nie zosta³ znaleziony
-                ErrorMessage = "Invalid email or password.";
+                ModelState.AddModelError("Input.email", "The email address is not registered.");
+                return Page();
+            }
+
+            var passwordHasher = new PasswordHasher<User>();
+
+            var result = passwordHasher.VerifyHashedPassword(user, user.password, Input.password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                ModelState.AddModelError("Input.password", "The password is incorrect.");
                 return Page();
             }
 
             CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Account/ClientPanel");
         }
     }
 
