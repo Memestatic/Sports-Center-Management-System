@@ -35,5 +35,10 @@ namespace ProjectIO.Pages
 
             Console.WriteLine(reservations);
         }
+
+        public IActionResult OnPostPayHandler(int reservationId)
+        {
+            return RedirectToPage("/Payment", new { reservationId = reservationId });
+        }
     }
 }
