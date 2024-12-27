@@ -16,7 +16,7 @@
 
                 @if (CurrentPerson.GetInstance() != null)
                 {
-                    <span class="text-light">Hello, @CurrentPerson.GetInstance().name</span>
+                    //<span class="text-light">Hello, @CurrentPerson.GetInstance().name</span>
                 }
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -38,17 +38,17 @@
                         @if(CurrentPerson.GetInstance() == null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link active" href="/Login">Log in</a>
+                                <a class="nav-link active" href="/Account/Login">Log in</a>
                             </li>
                         }
                         @if(CurrentPerson.GetInstance() != null)
                         {     
                             <li class="nav-item">
-                                <a class="nav-link active" href="/ClientPanel">Profile</a>
+                                <a class="nav-link active" href="/Account/ClientPanel">Profile</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link active" href="/Logout">Log out</a>
+                                <a class="nav-link active" href="/Account/Logout">Log out</a>
                             </li>
                         }
                     </ul>

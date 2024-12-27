@@ -5,7 +5,7 @@ using ProjectIO.model;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace ProjectIO.Pages
+namespace ProjectIO.Pages.Account
 {
     public class LoginModel : PageModel
     {

@@ -5,7 +5,7 @@ using ProjectIO.model;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace ProjectIO.Pages
+namespace ProjectIO.Pages.Account
 {
     public class UserReservationManagerModel : PageModel
     {
@@ -45,7 +45,7 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostPayHandler(int reservationId)
         {
-            return RedirectToPage("/Payment", new { reservationId = reservationId });
+            return RedirectToPage("/Payment", new { reservationId });
         }
     }
 }
