@@ -162,16 +162,18 @@ namespace ProjectIO.Pages
                 return BadRequest("Facility not found.");
             }
 
-            var currentPerson = CurrentPerson.GetInstance();
+            var currentPerson = (User)CurrentPerson.GetInstance();
             if (currentPerson is not User user)
             {
                 return Unauthorized();
             }
 
+            _context.Users.Attach(currentPerson);
+
             var reservation = new Reservation
             {
                 facility = facility,
-                user = (User)currentPerson,
+                user = currentPerson,
                 reservationDate = reservationDate,
                 reservationStatus = ReservationStatus.Pending
             };
@@ -179,12 +181,7 @@ namespace ProjectIO.Pages
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
 
-            return RedirectToPage("/Booking", new
-            {
-                centerId = SelectedCenterId,
-                objectId = SelectedObjectId,
-                selectedDay = SelectedDay
-            });
+            return RedirectToPage("/Payment");
         }
 
     }
