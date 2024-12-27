@@ -16,6 +16,14 @@ builder.Services.AddDbContext<SportCenterContext>(options =>
     options.UseSqlServer($"Server={machineName};Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
 
+builder.Services.AddDistributedMemoryCache(); // Wymagane dla sesji
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Czas życia sesji
+    options.Cookie.HttpOnly = true; // Sesja dostępna tylko przez HTTP
+    options.Cookie.IsEssential = true; // Sesja jest kluczowa dla działania aplikacji
+});
+
 
 // Automatyczne zastosowanie migracji przy uruchomieniu aplikacji
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
@@ -43,5 +51,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.UseSession(); // Włącz obsługę sesji
 
 app.Run();
