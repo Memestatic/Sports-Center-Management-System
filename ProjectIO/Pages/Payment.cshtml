@@ -18,7 +18,8 @@
                     <p class="lead">Your reservation nr: @Model.reservationId</p>
                 </div>
 
-                <form id="paymentForm">
+                <form id="paymentForm" method="post">
+                    <input type="hidden" name="ReservationId" value="@Model.reservationId" />
                     <div class="form-group mb-3">
                         <label for="paymentCode" class="form-label">Kod płatności (6 cyfr)</label>
                         <input type="text" id="paymentCode" class="form-control" placeholder="Wpisz kod" maxlength="6" required>
@@ -58,7 +59,7 @@
 
                 
                 setTimeout(() => {
-                    window.location.href = '/Booking';
+                    event.target.submit();
                 }, 3000); 
             }, 5000); 
         } else {

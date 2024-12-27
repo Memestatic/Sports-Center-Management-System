@@ -1,0 +1,48 @@
+﻿@page
+@using ProjectIO.model
+@model ProjectIO.Pages.UserReservationManagerModel
+@{
+    <div class="container mt-5">
+        <h2 class="mb-4">Tabela rezerwacji</h2>
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>numer rezerwacji</th>
+                    <th>nazwa ośrodka</th>
+                    <th>nazwa obiektu</th>
+                    <th>data rozpoczęcia</th>
+                    <th>status rezerwacji</th>
+                    <th>akcje użytkownika</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Renderujemy wiersze danych -->
+                @foreach (var res in Model.reservations)
+                {
+                    <tr>
+                        <td>@res.reservationId</td>
+                        <td>@res.facility.sportsCenter.centerName</td>
+                        <td>@res.facility.facilityName</td>
+                        <td>@res.reservationDate</td>
+                        <td>@res.reservationStatus.ToString()</td>
+                        <td class="d-flex gap-2">
+                            <form method="post" asp-page-handler="payHandler">
+                                <input type="hidden" name="reservationId" value="@res.reservationId" />
+                                <button type="submit" class="btn btn-success btn-sm"
+                                @(res.reservationStatus != ReservationStatus.Pending ? "disabled" : "")>
+                                    Zapłać teraz
+                                </button>
+                            </form>
+                            <form method="post" asp-page-handler="denyHandler">
+                                <input type="hidden" name="reservationId" value="@res.reservationId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Odrzuć</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+}

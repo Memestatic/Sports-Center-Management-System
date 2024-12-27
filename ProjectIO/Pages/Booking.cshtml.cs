@@ -104,7 +104,7 @@ namespace ProjectIO.Pages
                         if (reservation.facility.sportsCenter.centerId == SelectedCenterId &&
                             reservation.facility.facilityId == SelectedObjectId &&
                             reservation.reservationDate.Date == selectedDate.Date &&
-                            reservation.reservationStatus != ReservationStatus.Denied)
+                            reservation.reservationStatus == ReservationStatus.Approved)
                         {
                             string slot = $"{reservation.facility.sportsCenter.centerId} {reservation.facility.facilityId} {reservation.reservationDate:yyyy-MM-dd HH}";
                             if (!TakenSlots.Contains(slot))
