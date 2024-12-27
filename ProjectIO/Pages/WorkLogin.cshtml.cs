@@ -49,8 +49,7 @@ namespace ProjectIO.Pages
 
             CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
 
-            //------------------------------ REDIREDCT DO ADMINPANEL
-            return RedirectToPage("/Booking");
+            return RedirectToPage("/AdminPanel");
         }
     }
 
