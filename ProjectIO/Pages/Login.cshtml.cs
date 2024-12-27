@@ -49,7 +49,7 @@ namespace ProjectIO.Pages
 
             CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
 
-            return RedirectToPage("/Booking");
+            return RedirectToPage("/Index");
         }
     }
 

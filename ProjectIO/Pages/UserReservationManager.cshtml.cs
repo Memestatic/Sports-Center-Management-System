@@ -22,8 +22,13 @@ namespace ProjectIO.Pages
             _context = context;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (CurrentPerson.GetInstance() == null)
+            {
+                return RedirectToPage("/Login");
+            }
+
             currentUser = (User)CurrentPerson.GetInstance();
 
             reservations = _context.Reservations
@@ -34,6 +39,8 @@ namespace ProjectIO.Pages
                 .ToList();
 
             Console.WriteLine(reservations);
+
+            return Page();
         }
 
         public IActionResult OnPostPayHandler(int reservationId)
