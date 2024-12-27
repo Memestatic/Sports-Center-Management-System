@@ -1,0 +1,40 @@
+﻿@page
+@model ProjectIO.Pages.PaymentModel
+@{
+}
+
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4 border p-5">
+            <div class="text-center">
+                <img src="/assets/BLIK.png" alt="Logo" class="mb-3" style="width: 100px;">
+                <h3 class="mb-4">Płatność BLIK</h3>
+            </div>
+
+            <form id="paymentForm">
+                <div class="form-group mb-3">
+                    <label for="paymentCode" class="form-label">Kod płatności (6 cyfr)</label>
+                    <input type="text" id="paymentCode" class="form-control" placeholder="Wpisz kod" maxlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Zapłać</button>
+            </form>
+
+            <div id="paymentStatus" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('paymentForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const paymentCode = document.getElementById('paymentCode').value;
+        const paymentStatus = document.getElementById('paymentStatus');
+
+        if (paymentCode.length === 6 && !isNaN(paymentCode)) {
+            paymentStatus.innerHTML = '<div class="alert alert-success">Płatność zakończona sukcesem!</div>';
+        } else {
+            paymentStatus.innerHTML = '<div class="alert alert-danger">Nieprawidłowy kod płatności.</div>';
+        }
+    });
+</script>
