@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
@@ -13,10 +14,9 @@ namespace ProjectIO.Pages.Account
             _context = context;
         }
 
-        // Bindowanie danych bezpo�rednio do encji User
+        // Bindowanie danych bezpośrednio do encji User
         [BindProperty]
         public User Input { get; set; }
-
 
         public void OnGet()
         {
@@ -26,15 +26,21 @@ namespace ProjectIO.Pages.Account
         {
             if (!ModelState.IsValid)
             {
-                return Page(); // Je�li model jest niepoprawny, wr�� do formularza
+                return Page(); // Jeśli model jest niepoprawny, wróć do formularza
             }
 
-            // Dodanie u�ytkownika do bazy danych
+            // Tworzymy instancję PasswordHasher
+            var passwordHasher = new PasswordHasher<User>();
+
+            // Hashowanie hasła
+            Input.password = passwordHasher.HashPassword(Input, Input.password);
+
+            // Dodanie użytkownika do bazy danych z zahashowanym hasłem
             _context.Users.Add(Input);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Login"); // Przekierowanie po sukcesie
+            return RedirectToPage("/Account/Login"); // Przekierowanie po sukcesie
         }
-
     }
+
 }
