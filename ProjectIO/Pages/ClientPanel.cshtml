@@ -1,0 +1,68 @@
+﻿@page
+@model ProjectIO.Pages.ClientPanelModel
+@{
+}
+
+<div class="container mt-4 mb-3">
+    <h1 class="mb-4">Client Panel</h1>
+    <div class="row">
+        <!-- View Reservations -->
+        <div class="col-md-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Your Reservations</h5>
+                    <p class="card-text">Review details of your current and past reservations.</p>
+                    <a href="/UserReservationManager" class="btn btn-primary">See reservations</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="col-md-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Change Password</h5>
+                    <p class="card-text">Ensure the security of your account by changing your password.</p>
+                    <a href="/Account/ChangePassword" class="btn btn-warning">Change Password</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile -->
+        <div class="col-md-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Your Profile</h5>
+                    <p class="card-text">Update your contact information and preferences.</p>
+                    <a href="/Account/EditProfile" class="btn btn-success">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Help -->
+        <div class="col-md-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Help</h5>
+                    <p class="card-text">Have questions? Contact us or check the FAQ.</p>
+                    <a href="/Help" class="btn btn-info">Get Help</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <div class="col-md-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Logout</h5>
+                    <p class="card-text">Safely log out of the system.</p>
+                    <a href="/Account/Logout" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
