@@ -181,7 +181,7 @@ namespace ProjectIO.Pages
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
 
-            return RedirectToPage("/Payment");
+            return RedirectToPage("/Payment", new { reservationId = reservation.reservationId });
         }
 
     }

@@ -5,8 +5,10 @@ namespace ProjectIO.Pages
 {
     public class PaymentModel : PageModel
     {
-        public void OnGet()
+        public int? reservationId;
+        public void OnGet(int? reservationId)
         {
+            this.reservationId = reservationId;
         }
     }
 }

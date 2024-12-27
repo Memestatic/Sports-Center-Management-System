@@ -1,15 +1,21 @@
 ﻿@page
-@model ProjectIO.Pages.PaymentModel
+@model PaymentModel
 @{
+	ViewData["Title"] = "Payment";
 }
 
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4 border p-5 text-center">
+            
             <div id="paymentContent">
                 <div class="text-center">
                     <img src="/assets/BLIK.png" alt="Logo" class="mb-3" style="width: 100px;">
                     <h3 class="mb-4">Płatność BLIK</h3>
+                </div>
+
+                <div>
+                    <p class="lead">Your reservation nr: @Model.reservationId</p>
                 </div>
 
                 <form id="paymentForm">
