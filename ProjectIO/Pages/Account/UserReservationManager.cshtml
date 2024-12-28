@@ -2,21 +2,32 @@
 @using ProjectIO.model
 @model ProjectIO.Pages.Account.UserReservationManagerModel
 @{
-    <div class="container mt-5">
-        <h2 class="mb-4">Tabela rezerwacji</h2>
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Reservations Table</h2>
+
+    @if (Model.reservations == null || !Model.reservations.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            You have no reservations at the moment.
+        </div>
+        
+    }
+    else
+    {
         <table class="table table-striped table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>numer rezerwacji</th>
-                    <th>nazwa ośrodka</th>
-                    <th>nazwa obiektu</th>
-                    <th>data rozpoczęcia</th>
-                    <th>status rezerwacji</th>
-                    <th>akcje użytkownika</th>
+                    <th>Reservation Number</th>
+                    <th>Sports Center Name</th>
+                    <th>Facility Name</th>
+                    <th>Start Date</th>
+                    <th>Reservation Status</th>
+                    <th>User Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Renderujemy wiersze danych -->
                 @foreach (var res in Model.reservations)
                 {
                     <tr>
@@ -30,19 +41,18 @@
                                 <input type="hidden" name="reservationId" value="@res.reservationId" />
                                 <button type="submit" class="btn btn-success btn-sm"
                                 @(res.reservationStatus != ReservationStatus.Pending ? "disabled" : "")>
-                                    Zapłać teraz
+                                    Pay Now
                                 </button>
                             </form>
                             <form method="post" asp-page-handler="denyHandler">
                                 <input type="hidden" name="reservationId" value="@res.reservationId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Odrzuć</button>
+                                <button type="submit" class="btn btn-danger btn-sm">Deny</button>
                             </form>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
-
-
-}
+    }
+    <a href="/Booking" class="btn btn-primary mb-2">Make a Reservation</a>
+</div>

@@ -1,3 +1,40 @@
+/* Light theme */
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --header-footer-bg: #212529;
+}
+
+/* Dark theme */
+body.dark-mode {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --header-footer-bg: #343a40;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header, footer {
+    background-color: var(--header-footer-bg);
+    color: var(--text-color);
+}
+
+.card {
+    background-color: #ffffff; /* Domyœlne t³o */
+    color: #000000; /* Domyœlny kolor tekstu */
+}
+
+body.dark-mode .card {
+    background-color: #343a40; /* Ciemniejsze t³o */
+    color: #ffffff; /* Jasny tekst */
+    border: 1px solid #444; /* Opcjonalny ciemniejszy obrys */
+}
+
+
+
 html {
   font-size: 14px;
 }
@@ -20,3 +57,78 @@ html {
 /*body {
   margin-bottom: 0px;
 } */
+
+/* Motive toggler */
+
+/* Wrapper for the toggle switch */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 15px;
+}
+
+/* Hidden checkbox */
+.theme-switch input {
+    display: none;
+}
+
+/* Slider container */
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+    /* Slider background */
+    .theme-switch .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+    }
+
+    /* Icons inside the slider */
+    .theme-switch .sun-icon,
+    .theme-switch .moon-icon {
+        color: white;
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+/* Default: Sun icon visible (light mode) */
+body:not(.dark-mode) .sun-icon {
+    opacity: 1;
+}
+
+/* Dark mode: Moon icon visible */
+body.dark-mode .moon-icon {
+    opacity: 1;
+}
+
+/* Slider when toggle is active */
+.theme-switch input:checked + .slider {
+    background-color: #343a40;
+}
+
+/* Hide Sun icon in dark mode */
+body.dark-mode .sun-icon {
+    opacity: 0;
+}
+
+/* Hide Moon icon in light mode */
+body:not(.dark-mode) .moon-icon {
+    opacity: 0;
+}
+
