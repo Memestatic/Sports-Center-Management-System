@@ -3,8 +3,266 @@
 @{
     ViewData["Title"] = "AdminPanel";
 }
-@if (Model.Permissions == 1) 
-{
-<button type="button" class="btn btn-primary btn-lg">Large button</button>
-}
-<button type="button" class="btn btn-secondary btn-lg">Large button</button>
+@* <!-- @if (Model.Permissions == 1) {} --> *@
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" id="nav-sportscenter-tab" data-bs-toggle="tab" data-bs-target="#nav-sportscenter" type="button" role="tab" aria-controls="nav-sportscenter" aria-selected="false">Sports Center</button>
+        <button class="nav-link" id="nav-sportsobject-tab" data-bs-toggle="tab" data-bs-target="#nav-sportsobject" type="button" role="tab" aria-controls="nav-sportsobject" aria-selected="false">Sports Object</button>
+        <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="false">Users</button>
+        <button class="nav-link" id="nav-workers-tab" data-bs-toggle="tab" data-bs-target="#nav-workers" type="button" role="tab" aria-controls="nav-workers" aria-selected="false">Workers</button>
+        <button class="nav-link" id="nav-price-tab" data-bs-toggle="tab" data-bs-target="#nav-price" type="button" role="tab" aria-controls="nav-price" aria-selected="false">Pricing</button>
+        <button class="nav-link" id="nav-promotions-tab" data-bs-toggle="tab" data-bs-target="#nav-promotions" type="button" role="tab" aria-controls="nav-promotions" aria-selected="false">Promotions</button>
+        <button class="nav-link" id="nav-reservations-tab" data-bs-toggle="tab" data-bs-target="#nav-reservations" type="button" role="tab" aria-controls="nav-reservations" aria-selected="false">Reservations</button>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <!--SPORTSCENTER-TAB------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-sportscenter" role="tabpanel" aria-labelledby="nav-sportscenter-tab" tabindex="0" asp-page="./AdminPanel" asp-route-activeTab="tab1">
+        <!-- ADD NEW RECORD FORM -->
+        @* <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.centerId">Add New Record</button>
+        <div id="addForm-Model.centerId" class="collapse">
+            <form method="post" asp-page-handler="Add">
+                <div class="form-group">
+                    <label>Nazwa Ośrodka:</label>
+                    <input type="text" name="centerName" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Ulica:</label>
+                    <input type="text" name="centerStreet" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Numer Ulicy:</label>
+                    <input type="text" name="centerStreetNumber" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Miasto:</label>
+                    <input type="text" name="centerCity" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Wojewódzctwo:</label>
+                    <input type="text" name="centerState" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Kod Pocztowy:</label>
+                    <input type="text" name="centerZip" value="" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-success">Add</button>
+            </form>
+        </div>
+
+        <br> *@
+        <!--LIST-VALUES-->
+        @if (Model.SportsCenters != null && Model.SportsCenters.Count > 0)
+        {
+            @foreach (var center in Model.SportsCenters)
+            {
+                <tr>
+                    <td>@center.centerId</td>
+                    <td>@center.centerName</td>
+                    <td>@center.centerStreet</td>
+                    <td>@center.centerStreetNumber</td>
+                    <td>@center.centerCity</td>
+                    <td>@center.centerState</td>
+                    <td>@center.centerZip</td>
+                </tr>
+                <!-- DELETE BUTTON -->
+                <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@center.centerId">Delete</button>
+
+                <!-- POPUP CONFIRM MENU -->
+                <div class="modal fade" id="confirmDeleteModal-@center.centerId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@center.centerId" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmDeleteModalLabel-@center.centerId">Confirm Deletion</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete this item?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form method="post" id="deleteForm-@center.centerId" asp-page-handler="Delete" asp-route-id="@center.centerId" style="display:inline;">
+                                    <button type="submit" id="confirmDeleteButton-@center.centerId" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--EDIT-BUTTON-->
+                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@center.centerId">Edytuj</button>
+                <!--POPUP-EDIT-FORM-->
+                    <div id="editForm-@center.centerId" class="collapse">
+                                <form method="post" asp-page-handler="Edit" asp-route-id="@center.centerId">
+                                    <div class="form-group">
+                                        <label>Nazwa Ośrodka:</label>
+                                        <input type="text" name="centerName" value="@center.centerName" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ulica:</label>
+                                        <input type="text" name="centerStreet" value="@center.centerStreet" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Numer Ulicy:</label>
+                                        <input type="text" name="centerStreetNumber" value="@center.centerStreetNumber" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Miasto:</label>
+                                        <input type="text" name="centerCity" value="@center.centerCity" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stan:</label>
+                                        <input type="text" name="centerState" value="@center.centerState" class="form-control" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kod Pocztowy:</label>
+                                        <input type="text" name="centerZip" value="@center.centerZip" class="form-control" required />
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                                 </form>
+                     </div>
+
+                <br>
+            }
+        }
+        else
+        {
+            <p>Brak danych o obiektach.</p>
+        }
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-sportsobject" role="tabpanel" aria-labelledby="nav-sportsobject-tab" tabindex="0">
+        @if (Model.Facilities != null && Model.Facilities.Count > 0)
+        {
+            @foreach (var facility in Model.Facilities)
+            {
+                <tr>
+                    <td>@facility.facilityId</td>
+                    <!--nie mam pojecia dlaczego ale jak to gowno sie odkomentuje to
+                    jest exception nullreference-->
+                    @* <td>@facility.facilityType.typeName</td> *@
+                    <td>@facility.sportsCenter.centerName</td>
+                    <td>@facility.isChangingRoomAvailable</td>
+                    <td>@facility.isEquipmentAvailable</td>
+                    @*              <td>@facility.promoStart</td>
+            <td>@facility.promoEnd</td>
+            <td>@facility.promoRate</td> *@
+                    <button type="submit" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
+                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+                    <br>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Brak danych o obiektach.</p>
+        }
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab" tabindex="0">
+        @if (Model.Users != null && Model.Users.Count > 0)
+        {
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.userId</td>
+                    <td>@user.name</td>
+                    <td>@user.surname</td>
+                    <td>@user.gender</td>
+                    <td>@user.phone</td>
+                    <td>@user.email</td>
+                    <td>@user.password</td>
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
+                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+                    <br>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Brak danych o użytkownikach.</p>
+        }
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-workers" role="tabpanel" aria-labelledby="nav-workers-tab" tabindex="0">
+        @if (Model.Workers != null && Model.Workers.Count > 0)
+        {
+            @foreach (var worker in Model.Workers)
+            {
+                <tr>
+                    <td>@worker.workerId</td>
+                    <!--to samo co w uzytkownikach, nullexception-->
+                    @* <td>@worker.function.functionName</td> *@
+                    <td>@worker.name</td>
+                    <td>@worker.surname</td>
+                    <td>@worker.gender</td>
+                    <td>@worker.phone</td>
+                    <td>@worker.email</td>
+                    <td>@worker.password</td> <!-- to musi miec ograniczanie zeby moderator nie widzial od admina np-->
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
+                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+                    <br>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Brak danych o pracownikach.</p>
+        }
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-price" role="tabpanel" aria-labelledby="nav-price-tab" tabindex="0">
+        Nie ma takiej tabeli w BD
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-promotions" role="tabpanel" aria-labelledby="nav-promotions-tab" tabindex="0">
+        @if (Model.Facilities != null && Model.Facilities.Count > 0)
+        {
+            @foreach (var facility in Model.Facilities)
+            {
+                <tr>
+                    <td>@facility.facilityId</td>
+                    <!--exception nullreference-->
+                    @* <td>@facility.facilityType.typeName</td> *@
+                    <td>@facility.promoStart</td>
+                    <td>@facility.promoEnd</td>
+                    <td>@facility.promoRate</td>
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
+                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+                    <br>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Brak danych o promocjach.</p>
+        }
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+    <div class="tab-pane fade" id="nav-reservations" role="tabpanel" aria-labelledby="nav-reservations-tab" tabindex="0">
+        @if (Model.Reservations != null && Model.Reservations.Count > 0)
+        {
+            @foreach (var res in Model.Reservations)
+            {
+                <tr>
+                    <td>@res.reservationId</td>
+                    <td>@res.facility.facilityId</td>
+                    <td>@res.user.userId</td>
+                    <td>@res.reservationDate</td>
+                    <td>@res.reservationStatus</td>
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
+                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+                    <br>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Brak danych o rezerwacjach.</p>
+        }
+    </div>
+    <!---------------------------------------------------------------------------------------------------->
+</div>
