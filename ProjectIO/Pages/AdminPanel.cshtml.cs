@@ -14,6 +14,7 @@ namespace ProjectIO.Pages
 
         public List<SportsCenter> SportsCenters { get; set; }
         public List<Facility> Facilities { get; set; }
+        public List<FacilityType> FacilityTypes { get; set; }
         public List<User> Users { get; set; }
         public List<Worker> Workers { get; set; }
         public List<Reservation> Reservations { get; set; }
@@ -44,6 +45,7 @@ namespace ProjectIO.Pages
 
             SportsCenters = _context.SportsCenters.ToList();
             Facilities = _context.Facilities.ToList();
+            FacilityTypes = _context.FacilityTypes.ToList();
             Users = _context.Users.ToList();
             Workers = _context.Workers.ToList();
             Reservations = _context.Reservations.ToList();
@@ -54,8 +56,8 @@ namespace ProjectIO.Pages
             }
 
 
-                // Obs³uga ró¿nych zak³adek
-                switch (tab)
+            // Obs³uga ró¿nych zak³adek
+            switch (tab)
             {
                 case "tab1":
                     SportsCenters = _context.SportsCenters.ToList(); // Przyk³ad dla zak³adki 1
@@ -80,11 +82,11 @@ namespace ProjectIO.Pages
                     break;
                 // Dodaj wiêcej przypadków dla pozosta³ych zak³adek
                 default:
-                   // SportsCenters = _context.SportsCenters.ToList(); 
-                   // Facilities = _context.Facilities.ToList();
-                   // Users = _context.Users.ToList();
-                   // Workers = _context.Workers.ToList();
-                   // Reservations = _context.Reservations.ToList();
+                    // SportsCenters = _context.SportsCenters.ToList(); 
+                    // Facilities = _context.Facilities.ToList();
+                    // Users = _context.Users.ToList();
+                    // Workers = _context.Workers.ToList();
+                    // Reservations = _context.Reservations.ToList();
                     break;
             }
 
@@ -135,6 +137,66 @@ namespace ProjectIO.Pages
             _context.SaveChanges();
             return RedirectToPage();
         }
+
+        public IActionResult OnPostAddF(string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
+        {
+            // Znalezienie SportsCenter na podstawie nazwy
+            var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.centerName == centerName);
+            if (sportsCenter == null)
+            {
+                ModelState.AddModelError(string.Empty, "Specified Sports Center not found.");
+                return Page();
+            }
+
+            // Znalezienie FacilityType na podstawie typu (typeName)
+            var facilityType = _context.FacilityTypes.FirstOrDefault(ft => ft.typeName == typeName);
+            if (facilityType == null)
+            {
+                ModelState.AddModelError(string.Empty, "Specified Facility Type not found.");
+                return Page();
+            }
+
+            // Walidacja zakresu dat promocji
+            if (promoEnd <= promoStart)
+            {
+                ModelState.AddModelError(string.Empty, "Promotion end date must be later than start date.");
+                return Page();
+            }
+
+            // Tworzenie nowego obiektu Facility
+            var facility = new Facility
+            {
+                facilityName = facilityName,
+                sportsCenter = sportsCenter,
+                facilityType = facilityType,
+                isChangingRoomAvailable = isChangingRoomAvailable,
+                isEquipmentAvailable = isEquipmentAvailable,
+                promoStart = promoStart,
+                promoEnd = promoEnd,
+                promoRate = promoRate
+            };
+
+            // Dodanie nowego Facility do bazy danych
+            _context.Facilities.Add(facility);
+            _context.SaveChanges();
+
+            // Przekierowanie po udanej operacji
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDeleteF(int id)
+        {
+            // Znalezienie obiektu Facility na podstawie ID
+            var facility = _context.Facilities.Find(id);
+            if (facility != null)
+            {
+                _context.Facilities.Remove(facility); // Usuniêcie obiektu z kontekstu
+                _context.SaveChanges(); // Zapisanie zmian w bazie danych
+            }
+            return RedirectToPage(); // Przekierowanie po usuniêciu
+        }
+
+
 
     }
 }
