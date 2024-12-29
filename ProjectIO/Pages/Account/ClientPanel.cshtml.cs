@@ -12,7 +12,7 @@ namespace ProjectIO.Pages.Account
             var currentUser = CurrentPerson.GetInstance();
             if (currentUser == null)
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Account/Login");
             }
 
             return Page();

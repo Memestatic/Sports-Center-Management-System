@@ -37,6 +37,10 @@ namespace ProjectIO.Pages
 
         private readonly SportCenterContext _context;
 
+        public string MinDate { get; set; }
+        public string MaxDate { get; set; }
+
+
         public BookingModel(SportCenterContext context)
         {
             _context = context;
@@ -45,6 +49,12 @@ namespace ProjectIO.Pages
 
         public void OnGet(int? centerId, int? objectId, string? selectedDay)
         {
+            // Minimalna data to dziœ
+            MinDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            // Maksymalna data - np. rezerwacje tylko do 3 miesiêcy naprzód
+            MaxDate = DateTime.Now.AddMonths(3).ToString("yyyy-MM-dd");
+
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
             Facilities = _context.Facilities.ToList();
             Reservations = _context.Reservations.ToList();
@@ -114,20 +124,17 @@ namespace ProjectIO.Pages
                         }
                     }
 
-                    var exampleReservation = new Reservation
+                    // Dodaj przesz³e godziny dla bie¿¹cego dnia jako "zajête"
+                    if (selectedDate.Date == DateTime.Now.Date)
                     {
-                        reservationId = 1, // Jeœli bazy danych u¿ywa klucza autoinkrementuj¹cego, ten numer zostanie nadpisany.
-                        facility = Facilities.FirstOrDefault(f => f.facilityId == 1, null),
-                        user = (User)CurrentPerson.GetInstance(),
-                        reservationDate = new DateTime(2024, 12, 26, 10, 0, 0),
-                        reservationStatus = ReservationStatus.Pending // Ustawienie statusu na "Oczekuj¹cy"
-                    };
-
-                    if (exampleReservation.facility != null)
-                    {
-                        string slot1 = $"{exampleReservation.facility.sportsCenter.centerId} {exampleReservation.facility.facilityId} {exampleReservation.reservationDate:yyyy-MM-dd HH}";
-                        Console.WriteLine($"Slot1: {slot1}");
-                        TakenSlots.Add(slot1);
+                        for (int pastHour = 0; pastHour < DateTime.Now.Hour; pastHour++)
+                        {
+                            string pastSlot = $"{SelectedCenterId} {SelectedObjectId} {selectedDate:yyyy-MM-dd} {pastHour:00}";
+                            if (!TakenSlots.Contains(pastSlot))
+                            {
+                                TakenSlots.Add(pastSlot);
+                            }
+                        }
                     }
                 }
             }
@@ -135,15 +142,6 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPost()
         {
-            SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
-            Facilities = _context.Facilities.ToList();
-
-            // Upewnij siê, ¿e Facilities nie jest null
-            if (Facilities == null || !Facilities.Any())
-            {
-                return BadRequest("Facilities list is not available or empty.");
-            }
-
             if (!DateTime.TryParseExact(
                 $"{SelectedDay} {SelectedHour}:00:00",
                 "yyyy-MM-dd HH:mm:ss",
@@ -153,6 +151,21 @@ namespace ProjectIO.Pages
             {
                 return BadRequest("Invalid date or time format.");
             }
+            if (reservationDate < DateTime.Now)
+            {
+                return BadRequest("Cannot book a past time.");
+            }
+
+            SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
+            Facilities = _context.Facilities.ToList();
+
+            // Upewnij siê, ¿e Facilities nie jest null
+            if (Facilities == null || !Facilities.Any())
+            {
+                return BadRequest("Facilities list is not available or empty.");
+            }
+
+            
 
             int? selectedObjectId = HttpContext.Session.GetInt32("selectedObjectId");
 

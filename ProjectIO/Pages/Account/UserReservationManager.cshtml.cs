@@ -26,7 +26,7 @@ namespace ProjectIO.Pages.Account
         {
             if (CurrentPerson.GetInstance() == null)
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Account/Login");
             }
 
             currentUser = (User)CurrentPerson.GetInstance();
