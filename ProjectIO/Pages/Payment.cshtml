@@ -11,22 +11,28 @@
             <div id="paymentContent">
                 <div class="text-center">
                     <img src="/assets/BLIK.png" alt="Logo" class="mb-3" style="width: 100px;">
-                    <h3 class="mb-4">Płatność BLIK</h3>
+                    <h3 class="mb-4">BLIK Payment</h3>
                 </div>
 
                 <div>
-                    <p class="lead">Your reservation nr: @Model.reservationId</p>
+                    <p class="lead">Your reservation number: @Model.reservationId</p>
                 </div>
 
                 <form id="paymentForm" method="post">
                     <input type="hidden" name="ReservationId" value="@Model.reservationId" />
                     <div class="form-group mb-3">
-                        <label for="paymentCode" class="form-label">Kod płatności (6 cyfr)</label>
-                        <input type="text" id="paymentCode" class="form-control" placeholder="Wpisz kod" maxlength="6" required>
+                        <label for="paymentCode" class="form-label">Payment code (6 digits)</label>
+                        <input type="text" id="paymentCode" class="form-control" placeholder="Enter code" maxlength="6" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Zapłać</button>
+                    <button type="submit" class="btn btn-primary w-100">Pay</button>
                 </form>
+
+                <!-- New "Pay Later" button -->
+                <div class="text-center mt-3">
+                    <a href="/Account/ClientPanel" class="btn btn-secondary w-100">Pay Later</a>
+                </div>
             </div>
+
 
             <div id="loadingSpinner" class="spinner-border text-primary d-none mt-5" role="status" style="width: 3rem; height: 3rem;">
                 <span class="visually-hidden">Loading...</span>

@@ -24,10 +24,18 @@ namespace ProjectIO.Pages.Account
         // Komunikat o b³êdzie
         public string ErrorMessage { get; set; }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (CurrentPerson.GetInstance() != null)
+            {
+                // Jeœli u¿ytkownik jest ju¿ zalogowany, przekieruj go do panelu klienta
+                return RedirectToPage("/Account/ClientPanel");
+            }
+
             // Wyczyszczenie komunikatu o b³êdzie przy za³adowaniu strony
             ErrorMessage = string.Empty;
+
+            return Page();
         }
 
         public IActionResult OnPost()
