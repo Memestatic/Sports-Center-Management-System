@@ -1,0 +1,49 @@
+﻿@page
+@model ProjectIO.Pages.WorkLoginModel
+@{
+    ViewData["Title"] = "Worker Login";
+}
+
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4 border p-5">
+            <h2 class="text-center mb-4">Worker Login</h2>
+            <form method="post">
+                <!-- Display validation errors -->
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+                <!-- Email field -->
+                <div class="form-group row p-2">
+                    <label asp-for="Input.email">Email Address:</label>
+                    <input type="email" asp-for="Input.email" class="form-control" placeholder="Enter your email" required />
+                    <span class="text-danger" asp-validation-for="Input.email"></span>
+                </div>
+
+                <!-- Password field -->
+                <div class="form-group row p-2">
+                    <label asp-for="Input.password">Password:</label>
+                    <input type="password" asp-for="Input.password" class="form-control" placeholder="Enter your password" required />
+                    <span class="text-danger" asp-validation-for="Input.password"></span>
+                </div>
+
+                <!-- Remember Me checkbox -->
+                <div class="form-group row p-2">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">Remember Me</label>
+                    </div>
+                </div>
+
+                <!-- Login button -->
+                <div class="form-group row p-2">
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </div>
+
+                <!-- Forgot password link -->
+                <div class="form-group row p-2">
+                    <a href="/ForgotPassword" class="text-center d-block">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
