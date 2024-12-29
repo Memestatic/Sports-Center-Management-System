@@ -47,5 +47,27 @@ namespace ProjectIO.Pages.Account
         {
             return RedirectToPage("/Payment", new { reservationId });
         }
+
+        public IActionResult OnPostDenyHandler(int reservationId)
+        {
+            // ZnajdŸ rezerwacjê o podanym ID w bazie danych
+            var reservationToRemove = _context.Reservations.FirstOrDefault(r => r.reservationId == reservationId);
+
+            if (reservationToRemove == null)
+            {
+                // Jeœli rezerwacja nie istnieje, mo¿esz wyœwietliæ b³¹d lub przekierowaæ
+                ModelState.AddModelError("", "Reservation not found.");
+                return Page();
+            }
+
+            // Usuñ rezerwacjê z bazy danych
+            _context.Reservations.Remove(reservationToRemove);
+
+            // Zapisz zmiany w bazie danych
+            _context.SaveChanges();
+
+            // Prze³aduj stronê, aby odœwie¿yæ listê rezerwacji
+            return RedirectToPage();
+        }
     }
 }

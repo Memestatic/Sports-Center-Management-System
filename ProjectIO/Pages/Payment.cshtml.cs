@@ -59,7 +59,7 @@ namespace ProjectIO.Pages
 
             _context.SaveChanges();
 
-            return RedirectToPage("/UserReservationManager");
+            return RedirectToPage("/Account/UserReservationManager");
         }
 
         
