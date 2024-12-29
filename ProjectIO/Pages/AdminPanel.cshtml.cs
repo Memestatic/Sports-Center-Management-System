@@ -196,6 +196,29 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuniêciu
         }
 
+        public IActionResult OnPostEditF(int id, string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
+        {
+            var fac = _context.Facilities
+                      .Include(f => f.sportsCenter)
+                      .Include(f => f.facilityType)
+                      .FirstOrDefault(f => f.facilityId == id);
+
+            if (fac != null)
+            {
+                fac.facilityName = facilityName;
+                fac.sportsCenter.centerName = centerName;
+                fac.facilityType.typeName = typeName;
+                fac.isChangingRoomAvailable = isChangingRoomAvailable;
+                fac.isEquipmentAvailable = isEquipmentAvailable;
+                fac.promoStart = promoStart;
+                fac.promoEnd = promoEnd;
+                fac.promoRate = promoRate;
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
+
 
 
     }
