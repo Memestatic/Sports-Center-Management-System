@@ -15,6 +15,11 @@ namespace ProjectIO.Pages.Account
                 return RedirectToPage("/Account/Login");
             }
 
+            if (currentUser is Worker)
+            {
+                return BadRequest("Login into your customer account first");
+            }
+
             return Page();
         }
     }

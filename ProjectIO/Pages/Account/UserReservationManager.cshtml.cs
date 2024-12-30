@@ -29,6 +29,11 @@ namespace ProjectIO.Pages.Account
                 return RedirectToPage("/Account/Login");
             }
 
+            if (CurrentPerson.GetInstance() is Worker)
+            {
+                return BadRequest("Login into your customer account first");
+            }
+
             currentUser = (User)CurrentPerson.GetInstance();
 
             reservations = _context.Reservations

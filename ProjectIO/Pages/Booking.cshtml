@@ -1,5 +1,6 @@
 ﻿@page
 @model BookingModel
+@using ProjectIO.model
 @{
     ViewData["Title"] = "Booking";
 }
@@ -98,7 +99,8 @@
                                     else
                                     {
                                         <span class="badge bg-success me-2">Available</span>
-                                        @if (Model.isUserLogged)
+
+                                        @if (Model.isUserLogged && CurrentPerson.GetInstance() is not Worker)
                                         {
                                             <form method="post">
                                                 <input type="hidden" name="SelectedDay" value="@Model.SelectedDay" />

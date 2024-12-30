@@ -142,6 +142,11 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPost()
         {
+            if (CurrentPerson.GetInstance() is Worker)
+            {
+                return BadRequest("Login into your customer account first");
+            }
+
             if (!DateTime.TryParseExact(
                 $"{SelectedDay} {SelectedHour}:00:00",
                 "yyyy-MM-dd HH:mm:ss",

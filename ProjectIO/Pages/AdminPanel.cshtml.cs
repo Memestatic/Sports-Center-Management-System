@@ -35,6 +35,11 @@ namespace ProjectIO.Pages
                 return RedirectToPage("/WorkLogin");
             }
 
+            if (CurrentPerson.GetInstance() is User)
+            {
+                return BadRequest("Login into your worker account first");
+            }
+
             var perms = CurrentPerson.GetInstance() as Worker;
 
             Permissions = _context.Workers
