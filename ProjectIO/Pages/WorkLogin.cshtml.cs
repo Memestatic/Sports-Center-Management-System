@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
-using ProjectIO.model;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
