@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ProjectIO.DataValidation;
 
 namespace ProjectIO.model
 {
@@ -25,6 +26,7 @@ namespace ProjectIO.model
 
         [Required]
         [MaxLength(255)]
+        [ValidatePassword]
         public string password { get; set; }
     }
 }
