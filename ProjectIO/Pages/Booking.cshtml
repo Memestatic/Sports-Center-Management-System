@@ -86,7 +86,7 @@
                             bool isTaken = Model.TakenSlots.Contains(slotKey);
 
                             // Sprawdzenie, czy godzina jest przeszła w bieżącym dniu
-                            bool isPastHour = Model.SelectedDay == DateTime.Now.ToString("yyyy-MM-dd") && hour < DateTime.Now.Hour;
+                            bool isPastHour = Model.SelectedDay == DateTime.Now.ToString("yyyy-MM-dd") && hour <= DateTime.Now.Hour;
 
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 @hour:00 - @hour:59
