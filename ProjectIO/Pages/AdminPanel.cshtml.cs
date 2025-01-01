@@ -152,7 +152,7 @@ namespace ProjectIO.Pages
             if (sportsCenter == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Sports Center not found.");
-                return Page();
+                return RedirectToPage();
             }
 
             // Znalezienie FacilityType na podstawie typu (typeName)
@@ -160,14 +160,14 @@ namespace ProjectIO.Pages
             if (facilityType == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Facility Type not found.");
-                return Page();
+                return RedirectToPage();
             }
 
             // Walidacja zakresu dat promocji
             if (promoEnd <= promoStart)
             {
                 ModelState.AddModelError(string.Empty, "Promotion end date must be later than start date.");
-                return Page();
+                return RedirectToPage();
             }
 
             // Tworzenie nowego obiektu Facility
@@ -203,7 +203,28 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuniêciu
         }
 
-        //brakuje edit
+        public IActionResult OnPostEditF(int id, string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
+        {
+            var fac = _context.Facilities
+                              .Include(f => f.sportsCenter)
+                              .Include(f => f.facilityType)
+                              .FirstOrDefault(f => f.facilityId == id);
+
+            if (fac != null)
+            {
+                fac.facilityName = facilityName;
+                fac.sportsCenter.centerName = centerName;
+                fac.facilityType.typeName = typeName;
+                fac.isChangingRoomAvailable = isChangingRoomAvailable;
+                fac.isEquipmentAvailable = isEquipmentAvailable;
+                fac.promoStart = promoStart;
+                fac.promoEnd = promoEnd;
+                fac.promoRate = promoRate;
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
 
         //USERS/////////////////////////////////////////////////////////////////////////////
         public IActionResult OnPostDeleteUser(int id)
