@@ -39,7 +39,7 @@ namespace ProjectIO.Pages.Account
 
             if (u != null)
             {
-                return RedirectToPage("/Account/KnownEmail" new {name = Input.name, surname = Input.surname, gender = Input.gender.ToString(), phone = Input.phone, email = Input.email}); 
+                return RedirectToPage("/Account/KnownEmail"); 
             }
 
             // Tworzymy instancję PasswordHasher
