@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using ProjectIO.model;
 
 namespace ProjectIO.Pages
 {
@@ -7,14 +9,19 @@ namespace ProjectIO.Pages
     {
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public List<SportsCenter> SportsCenters { get; set; }
+
+        private readonly SportCenterContext _context;
+
+        public IndexModel(SportCenterContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public void OnGet()
         {
 
+            SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
         }
     }
 }

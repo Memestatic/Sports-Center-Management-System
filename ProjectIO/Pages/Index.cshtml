@@ -94,44 +94,42 @@
         <h1 class="display-2">Find us here</h1>
     </div>
 
-    <!-- Sekcja z kartami -->
+    <!-- Karuzela z kartami -->
     <section class="features py-3">
         <div class="container">
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center">
-                <!-- Pierwsza karta -->
-                <div class="col d-flex justify-content-center">
-                    <div class="card" style="width: 100%; max-width: 350px;">
-                        <img src="~/assets/loc1.png"
-                             class="card-img-top"
-                             alt="Our centre in Florida"
-                             style="object-fit: cover; height: 300px; width: 100%;">
-                        <div class="card-body">
-                            <h5 class="card-title">Our centre in Florida</h5>
-                            <p class="card-text">
-                                26-18 Werner Heights, Florida, NY 10921, United States
-                            </p>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    @foreach (var center in Model.SportsCenters)
+                    {
+                        <div class="swiper-slide">
+                            <div class="card" style="width: 100%; max-width: 350px; margin: auto;">
+                                <img src="https://via.placeholder.com/350x300"
+                                     class="card-img-top"
+                                     alt="@center.centerName"
+                                     style="object-fit: cover; height: 300px; width: 100%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">@center.centerName</h5>
+                                    <p class="card-text">
+                                        @center.centerStreet @center.centerStreetNumber,
+                                        @center.centerCity, @center.centerState @center.centerZip
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
-                <!-- Druga karta -->
-                <div class="col d-flex justify-content-center">
-                    <div class="card" style="width: 100%; max-width: 350px;">
-                        <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
-                             class="card-img-top"
-                             alt="Hollywood Sign on The Hill"
-                             style="object-fit: cover; height: 300px; width: 100%;">
-                        <div class="card-body">
-                            <h5 class="card-title">Addres 2</h5>
-                            <p class="card-text">
-                                Address here
-                            </p>
-                        </div>
-                    </div>
-                </div>
+
+                <!-- Przyciski nawigacji -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+
+                <!-- Paginacja -->
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </section>
 </div>
+
 
 
 <!--contact us here-->
@@ -151,3 +149,32 @@
         <a href="/Booking" class="btn btn-light btn-lg mt-4">Contact us</a>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        new Swiper('.swiper', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                },
+                768: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+            },
+        });
+    });
+</script>
+
