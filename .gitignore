@@ -400,3 +400,4 @@ FodyWeavers.xsd
 
 # Migrations
 ProjectIO/Migrations/
+ProjectIO/.idea/
