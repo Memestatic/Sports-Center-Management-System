@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -246,14 +247,25 @@ namespace ProjectIO.Pages
         public IActionResult OnPostEditUser(int id, string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
         {
             var usr = _context.Users.Find(id);
+
             if (usr != null)
             {
+                // Aktualizacja danych u¿ytkownika
                 usr.name = userName;
                 usr.surname = userSurname;
                 usr.gender = userGender;
                 usr.phone = userPhone;
                 usr.email = userEmail;
-                usr.password = userPassword;
+
+                // Sprawdzenie, czy has³o zosta³o podane
+                if (!string.IsNullOrWhiteSpace(userPassword))
+                {
+                    // Haszowanie has³a przed zapisem
+                    var passwordHasher = new PasswordHasher<User>();
+                    usr.password = passwordHasher.HashPassword(null, userPassword);
+                }
+
+                // Zapis zmian w bazie danych
                 _context.SaveChanges();
             }
 
@@ -262,6 +274,10 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostAddUser(string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
         {
+            // Utwórz instancjê PasswordHasher
+            var passwordHasher = new PasswordHasher<User>();
+
+            // Tworzenie u¿ytkownika
             var usr = new User
             {
                 name = userName,
@@ -269,11 +285,14 @@ namespace ProjectIO.Pages
                 gender = userGender,
                 phone = userPhone,
                 email = userEmail,
-                password = userPassword
+                // Haszowanie has³a
+                password = passwordHasher.HashPassword(null, userPassword)
             };
 
+            // Dodanie u¿ytkownika do bazy danych
             _context.Users.Add(usr);
             _context.SaveChanges();
+
             return RedirectToPage();
         }
 
@@ -291,18 +310,29 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
         {
+            // Pobranie funkcji pracownika
             var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == workerFunction);
             var wrk = _context.Workers.Find(id);
+
             if (wrk != null)
             {
+                // Aktualizacja danych pracownika
                 wrk.function = functionId;
                 wrk.name = workerName;
                 wrk.surname = workerSurname;
                 wrk.gender = workerGender;
                 wrk.phone = workerPhone;
                 wrk.email = workerEmail;
-                wrk.password = workerPassword;
 
+                // Sprawdzenie, czy has³o zosta³o podane
+                if (!string.IsNullOrWhiteSpace(workerPassword))
+                {
+                    // Haszowanie has³a przed zapisem
+                    var passwordHasher = new PasswordHasher<Worker>();
+                    wrk.password = passwordHasher.HashPassword(null, workerPassword);
+                }
+
+                // Zapis zmian w bazie danych
                 _context.SaveChanges();
             }
 
@@ -311,9 +341,13 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostAddWorker(int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
         {
-
+            // Pobierz odpowiedni¹ funkcjê pracownika
             var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == workerFunction);
 
+            // Utwórz hasher hase³
+            var passwordHasher = new PasswordHasher<Worker>();
+
+            // Utwórz nowego pracownika
             var wrk = new Worker
             {
                 function = functionId,
@@ -322,11 +356,14 @@ namespace ProjectIO.Pages
                 gender = workerGender,
                 phone = workerPhone,
                 email = workerEmail,
-                password = workerPassword
+                // Zhashowanie has³a przed zapisem
+                password = passwordHasher.HashPassword(null, workerPassword)
             };
 
+            // Dodanie pracownika do bazy danych
             _context.Workers.Add(wrk);
             _context.SaveChanges();
+
             return RedirectToPage();
         }
 
