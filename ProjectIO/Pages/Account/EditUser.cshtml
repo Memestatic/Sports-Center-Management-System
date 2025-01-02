@@ -1,0 +1,51 @@
+﻿@page
+@using ProjectIO.model
+@model ProjectIO.Pages.Account.EditUserModel
+@{
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Please, update your personal data.</h1>
+
+        <form method="post" action="/Account/EditUser">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Input.name" class="form-label">Name:</label>
+                <input asp-for="Input.name" class="form-control" />
+                <span asp-validation-for="Input.name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Input.surname" class="form-label">Surname:</label>
+                <input asp-for="Input.surname" class="form-control" />
+                <span asp-validation-for="Input.surname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Input.gender" class="form-label">Gender:</label>
+                <select asp-for="Input.gender" class="form-control">
+                    <option value="" disabled>Choose...</option>
+                    @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                    {
+                        <option value="@gender">@gender</option>
+                    }
+                </select>
+                <span asp-validation-for="Input.gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Input.phone" class="form-label">Phone:</label>
+                <input asp-for="Input.phone" class="form-control" />
+                <span asp-validation-for="Input.phone" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between mt-5">
+                <a href="/Account/ClientPanel" class="btn btn-danger btn-lg">Leave</a>
+                <button type="submit" class="btn btn-success btn-lg">Submit</button>
+            </div>
+        </form>
+        <div class="form-group mb-3"></div>
+        <div class="form-group mb-3"></div>
+    </div>
+
+
+}

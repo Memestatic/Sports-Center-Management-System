@@ -17,7 +17,7 @@ namespace ProjectIO.model
         public Gender gender { get; set; }
 
         [Required]
-        [Phone]
+        [ValidatePhone]
         public string phone { get; set; }
 
         [Required]
