@@ -1,0 +1,25 @@
+﻿@page
+@model ProjectIO.Pages.ContactModel
+@{
+}
+
+<div class="container mt-5 mb-2">
+    <h1 class="text-center mb-4">Contact Us</h1>
+    <form method="post">
+        <div class="mb-3">
+            <label for="email" class="form-label">Your Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="4" maxlength="255" required></textarea>
+            <div class="form-text">Maximum 255 characters.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-info mt-4">@Model.StatusMessage</div>
+    }
+</div>
