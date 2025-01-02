@@ -8,13 +8,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        @if (Model.Permissions == 1)
-        {
-            <button class="nav-link" id="nav-sportscenter-tab" data-bs-toggle="tab" data-bs-target="#nav-sportscenter" type="button" role="tab" aria-controls="nav-sportscenter" aria-selected="false">Sports Center</button>
-            <button class="nav-link" id="nav-sportsobject-tab" data-bs-toggle="tab" data-bs-target="#nav-sportsobject" type="button" role="tab" aria-controls="nav-sportsobject" aria-selected="false">Sports Object</button>
-            <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="false">Users</button>
-            <button class="nav-link" id="nav-workers-tab" data-bs-toggle="tab" data-bs-target="#nav-workers" type="button" role="tab" aria-controls="nav-workers" aria-selected="false">Workers</button>
-        }
+        <button class="nav-link" id="nav-sportscenter-tab" data-bs-toggle="tab" data-bs-target="#nav-sportscenter" type="button" role="tab" aria-controls="nav-sportscenter" aria-selected="false">Sports Center</button>
+        <button class="nav-link" id="nav-sportsobject-tab" data-bs-toggle="tab" data-bs-target="#nav-sportsobject" type="button" role="tab" aria-controls="nav-sportsobject" aria-selected="false">Sports Object</button>
+        <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="false">Users</button>
+        <button class="nav-link" id="nav-workers-tab" data-bs-toggle="tab" data-bs-target="#nav-workers" type="button" role="tab" aria-controls="nav-workers" aria-selected="false">Workers</button>
         <button class="nav-link" id="nav-price-tab" data-bs-toggle="tab" data-bs-target="#nav-price" type="button" role="tab" aria-controls="nav-price" aria-selected="false">Pricing</button>
         <button class="nav-link" id="nav-promotions-tab" data-bs-toggle="tab" data-bs-target="#nav-promotions" type="button" role="tab" aria-controls="nav-promotions" aria-selected="false">Promotions</button>
         <button class="nav-link" id="nav-reservations-tab" data-bs-toggle="tab" data-bs-target="#nav-reservations" type="button" role="tab" aria-controls="nav-reservations" aria-selected="false">Reservations</button>
@@ -22,7 +19,7 @@
 </nav>
 <div class="tab-content" id="nav-tabContent">
     <!--SPORTSCENTER-TAB------------------------------------------------------------------------------------------------->
-    <div class="tab-pane fade" id="nav-sportscenter" role="tabpanel" aria-labelledby="nav-sportscenter-tab" tabindex="0" asp-page="./AdminPanel" asp-route-activeTab="tab1">
+    <div class="tab-pane fade" id="nav-sportscenter" role="tabpanel" aria-labelledby="nav-sportscenter-tab" tabindex="0">
         <!-- ADD NEW RECORD FORM -->
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.centerId">Add New Record</button>
         <div id="addForm-Model.centerId" class="collapse">
@@ -95,7 +92,7 @@
                     </div>
                 </div>
                 <!--EDIT-BUTTON-->
-                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@center.centerId">Edytuj</button>
+                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@center.centerId">Edit</button>
                 <!--POPUP-EDIT-FORM-->
                     <div id="editForm-@center.centerId" class="collapse">
                                 <form method="post" asp-page-handler="Edit" asp-route-id="@center.centerId">
@@ -136,7 +133,7 @@
             <p>Brak danych o obiektach.</p>
         }
     </div>
-    <!---------------------------------------------------------------------------------------------------->
+    <!--SPORTSOBJECT/FACILITY-TAB---------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-sportsobject" role="tabpanel" aria-labelledby="nav-sportsobject-tab" tabindex="0">
 
         <!-- ADD NEW RECORD FORM -->
@@ -197,6 +194,7 @@
             </form>
         </div>
 
+
         <br>
         @if (Model.Facilities != null && Model.Facilities.Count > 0)
         {
@@ -212,7 +210,7 @@
                     <td>@facility.promoStart</td>
                     <td>@facility.promoEnd</td>
                     <td>@facility.promoRate</td>
-                </tr>
+                
                 <!-- DELETE BUTTON -->
                 <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@facility.facilityId">Delete</button>
 
@@ -236,16 +234,113 @@
                         </div>
                     </div>
                 </div>
+
+                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@facility.facilityId">Edit</button>
+                <div id="editForm-@facility.facilityId" class="collapse">
+                    <form method="post" asp-page-handler="EditF" asp-route-id="@facility.facilityId">
+                        <div class="form-group">
+                            <label>Nazwa Obiektu:</label>
+                            <input type="text" name="facilityName" value="@facility.facilityName" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="facilityType">Typ Obiektu:</label>
+                                <select name="typeName" id="facilityType" value="@facility.facilityType.typeName" class="form-control" required>
+                                    @if (Model.FacilityTypes != null && Model.FacilityTypes.Count > 0)
+                                    {
+                                        @foreach (var type in Model.FacilityTypes)
+                                        {
+                                            <option value="@type.typeName">@type.typeName</option>
+                                            <option value="@type.typeName">@type.typeName</option>
+                                        }
+                                    }
+                                </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="centerName">Nazwa Ośrodka:</label>
+                            <select name="centerName" id="centerName" value="@facility.sportsCenter.centerName" class="form-control" required>
+                                @if (Model.SportsCenters != null && Model.SportsCenters.Count > 0)
+                                {
+                                    @foreach (var center in Model.SportsCenters)
+                                    {
+                                        <option value="@center.centerName">@center.centerName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Przebieralnia:</label>
+                            <input class="form-check-input" type="checkbox" id="isChangingRoomAvailable" name="isChangingRoomAvailable" @(facility.isChangingRoomAvailable ? "checked" : "")>
+                        </div>
+                        <div class="form-group">
+                            <label for="isEquipmentAvailable">Pełne wyposażenie:</label>
+                            <input class="form-check-input" type="checkbox" id="isEquipmentAvailable" name="isEquipmentAvailable" value="true" @(facility.isEquipmentAvailable ? "checked" : "")>
+                        </div>
+                        <div class="form-group">
+                            <label for="promoStart">Data rozpoczęcia promocji:</label>
+                            <input type="date" id="promoStart" name="promoStart" class="form-control" value="@facility.promoStart.ToString("yyyy-MM-dd")" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="promoEnd">Data zakończenia promocji:</label>
+                            <input type="date" id="promoEnd" name="promoEnd" class="form-control" value="@facility.promoEnd.ToString("yyyy-MM-dd")" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="promoRate">Wartość promocji [%]:</label>
+                            <input type="number" id="promoRate" name="promoRate" value="@facility.promoRate" class="form-control" required step="0.01" min="0" placeholder="Wprowadź wartość np. 25 dla 25%">
+                        </div>
+                        <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                    </form>
+                </div>
+                    <br />
+                </tr>
             }
         }
         else
         {
             <p>Brak danych o obiektach.</p>
         }
-        <br/>
+        
+
     </div>
-    <!---------------------------------------------------------------------------------------------------->
+    <!--USERS-TAB-------------------------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab" tabindex="0">
+
+        <!-- ADD NEW RECORD FORM -->
+        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.userId">Add New Record</button>
+        <div id="addForm-Model.userId" class="collapse">
+            <form method="post" asp-page-handler="AddUser">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" name="userName" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Surname:</label>
+                    <input type="text" name="userSurname" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <select name="userGender" class="form-control" required>
+                        <option value="77">Male</option>
+                        <option value="70">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="text" name="userPhone" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="text" name="userEmail" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="text" name="userPassword" value="" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-success">Add</button>
+            </form>
+        </div>
+        <br>
+        <!--LIST-VALUES-->
         @if (Model.Users != null && Model.Users.Count > 0)
         {
             @foreach (var user in Model.Users)
@@ -258,8 +353,69 @@
                     <td>@user.phone</td>
                     <td>@user.email</td>
                     <td>@user.password</td>
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
-                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+
+                    <!-- DELETE BUTTON -->
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@user.userId">Delete</button>
+
+                    <!-- POPUP CONFIRM MENU -->
+                    <div class="modal fade" id="confirmDeleteModal-@user.userId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@user.userId" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel-@user.userId">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this item?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" id="deleteForm-@user.userId" asp-page-handler="DeleteUser" asp-route-id="@user.userId" style="display:inline;">
+                                        <button type="submit" id="confirmDeleteButton-@user.userId" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--EDIT BUTTON-->
+                    <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@user.userId">Edit</button>
+
+                    <!--POPUP-EDIT-FORM-->
+                    <div id="editForm-@user.userId" class="collapse">
+                        <form method="post" asp-page-handler="EditUser" asp-route-id="@user.userId">
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="text" name="userName" value="@user.name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Surname:</label>
+                                <input type="text" name="userSurname" value="@user.surname" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Gender:</label>
+                                <select name="userGender" class="form-control" required>
+                                    <option value="77">Male</option>
+                                    <option value="70">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone:</label>
+                                <input type="text" name="userPhone" value="@user.phone" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="text" name="userEmail" value="@user.email" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Password:</label>
+                                <input type="text" name="userPassword" value="@user.password" class="form-control" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                        </form>
+                    </div>
+
                     <br>
                 </tr>
             }
@@ -271,22 +427,146 @@
     </div>
     <!---------------------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-workers" role="tabpanel" aria-labelledby="nav-workers-tab" tabindex="0">
+
+        <!--ADD NEW RECORD FORM-->
+        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.workerId">Add New Record</button>
+        <div id="addForm-Model.workerId" class="collapse">
+            <form method="post" asp-page-handler="AddWorker">
+                <div class="form-group">
+                    <label>Function Type:</label>
+                    <select name="workerFunction" class="form-control" required>
+                        @* <option value="">Select worker function</option> *@
+                        @if (Model.WorkerFunctions != null && Model.WorkerFunctions.Count > 0)
+                        {
+                            @foreach (var func in Model.WorkerFunctions)
+                            {
+                                <option value="@func.functionId">@func.functionName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" name="workerName" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Surname:</label>
+                    <input type="text" name="workerSurname" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <select name="workerGender" class="form-control" required>
+                        <option value="77">Male</option>
+                        <option value="70">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="text" name="workerPhone" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="text" name="workerEmail" value="" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="text" name="workerPassword" value="" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-success">Add</button>
+            </form>
+        </div>
+        <br>
+
+        <!--LIST VALUES-->
         @if (Model.Workers != null && Model.Workers.Count > 0)
         {
             @foreach (var worker in Model.Workers)
             {
                 <tr>
                     <td>@worker.workerId</td>
-                    <!--to samo co w uzytkownikach, nullexception-->
-                    @* <td>@worker.function.functionName</td> *@
+                    <td>@worker.function.functionName</td> 
                     <td>@worker.name</td>
                     <td>@worker.surname</td>
                     <td>@worker.gender</td>
                     <td>@worker.phone</td>
                     <td>@worker.email</td>
-                    <td>@worker.password</td> <!-- to musi miec ograniczanie zeby moderator nie widzial od admina np-->
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
-                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
+                    <td>@worker.password</td>
+
+                    <!-- DELETE BUTTON -->
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@worker.workerId">Delete</button>
+
+                    <!-- POPUP CONFIRM MENU -->
+                    <div class="modal fade" id="confirmDeleteModal-@worker.workerId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@worker.workerId" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel-@worker.workerId">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this item?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" id="deleteForm-@worker.workerId" asp-page-handler="DeleteWorker" asp-route-id="@worker.workerId" style="display:inline;">
+                                        <button type="submit" id="confirmDeleteButton-@worker.workerId" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--EDIT BUTTON-->
+                    <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@worker.workerId">Edit</button>
+
+                    <!--POPUP-EDIT-FORM-->
+                    <div id="editForm-@worker.workerId" class="collapse">
+                        <form method="post" asp-page-handler="EditWorker" asp-route-id="@worker.workerId">
+                            <div class="form-group">
+                                <label>Function Type:</label>
+                                <select name="workerFunction" class="form-control" required>
+                                    @* <option value="">Select worker function</option> *@
+                                    @if (Model.WorkerFunctions != null && Model.WorkerFunctions.Count > 0)
+                                    {
+                                        @foreach (var func in Model.WorkerFunctions)
+                                        {
+                                            <option value="@func.functionId">@func.functionName</option>
+                                        }
+                                    }`
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="text" name="workerName" value="@worker.name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Surname:</label>
+                                <input type="text" name="workerSurname" value="@worker.surname" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Gender:</label>
+                                <select name="workerGender" class="form-control" required>
+                                    <option value="77">Male</option>
+                                    <option value="70">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone:</label>
+                                <input type="text" name="workerPhone" value="@worker.phone" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="text" name="workerEmail" value="@worker.email" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Password:</label>
+                                <input type="text" name="workerPassword" value="@worker.password" class="form-control" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                        </form>
+                    </div>
+
                     <br>
                 </tr>
             }

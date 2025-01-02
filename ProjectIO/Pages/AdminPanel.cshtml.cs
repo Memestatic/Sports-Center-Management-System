@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProjectIO.model;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
+using System.Numerics;
+using System.Reflection;
 using System.Reflection.Metadata;
 
 namespace ProjectIO.Pages
@@ -18,6 +21,7 @@ namespace ProjectIO.Pages
         public List<User> Users { get; set; }
         public List<Worker> Workers { get; set; }
         public List<Reservation> Reservations { get; set; }
+        public List<WorkerFunction> WorkerFunctions { get; set; }
 
         public string ActiveTab { get; set; }
         public int Permissions { get; set; }
@@ -54,6 +58,7 @@ namespace ProjectIO.Pages
             Users = _context.Users.ToList();
             Workers = _context.Workers.ToList();
             Reservations = _context.Reservations.ToList();
+            WorkerFunctions = _context.WorkerFunctions.ToList();
 
             if (!string.IsNullOrEmpty(tab))
             {
@@ -98,6 +103,7 @@ namespace ProjectIO.Pages
             return Page();
         }
 
+        //SPORTSCENTER////////////////////////////////////////////////////////////////////////////
         public IActionResult OnPostDelete(int id)
         {
             var sc = _context.SportsCenters.Find(id);
@@ -143,6 +149,7 @@ namespace ProjectIO.Pages
             return RedirectToPage();
         }
 
+        //FACILITY/SPORTSOBJECT/////////////////////////////////////////////////////////////
         public IActionResult OnPostAddF(string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
         {
             // Znalezienie SportsCenter na podstawie nazwy
@@ -150,7 +157,7 @@ namespace ProjectIO.Pages
             if (sportsCenter == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Sports Center not found.");
-                return Page();
+                return RedirectToPage();
             }
 
             // Znalezienie FacilityType na podstawie typu (typeName)
@@ -158,14 +165,14 @@ namespace ProjectIO.Pages
             if (facilityType == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Facility Type not found.");
-                return Page();
+                return RedirectToPage();
             }
 
             // Walidacja zakresu dat promocji
             if (promoEnd <= promoStart)
             {
                 ModelState.AddModelError(string.Empty, "Promotion end date must be later than start date.");
-                return Page();
+                return RedirectToPage();
             }
 
             // Tworzenie nowego obiektu Facility
@@ -201,7 +208,127 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuniêciu
         }
 
+        public IActionResult OnPostEditF(int id, string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
+        {
+            var fac = _context.Facilities
+                              .Include(f => f.sportsCenter)
+                              .Include(f => f.facilityType)
+                              .FirstOrDefault(f => f.facilityId == id);
 
+            if (fac != null)
+            {
+                fac.facilityName = facilityName;
+                fac.sportsCenter.centerName = centerName;
+                fac.facilityType.typeName = typeName;
+                fac.isChangingRoomAvailable = isChangingRoomAvailable;
+                fac.isEquipmentAvailable = isEquipmentAvailable;
+                fac.promoStart = promoStart;
+                fac.promoEnd = promoEnd;
+                fac.promoRate = promoRate;
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
+
+        //USERS/////////////////////////////////////////////////////////////////////////////
+        public IActionResult OnPostDeleteUser(int id)
+        {
+            var usr = _context.Users.Find(id);
+            if (usr != null)
+            {
+                _context.Users.Remove(usr);
+                _context.SaveChanges();
+            }
+            return RedirectToPage(); // Przekierowanie po usuniêciu
+        }
+
+        public IActionResult OnPostEditUser(int id, string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
+        {
+            var usr = _context.Users.Find(id);
+            if (usr != null)
+            {
+                usr.name = userName;
+                usr.surname = userSurname;
+                usr.gender = userGender;
+                usr.phone = userPhone;
+                usr.email = userEmail;
+                usr.password = userPassword;
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostAddUser(string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
+        {
+            var usr = new User
+            {
+                name = userName,
+                surname = userSurname,
+                gender = userGender,
+                phone = userPhone,
+                email = userEmail,
+                password = userPassword
+            };
+
+            _context.Users.Add(usr);
+            _context.SaveChanges();
+            return RedirectToPage();
+        }
+
+        //WORKERS//////////////////////////////////////////////////
+        public IActionResult OnPostDeleteWorker(int id)
+        {
+            var wrk = _context.Workers.Find(id);
+            if (wrk != null)
+            {
+                _context.Workers.Remove(wrk);
+                _context.SaveChanges();
+            }
+            return RedirectToPage(); // Przekierowanie po usuniêciu
+        }
+
+        public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
+        {
+            var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == workerFunction);
+            var wrk = _context.Workers.Find(id);
+            if (wrk != null)
+            {
+                wrk.function = functionId;
+                wrk.name = workerName;
+                wrk.surname = workerSurname;
+                wrk.gender = workerGender;
+                wrk.phone = workerPhone;
+                wrk.email = workerEmail;
+                wrk.password = workerPassword;
+
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostAddWorker(int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
+        {
+
+            var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == workerFunction);
+
+            var wrk = new Worker
+            {
+                function = functionId,
+                name = workerName,
+                surname = workerSurname,
+                gender = workerGender,
+                phone = workerPhone,
+                email = workerEmail,
+                password = workerPassword
+            };
+
+            _context.Workers.Add(wrk);
+            _context.SaveChanges();
+            return RedirectToPage();
+        }
 
     }
 }
