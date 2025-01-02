@@ -28,10 +28,10 @@ namespace ProjectIO.Pages.Account
 
             Input = new UpdateInputModel
             {
-                name = user.name,
-                surname = user.surname,
-                phone = user.phone,
-                gender = user.gender
+                Name = user.Name,
+                Surname = user.Surname,
+                PhoneNumber = user.PhoneNumber,
+                DeclaredGender = user.DeclaredGender
             };
 
         }
@@ -44,10 +44,10 @@ namespace ProjectIO.Pages.Account
             }
 
             User user = (User)CurrentPerson.GetInstance();
-            user.name = Input.name;
-            user.surname = Input.surname;
-            user.phone = Input.phone;
-            user.gender = Input.gender;
+            user.Name = Input.Name;
+            user.Surname = Input.Surname;
+            user.PhoneNumber = Input.PhoneNumber;
+            user.DeclaredGender = Input.DeclaredGender;
 
             _context.Attach(user).State = EntityState.Modified;
             _context.SaveChanges();

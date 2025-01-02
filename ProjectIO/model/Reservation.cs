@@ -9,19 +9,19 @@ namespace ProjectIO.model
     public class Reservation
     {
         [Key]
-        public int reservationId { get; set; }
+        public int ReservationId { get; set; }
 
-        [ForeignKey("facilityId")]
-        public Facility facility { get; set; }
+        [ForeignKey("FacilityId")]
+        public required Facility ReservationFacility { get; set; }
 
-        [ForeignKey("userId")]
-        public User user { get; set; }
-
-        [Required]
-        public DateTime reservationDate { get; set; }
+        [ForeignKey("UserId")]
+        public required User ReservationUser { get; set; }
 
         [Required]
-        public ReservationStatus reservationStatus { get; set; }
+        public DateTime ReservationDate { get; set; }
+
+        [Required]
+        public ReservationStatus CurrentReservationStatus { get; set; }
 
 
     }

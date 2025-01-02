@@ -9,11 +9,11 @@ namespace ProjectIO.model
     public class WorkerFunction
     {
         [Key]
-        public int functionId { get; set; }
+        public int WorkerFunctionId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string functionName { get; set; }
+        public required string WorkerFunctionName { get; set; }
 
     }
 

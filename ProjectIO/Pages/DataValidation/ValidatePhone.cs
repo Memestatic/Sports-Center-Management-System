@@ -27,7 +27,7 @@ namespace ProjectIO.DataValidation
                 return ValidationResult.Success;
             }
 
-            return new ValidationResult("Invalid phone number format. Use 9 digits or +<country_code> followed by 9 digits.");
+            return new ValidationResult("Invalid PhoneNumber number format. Use 9 digits or +<country_code> followed by 9 digits.");
         }
     }
 }

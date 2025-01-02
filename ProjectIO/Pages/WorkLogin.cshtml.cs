@@ -21,12 +21,12 @@ namespace ProjectIO.Pages
         [BindProperty]
         public LoginInputModel Input { get; set; }
 
-        // Komunikat o b³êdzie
+        // Komunikat o bï¿½ï¿½dzie
         public string ErrorMessage { get; set; }
 
         public void OnGet()
         {
-            // Wyczyszczenie komunikatu o b³êdzie przy za³adowaniu strony
+            // Wyczyszczenie komunikatu o bï¿½ï¿½dzie przy zaï¿½adowaniu strony
             ErrorMessage = string.Empty;
         }
 
@@ -34,32 +34,32 @@ namespace ProjectIO.Pages
         {
             if (!ModelState.IsValid)
             {
-                return Page(); // Jeœli dane s¹ niepoprawne, wróæ na stronê
+                return Page(); // Jeï¿½li dane sï¿½ niepoprawne, wrï¿½ï¿½ na stronï¿½
             }
 
-            // Wyszukiwanie u¿ytkownika w bazie danych
+            // Wyszukiwanie uï¿½ytkownika w bazie danych
             var worker = _context.Workers
-                .FirstOrDefault(w => w.email == Input.email);
+                .FirstOrDefault(w => w.Email == Input.Email);
 
             if (worker == null)
             {
-                /// !!! UWAGA - ODKOMENTOWAÆ ABY DODAÆ PIERWSZEGO ADMINISTRATORA !!! ///
+                /// !!! UWAGA - ODKOMENTOWAï¿½ ABY DODAï¿½ PIERWSZEGO ADMINISTRATORA !!! ///
                 /// 
 
-                //// Jeœli u¿ytkownik nie zosta³ znaleziony, dodaj nowego pracownika
-                //var passwordHasher = new PasswordHasher<Worker>();
+                //// Jeï¿½li uï¿½ytkownik nie zostaï¿½ znaleziony, dodaj nowego pracownika
+                //var passwordHasher = new PasswordHasher<AssignedWorker>();
 
-                //var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == 1);
+                //var WorkerFunctionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == 1);
 
-                //worker = new Worker
+                //worker = new AssignedWorker
                 //{
-                //    function = functionId,
-                //    email = Input.email,
-                //    name = "John", // WprowadŸ domyœln¹ wartoœæ lub pobierz z formularza
-                //    surname = "Doe", // WprowadŸ domyœln¹ wartoœæ lub pobierz z formularza
-                //    gender = Gender.Male, // Domyœlna wartoœæ dla p³ci, jeœli brak w formularzu
-                //    phone = "123456789", // Domyœlny numer telefonu
-                //    password = passwordHasher.HashPassword(null, Input.password) // Hashuj has³o
+                //    AssignedWorkerFunction = WorkerFunctionId,
+                //    Email = Input.Email,
+                //    Name = "John", // Wprowadï¿½ domyï¿½lnï¿½ wartoï¿½ï¿½ lub pobierz z formularza
+                //    Surname = "Doe", // Wprowadï¿½ domyï¿½lnï¿½ wartoï¿½ï¿½ lub pobierz z formularza
+                //    DeclaredGender = Gender.Male, // Domyï¿½lna wartoï¿½ï¿½ dla pï¿½ci, jeï¿½li brak w formularzu
+                //    PhoneNumber = "123456789", // Domyï¿½lny numer telefonu
+                //    Password = passwordHasher.HashPassword(null, Input.Password) // Hashuj hasï¿½o
                 //};
 
                 //_context.Workers.Add(worker);
@@ -71,15 +71,15 @@ namespace ProjectIO.Pages
             }
 
             var passwordHasherForVerification = new PasswordHasher<Worker>();
-            var result = passwordHasherForVerification.VerifyHashedPassword(worker, worker.password, Input.password);
+            var result = passwordHasherForVerification.VerifyHashedPassword(worker, worker.Password, Input.Password);
 
             if (result == PasswordVerificationResult.Failed)
             {
-                ModelState.AddModelError("Input.password", "The password is incorrect.");
+                ModelState.AddModelError("Input.Password", "The Password is incorrect.");
                 return Page();
             }
 
-            CurrentPerson.SetInstance(worker); // Ustawienie zalogowanego u¿ytkownika
+            CurrentPerson.SetInstance(worker); // Ustawienie zalogowanego uï¿½ytkownika
 
             return RedirectToPage("/AdminPanel");
         }

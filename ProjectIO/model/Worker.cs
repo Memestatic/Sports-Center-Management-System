@@ -9,10 +9,10 @@ namespace ProjectIO.model
     public class Worker : Person
     {
         [Key]
-        public int workerId { get; set; }
+        public int WorkerId { get; set; }
 
-        [ForeignKey("functionId")]
-        public WorkerFunction function { get; set; }
+        [ForeignKey("WorkerFunctionId")]
+        public required WorkerFunction AssignedWorkerFunction { get; set; }
     }
 
 }

@@ -8,14 +8,14 @@ namespace ProjectIO.model
     public class PassType
     {
         [Key]
-        public int passTypeId { get; set; }
+        public int PassTypeId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string passTypeName { get; set; }
+        public required string PassTypeName { get; set; }
 
         [Required]
-        public int passTypeDuration { get; set; }
+        public int PassTypeDuration { get; set; }
     }
 }
 

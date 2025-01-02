@@ -21,9 +21,9 @@ namespace ProjectIO.Pages
         }
         public void OnGet(int reservationId)
         {
-            //this.reservationId. = reservationId;
+            //this.ReservationId. = ReservationId;
             this.reservationId = reservationId;
-            reservation = _context.Reservations.FirstOrDefault(r => r.reservationId == reservationId);
+            reservation = _context.Reservations.FirstOrDefault(r => r.ReservationId == reservationId);
 
 
         }
@@ -31,30 +31,30 @@ namespace ProjectIO.Pages
         public IActionResult OnPost()
         {
             var reservation = _context.Reservations
-                    .Include(r => r.facility) 
-                    .FirstOrDefault(r => r.reservationId == reservationId);
+                    .Include(r => r.ReservationFacility) 
+                    .FirstOrDefault(r => r.ReservationId == reservationId);
 
             if (reservation == null)
             {
                 return NotFound("Rezerwacja nie znaleziona");
             }
 
-            if (reservation.reservationStatus != ReservationStatus.Pending)
+            if (reservation.CurrentReservationStatus != ReservationStatus.Pending)
             {
-                return NotFound("Rezerwacja nie jest w stanie oczekuj¹cym");
+                return NotFound("Rezerwacja nie jest w stanie oczekujï¿½cym");
             }
 
-            reservation.reservationStatus = ReservationStatus.Approved;
+            reservation.CurrentReservationStatus = ReservationStatus.Approved;
 
             List<Reservation> toCancel = _context.Reservations
-                .Where(r => r.reservationDate == reservation.reservationDate
-                && r.facility.facilityId == reservation.facility.facilityId
-                && r.reservationId != reservationId)
+                .Where(r => r.ReservationDate == reservation.ReservationDate
+                && r.ReservationFacility.FacilityId == reservation.ReservationFacility.FacilityId
+                && r.ReservationId != reservationId)
                 .ToList();
 
             foreach(var r in toCancel)
             {
-                r.reservationStatus = ReservationStatus.Denied;
+                r.CurrentReservationStatus = ReservationStatus.Denied;
             }
 
             _context.SaveChanges();

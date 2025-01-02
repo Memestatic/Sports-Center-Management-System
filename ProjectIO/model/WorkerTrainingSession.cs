@@ -7,16 +7,16 @@ namespace ProjectIO.model
     public class WorkerTrainingSession
     {
         [Key, Column(Order = 0)]
-        public int workerId { get; set; }
+        public int AssignedWorkerId { get; set; }
 
         [Key, Column(Order = 1)]
-        public int sessionId { get; set; }
+        public int SessionId { get; set; }
 
-        [ForeignKey("workerId")]
-        public Worker Worker { get; set; }
+        [ForeignKey("WorkerId")]
+        public required Worker AssignedWorker { get; set; }
 
-        [ForeignKey("sessionId")]
-        public TrainingSession TrainingSession { get; set; }
+        [ForeignKey("TrainingSessionId")]
+        public required TrainingSession TrainingSession { get; set; }
     }
 
 }

@@ -9,7 +9,7 @@ namespace ProjectIO.model
     public class User : Person
     {
         [Key]
-        public int userId { get; set; }
+        public int UserId { get; set; }
     }
 }
 

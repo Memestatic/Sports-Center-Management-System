@@ -8,31 +8,31 @@ namespace ProjectIO.model
     public class SportsCenter
     {
         [Key]
-        public int centerId { get; set; }
+        public int SportsCenterId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string centerName { get; set; }
+        public required string Name { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string centerStreet { get; set; }
+        public required string Street { get; set; }
 
         [Required]
         [MaxLength(5)]
-        public string centerStreetNumber { get; set; }
+        public required string StreetNumber { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string centerCity { get; set; }
+        public required string City { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string centerState { get; set; }
+        public required string State { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string centerZip { get; set; }
+        public required string ZipCode { get; set; }
 
 
 

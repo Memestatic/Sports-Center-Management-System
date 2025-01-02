@@ -11,52 +11,52 @@
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.name">First Name:</label>
-                    <input type="text" asp-for="Input.name" class="form-control" />
-                    <span class="text-danger" asp-validation-for="Input.name"></span>
+                    <label asp-for="Input.Name">First Name:</label>
+                    <input type="text" asp-for="Input.Name" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.Name"></span>
                 </div>
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.surname">Last Name:</label>
-                    <input type="text" asp-for="Input.surname" class="form-control" />
-                    <span class="text-danger" asp-validation-for="Input.surname"></span>
+                    <label asp-for="Input.Surname">Last Name:</label>
+                    <input type="text" asp-for="Input.Surname" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.Surname"></span>
                 </div>
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.gender">Gender:</label>
-                    <select asp-for="Input.gender" class="form-control">
+                    <label asp-for="Input.DeclaredGender">Gender:</label>
+                    <select asp-for="Input.DeclaredGender" class="form-control">
                         <option value="" disabled selected>Choose...</option>
                         @foreach (var gender in Enum.GetValues(typeof(Gender)))
                         {
                             <option value="@gender">@gender</option>
                         }
                     </select>
-                    <span class="text-danger" asp-validation-for="Input.gender"></span>
+                    <span class="text-danger" asp-validation-for="Input.DeclaredGender"></span>
                 </div>
 
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.phone">Phone:</label>
-                    <input type="tel" asp-for="Input.phone" class="form-control" pattern="[0-9]{9}" placeholder="123456789" />
-                    <span class="text-danger" asp-validation-for="Input.phone"></span>
+                    <label asp-for="Input.PhoneNumber">Phone:</label>
+                    <input type="tel" asp-for="Input.PhoneNumber" class="form-control" pattern="[0-9]{9}" placeholder="123456789" />
+                    <span class="text-danger" asp-validation-for="Input.PhoneNumber"></span>
                 </div>
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.email">Email:</label>
-                    <input type="email" asp-for="Input.email" class="form-control" />
-                    <span class="text-danger" asp-validation-for="Input.email"></span>
+                    <label asp-for="Input.Email">Email:</label>
+                    <input type="Email" asp-for="Input.Email" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.Email"></span>
                 </div>
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.password">Password:</label>
-                    <input type="password" asp-for="Input.password" class="form-control" />
-                    <span class="text-danger" asp-validation-for="Input.password"></span>
+                    <label asp-for="Input.Password">Password:</label>
+                    <input type="Password" asp-for="Input.Password" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.Password"></span>
                 </div>
 
                 <div class="form-group row p-2">
-                    <label asp-for="Input.Verifypassword">Verify password:</label>
-                    <input type="password" asp-for="Input.Verifypassword" class="form-control" />
-                    <span class="text-danger" asp-validation-for="Input.Verifypassword"></span>
+                    <label asp-for="Input.VerifyPassword">Verify Password:</label>
+                    <input type="Password" asp-for="Input.VerifyPassword" class="form-control" />
+                    <span class="text-danger" asp-validation-for="Input.VerifyPassword"></span>
                 </div>
 
                 <!-- Checkbox for Terms and Conditions -->
