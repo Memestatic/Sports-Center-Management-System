@@ -25,30 +25,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//document.addEventListener("DOMContentLoaded", function () {
-//    new Swiper('.swiper', {
-//        slidesPerView: 1,
-//        spaceBetween: 20,
-//        navigation: {
-//            nextEl: '.swiper-button-next',
-//            prevEl: '.swiper-button-prev',
-//        },
-//        pagination: {
-//            el: '.swiper-pagination',
-//            clickable: true,
-//        },
-//        breakpoints: {
-//            640: {
-//                slidesPerView: 1,
-//            },
-//            768: {
-//                slidesPerView: 2,
-//            },
-//            1024: {
-//                slidesPerView: 3,
-//            },
-//        },
-//    });
-//});
+// Funkcja do zmiany wielkości czcionki
+document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.font-size-btn');
+    const defaultSize = '16px';
+
+    // Przywrócenie zapisanego rozmiaru czcionki
+    const savedSize = localStorage.getItem('fontSize') || defaultSize;
+    document.documentElement.style.setProperty('--base-font-size', savedSize);
+    setActiveButton(savedSize);
+
+    // Obsługa kliknięcia przycisku
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const size = button.getAttribute('data-size');
+            document.documentElement.style.setProperty('--base-font-size', size);
+            localStorage.setItem('fontSize', size);
+            setActiveButton(size);
+        });
+    });
+
+    // Ustawienie aktywnego przycisku
+    function setActiveButton(size) {
+        buttons.forEach(button => {
+            if (button.getAttribute('data-size') === size) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+});
+
 
 
