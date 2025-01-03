@@ -61,24 +61,15 @@
                                 <a class="nav-link active" href="/Account/Logout">Log out</a>
                             </li>
                         }
-                        <!-- Nowy przycisk do zmiany motywu -->
-                        <div class="theme-switch-wrapper">
-                            <label class="theme-switch" for="theme-toggle-checkbox">
-                                <input type="checkbox" id="theme-toggle-checkbox">
-                                <span class="slider">
-                                    <i class="fas fa-sun sun-icon"></i>
-                                    <i class="fas fa-moon moon-icon"></i>
-                                </span>
-                            </label>
-                        </div>
                     </ul>
+
                 </div>
 
             </div>
         </nav>
     </header>
 
-    <main role="main">
+    <main role="main" id="mainContent">
         @RenderBody()
     </main>
 
@@ -96,7 +87,7 @@
                         </h6>
                         <p>
                             For the better you.
-                        </p>
+                        </p>   
                     </div>
                     <!-- Grid column -->
                     <!-- Grid column -->
@@ -130,6 +121,30 @@
                         <p><i class="fas fa-PhoneNumber me-3"></i> + 48 213 721 37</p>
                     </div>
                     <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <!-- Nowy przycisk do zmiany motywu -->
+                        <div class="theme-switch-wrapper">
+                            <label class="theme-switch" for="theme-toggle-checkbox">
+                                <input type="checkbox" id="theme-toggle-checkbox">
+                                <span class="slider">
+                                    <i class="fas fa-sun sun-icon"></i>
+                                    <i class="fas fa-moon moon-icon"></i>
+                                </span>
+                            </label>
+                        </div>
+                        <!-- Font adjuster -->
+                        <div class="font-size-buttons" style="align-content:center">
+                            <button class="font-size-btn" data-size="14px" aria-label="Small font size">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="font-size-btn active" data-size="16px" aria-label="Medium font size">
+                                <i class="fas fa-text-height"></i>
+                            </button>
+                            <button class="font-size-btn" data-size="18px" aria-label="Large font size">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <!-- Grid row -->
             </div>

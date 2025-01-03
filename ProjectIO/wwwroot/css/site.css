@@ -3,6 +3,7 @@
     --background-color: #ffffff;
     --text-color: #000000;
     --header-footer-bg: #212529;
+    --base-font-size: 16px;
 }
 
 /* Dark theme */
@@ -15,6 +16,25 @@ body.dark-mode {
 body {
     background-color: var(--background-color);
     color: var(--text-color);
+    font-size: var(--base-font-size);
+}
+
+/* Nag³ówki zachowuj¹ swoje sta³e rozmiary */
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+/* Uniwersalna regu³a: dziedzicz rozmiar dla wszystkich innych elementów */
+*:not(h1):not(h2):not(h3) {
+    font-size: var(--base-font-size);
 }
 
 header, footer {
@@ -35,7 +55,7 @@ body.dark-mode .card {
 
 
 
-html {
+/*html {
   font-size: 14px;
 }
 
@@ -43,7 +63,7 @@ html {
   html {
     font-size: 16px;
   }
-}
+}*/
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
@@ -74,9 +94,8 @@ html {
 /* Wrapper for the toggle switch */
 .theme-switch-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-right: 15px;
+    justify-content: center; /* Wyœrodkowanie poziome */
+    align-items: center; /* Wyœrodkowanie pionowe */
 }
 
 /* Hidden checkbox */
@@ -142,4 +161,42 @@ body.dark-mode .sun-icon {
 body:not(.dark-mode) .moon-icon {
     opacity: 0;
 }
+
+.font-size-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.font-size-btn {
+    background-color: #212529;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.2rem;
+}
+
+    .font-size-btn.active {
+        background-color: #007bff;
+        color: #ffffff;
+        transform: scale(1.1);
+    }
+
+    .font-size-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .font-size-btn:focus {
+        outline: none;
+        box-shadow: 0 0 5px #0056b3;
+    }
+
 
