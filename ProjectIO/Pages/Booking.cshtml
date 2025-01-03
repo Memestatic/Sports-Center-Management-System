@@ -75,10 +75,9 @@
                     </form>
                 </div>
 
-                
 
-                <!-- Godziny dla wybranego dnia -->
-                <div class="col-md-4">
+
+                <div class="col-md-6">
                     <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">@Model.SelectedDay</span></h3>
                     <ul class="list-group">
                         @for (int hour = 9; hour <= 20; hour++)
@@ -102,9 +101,42 @@
 
                                         @if (Model.isUserLogged && CurrentPerson.GetInstance() is not Worker)
                                         {
-                                            <form method="post">
+                                            <form method="post" class="d-flex align-items-center">
                                                 <input type="hidden" name="SelectedDay" value="@Model.SelectedDay" />
                                                 <input type="hidden" name="SelectedHour" value="@hour" />
+
+
+                                                <div class="form-check me-2">
+                                                    
+                                                    @if (Model.selectedObject.IsChangingRoom)
+                                                    {
+                                                        <input type="checkbox"
+                                                               class="form-check-input"
+                                                               id="lockroom-@hour"
+                                                               name="IsLockroom"
+                                                               value="true"
+                                                               @(Model.IsLockroom ? "checked" : "") />
+                                                        <label class="form-check-label" for="lockroom-@hour">Lockroom</label>
+                                                    }
+                                                </div>
+
+                                                <div class="form-check me-2">
+                                                    
+                                                    @if (Model.selectedObject.IsEquipment)
+                                                    {
+                                                        <input type="checkbox"
+                                                               class="form-check-input"
+                                                               id="gear-@hour"
+                                                               name="IsGear"
+                                                               value="true"
+                                                               @(Model.IsGear ? "checked" : "") />
+                                                        <label class="form-check-label" for="gear-@hour">Gear</label>
+                                                    }
+                                                </div>
+
+
+
+
                                                 <button type="submit" class="btn btn-primary btn-sm">Reserve</button>
                                             </form>
                                         }
@@ -114,6 +146,7 @@
                         }
                     </ul>
                 </div>
+
             </div>
         </div>
     }
