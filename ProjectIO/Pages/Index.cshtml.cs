@@ -7,7 +7,6 @@ namespace ProjectIO.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
 
         public List<SportsCenter> SportsCenters { get; set; }
 
@@ -21,7 +20,7 @@ namespace ProjectIO.Pages
         public void OnGet()
         {
 
-            SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
+            SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
         }
     }
 }

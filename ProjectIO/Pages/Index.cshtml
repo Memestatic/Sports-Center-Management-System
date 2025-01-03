@@ -146,6 +146,40 @@
         <p class="fs-5 mt-3">
             Click here to send us a question.
         </p>
-        <a href="/Booking" class="btn btn-light btn-lg mt-4">Contact us</a>
+        <a href="/Contact" class="btn btn-light btn-lg mt-4">Contact us</a>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Upewnij się, że Swiper jest poprawnie załadowany
+        if (typeof Swiper === 'undefined') {
+            console.error("Swiper is not loaded. Ensure swiper-bundle.min.js is included.");
+            return;
+        }
+
+        new Swiper('.swiper', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                },
+                768: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+            },
+        });
+    });
+</script>
