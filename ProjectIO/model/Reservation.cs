@@ -22,7 +22,12 @@ namespace ProjectIO.model
 
         [Required]
         public ReservationStatus CurrentReservationStatus { get; set; }
-
+        
+        [Required]
+        public bool IsChangingRoomReserved { get; set; }
+        
+        [Required]
+        public bool IsEquipmentReserved { get; set; }
 
     }
 }

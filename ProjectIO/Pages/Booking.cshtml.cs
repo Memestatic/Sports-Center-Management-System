@@ -39,11 +39,19 @@ namespace ProjectIO.Pages
 
         public string MinDate { get; set; }
         public string MaxDate { get; set; }
+        
+        [BindProperty]
+        public bool IsLockroom { get; set; }
+        
+        [BindProperty]
+        public bool IsGear { get; set; }
 
 
         public BookingModel(SportCenterContext context)
         {
             _context = context;
+            IsLockroom = false;
+            IsGear = false;
         }
 
 
@@ -193,7 +201,9 @@ namespace ProjectIO.Pages
                 ReservationFacility = facility,
                 ReservationUser = currentPerson,
                 ReservationDate = reservationDate,
-                CurrentReservationStatus = ReservationStatus.Pending
+                CurrentReservationStatus = ReservationStatus.Pending,
+                IsChangingRoomReserved = IsLockroom,
+                IsEquipmentReserved = IsGear
             };
 
             _context.Reservations.Add(reservation);
