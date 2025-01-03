@@ -7,8 +7,10 @@ using ProjectIO.model;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Numerics;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Reflection.Metadata;
 
 namespace ProjectIO.Pages
@@ -116,33 +118,33 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
 
-        public IActionResult OnPostEdit(int id, string centerName, string centerStreet, string centerStreetNumber, string centerCity, string centerState, string centerZip)
+        public IActionResult OnPostEdit(int id, string Name, string Street, string StreetNumber, string City, string State, string ZipCode)
         {
             var sc = _context.SportsCenters.Find(id);
             if (sc != null)
             {
-                sc.Name = centerName;
-                sc.Street = centerStreet;
-                sc.StreetNumber = centerStreetNumber;
-                sc.City = centerCity;
-                sc.State = centerState;
-                sc.ZipCode = centerZip;
+                sc.Name = Name;
+                sc.Street = Street;
+                sc.StreetNumber = StreetNumber;
+                sc.City = City;
+                sc.State = State;
+                sc.ZipCode = ZipCode;
                 _context.SaveChanges();
             }
 
             return RedirectToPage();
         }
 
-        public IActionResult OnPostAdd(string centerName, string centerStreet, string centerStreetNumber, string centerCity, string centerState, string centerZip)
+        public IActionResult OnPostAdd(string Name, string Street, string StreetNumber, string City, string State, string ZipCode)
         {
             var sc = new SportsCenter
             {
-                Name = centerName,
-                Street = centerStreet,
-                StreetNumber = centerStreetNumber,
-                City = centerCity,
-                State = centerState,
-                ZipCode = centerZip
+                Name = Name,
+                Street = Street,
+                StreetNumber = StreetNumber,
+                City = City,
+                State = State,
+                ZipCode = ZipCode
             };
 
             _context.SportsCenters.Add(sc);
@@ -151,42 +153,42 @@ namespace ProjectIO.Pages
         }
 
         //FACILITY/SPORTSOBJECT/////////////////////////////////////////////////////////////
-        public IActionResult OnPostAddF(string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
+        public IActionResult OnPostAddF(string FacilityName, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
         {
-            // Znalezienie SportsCenter na podstawie nazwy
-            var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == centerName);
+            //Znalezienie SportsCenter na podstawie nazwy
+           var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == Name);
             if (sportsCenter == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Sports Center not found.");
                 return RedirectToPage();
             }
 
-            // Znalezienie FacilityType na podstawie typu (TypeName)
-            var facilityType = _context.FacilityTypes.FirstOrDefault(ft => ft.TypeName == typeName);
+            //// Znalezienie FacilityType na podstawie typu (TypeName)
+            var facilityType = _context.FacilityTypes.FirstOrDefault(ft => ft.TypeName == TypeName);
             if (facilityType == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Facility Type not found.");
                 return RedirectToPage();
             }
 
-            // Walidacja zakresu dat promocji
-            if (promoEnd <= promoStart)
-            {
-                ModelState.AddModelError(string.Empty, "Promotion end date must be later than start date.");
-                return RedirectToPage();
-            }
+            //// Walidacja zakresu dat promocji
+            //if (PromoEnd <= PromoStart)
+            //{
+            //    ModelState.AddModelError(string.Empty, "Promotion end date must be later than start date.");
+            //    return RedirectToPage();
+            //}
 
             // Tworzenie nowego obiektu Facility
             var facility = new Facility
             {
-                FacilityName = facilityName,
+                FacilityName = FacilityName,
                 FacilitySportsCenter = sportsCenter,
                 FacilityType = facilityType,
-                IsChangingRoom = isChangingRoomAvailable,
-                IsEquipment = isEquipmentAvailable,
-                PromoStart = promoStart,
-                PromoEnd = promoEnd,
-                PromoRate = promoRate
+                IsChangingRoom = IsChangingRoom,
+                IsEquipment = IsEquipment,
+                PromoStart = PromoStart,
+                PromoEnd = PromoEnd,
+                PromoRate = PromoRate
             };
 
             // Dodanie nowego Facility do bazy danych
@@ -209,7 +211,7 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
 
-        public IActionResult OnPostEditF(int id, string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
+        public IActionResult OnPostEditF(int id, string FacilityName, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
         {
             var fac = _context.Facilities
                               .Include(f => f.FacilitySportsCenter)
@@ -218,14 +220,14 @@ namespace ProjectIO.Pages
 
             if (fac != null)
             {
-                fac.FacilityName = facilityName;
-                fac.FacilitySportsCenter.Name = centerName;
-                fac.FacilityType.TypeName = typeName;
-                fac.IsChangingRoom = isChangingRoomAvailable;
-                fac.IsEquipment = isEquipmentAvailable;
-                fac.PromoStart = promoStart;
-                fac.PromoEnd = promoEnd;
-                fac.PromoRate = promoRate;
+                fac.FacilityName = FacilityName;
+                fac.FacilitySportsCenter.Name = Name;
+                fac.FacilityType.TypeName = TypeName;
+                fac.IsChangingRoom = IsChangingRoom;
+                fac.IsEquipment = IsEquipment;
+                fac.PromoStart = PromoStart;
+                fac.PromoEnd = PromoEnd;
+                fac.PromoRate = PromoRate;
                 _context.SaveChanges();
             }
 
@@ -244,25 +246,25 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
 
-        public IActionResult OnPostEditUser(int id, string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
+        public IActionResult OnPostEditUser(int id, string PassUserName, string PassUserSurName, Gender PassUserGender, string PassUserPhone, string PassUserEmail, string PassUserPassword)
         {
             var usr = _context.Users.Find(id);
 
             if (usr != null)
             {
                 // Aktualizacja danych u�ytkownika
-                usr.Name = userName;
-                usr.Surname = userSurname;
-                usr.DeclaredGender = userGender;
-                usr.PhoneNumber = userPhone;
-                usr.Email = userEmail;
+                usr.Name = PassUserName;
+                usr.Surname = PassUserSurName;
+                usr.DeclaredGender = PassUserGender;
+                usr.PhoneNumber = PassUserPhone;
+                usr.Email = PassUserEmail;
 
                 // Sprawdzenie, czy has�o zosta�o podane
-                if (!string.IsNullOrWhiteSpace(userPassword))
+                if (!string.IsNullOrWhiteSpace(PassUserPassword))
                 {
                     // Haszowanie has�a przed zapisem
                     var passwordHasher = new PasswordHasher<User>();
-                    usr.Password = passwordHasher.HashPassword(null, userPassword);
+                    usr.Password = passwordHasher.HashPassword(null, PassUserPassword);
                 }
 
                 // Zapis zmian w bazie danych
@@ -272,7 +274,7 @@ namespace ProjectIO.Pages
             return RedirectToPage();
         }
 
-        public IActionResult OnPostAddUser(string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
+        public IActionResult OnPostAddUser(string PassUserName, string PassUserSurName, Gender PassUserGender, string PassUserPhone, string PassUserEmail, string PassUserPassword)
         {
             // Utw�rz instancj� PasswordHasher
             var passwordHasher = new PasswordHasher<User>();
@@ -280,13 +282,13 @@ namespace ProjectIO.Pages
             // Tworzenie u�ytkownika
             var usr = new User
             {
-                Name = userName,
-                Surname = userSurname,
-                DeclaredGender = userGender,
-                PhoneNumber = userPhone,
-                Email = userEmail,
+                Name = PassUserName,
+                Surname = PassUserSurName,
+                DeclaredGender = PassUserGender,
+                PhoneNumber = PassUserPhone,
+                Email = PassUserEmail,
                 // Haszowanie has�a
-                Password = passwordHasher.HashPassword(null, userPassword)
+                Password = passwordHasher.HashPassword(null, PassUserPassword)
             };
 
             // Dodanie u�ytkownika do bazy danych
@@ -308,7 +310,7 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
 
-        public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
+        public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurName, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
         {
             // Pobranie funkcji pracownika
             var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == workerFunction);
@@ -319,7 +321,7 @@ namespace ProjectIO.Pages
                 // Aktualizacja danych pracownika
                 wrk.AssignedWorkerFunction = functionId;
                 wrk.Name = workerName;
-                wrk.Surname = workerSurname;
+                wrk.Surname = workerSurName;
                 wrk.DeclaredGender = workerGender;
                 wrk.PhoneNumber = workerPhone;
                 wrk.Email = workerEmail;
@@ -339,7 +341,7 @@ namespace ProjectIO.Pages
             return RedirectToPage();
         }
 
-        public IActionResult OnPostAddWorker(int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
+        public IActionResult OnPostAddWorker(int workerFunction, string workerName, string workerSurName, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
         {
             // Pobierz odpowiedni� funkcj� pracownika
             var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == workerFunction);
@@ -352,7 +354,7 @@ namespace ProjectIO.Pages
             {
                 AssignedWorkerFunction = functionId,
                 Name = workerName,
-                Surname = workerSurname,
+                Surname = workerSurName,
                 DeclaredGender = workerGender,
                 PhoneNumber = workerPhone,
                 Email = workerEmail,

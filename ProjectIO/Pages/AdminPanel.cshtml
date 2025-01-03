@@ -10,7 +10,7 @@
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" id="nav-sportscenter-tab" data-bs-toggle="tab" data-bs-target="#nav-sportscenter" type="button" role="tab" aria-controls="nav-sportscenter" aria-selected="false">Sports Center</button>
         <button class="nav-link" id="nav-sportsobject-tab" data-bs-toggle="tab" data-bs-target="#nav-sportsobject" type="button" role="tab" aria-controls="nav-sportsobject" aria-selected="false">Sports Object</button>
-        <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-PassUsers" type="button" role="tab" aria-controls="nav-PassUsers" aria-selected="false">Users</button>
+        <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="false">Users</button>
         <button class="nav-link" id="nav-workers-tab" data-bs-toggle="tab" data-bs-target="#nav-workers" type="button" role="tab" aria-controls="nav-workers" aria-selected="false">AssignedWorkers</button>
         <button class="nav-link" id="nav-price-tab" data-bs-toggle="tab" data-bs-target="#nav-price" type="button" role="tab" aria-controls="nav-price" aria-selected="false">Pricing</button>
         <button class="nav-link" id="nav-promotions-tab" data-bs-toggle="tab" data-bs-target="#nav-promotions" type="button" role="tab" aria-controls="nav-promotions" aria-selected="false">Promotions</button>
@@ -22,7 +22,7 @@
     <div class="tab-pane fade" id="nav-sportscenter" role="tabpanel" aria-labelledby="nav-sportscenter-tab" tabindex="0">
         <!-- ADD NEW RECORD FORM -->
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.SportsCenterId">Add New Record</button>
-        <div id="addForm-Model.centerId" class="collapse">
+        <div id="addForm-Model.SportsCenterId" class="collapse">
             <form method="post" asp-page-handler="Add">
                 <div class="form-group">
                     <label>Nazwa Ośrodka:</label>
@@ -138,7 +138,7 @@
 
         <!-- ADD NEW RECORD FORM -->
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.FacilityId">Add New Record</button>
-        <div id="addForm-Model.facilityId" class="collapse">
+        <div id="addForm-Model.FacilityId" class="collapse">
                     <form method="post" asp-page-handler="AddF">
                         <div class="form-group">
                             <label>Nazwa Obiektu:</label>
@@ -306,7 +306,7 @@
 
         <!-- ADD NEW RECORD FORM -->
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.PassUserId">Add New Record</button>
-        <div id="addForm-Model.userId" class="collapse">
+        <div id="addForm-Model.PassUserId" class="collapse">
             <form method="post" asp-page-handler="AddUser">
                 <div class="form-group">
                     <label>Name:</label>
@@ -429,9 +429,9 @@
     <div class="tab-pane fade" id="nav-workers" role="tabpanel" aria-labelledby="nav-workers-tab" tabindex="0">
 
         <!--ADD NEW RECORD FORM-->
-        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.AssignedWorkerId">Add New Record</button>
-        <div id="addForm-Model.workerId" class="collapse">
-            <form method="post" asp-page-handler="AddAssignedWorker">
+        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.WorkerId">Add New Record</button>
+        <div id="addForm-Model.WorkerId" class="collapse">
+            <form method="post" asp-page-handler="AddWorker">
                 <div class="form-group">
                     <label>Function Type:</label>
                     <select name="workerFunction" class="form-control" required>
@@ -521,7 +521,7 @@
 
                     <!--POPUP-EDIT-FORM-->
                     <div id="editForm-@worker.WorkerId" class="collapse">
-                        <form method="post" asp-page-handler="EditAssignedWorker" asp-route-id="@worker.WorkerId">
+                        <form method="post" asp-page-handler="EditWorker" asp-route-id="@worker.WorkerId">
                             <div class="form-group">
                                 <label>Function Type:</label>
                                 <select name="workerFunction" class="form-control" required>
@@ -532,7 +532,7 @@
                                         {
                                             <option value="@func.WorkerFunctionId">@func.WorkerFunctionName</option>
                                         }
-                                    }`
+                                    }
                                 </select>
                             </div>
                             <div class="form-group">
