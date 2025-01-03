@@ -44,14 +44,14 @@ namespace ProjectIO.Pages
             if (worker == null)
             {
                 /// !!! UWAGA - ODKOMENTOWA� ABY DODA� PIERWSZEGO ADMINISTRATORA !!! ///
-                /// 
+                
 
-                //// Je�li u�ytkownik nie zosta� znaleziony, dodaj nowego pracownika
-                //var passwordHasher = new PasswordHasher<AssignedWorker>();
+                // Je�li u�ytkownik nie zosta� znaleziony, dodaj nowego pracownika
+                //var passwordHasher = new PasswordHasher<Worker>();
 
                 //var WorkerFunctionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == 1);
 
-                //worker = new AssignedWorker
+                //worker = new Worker
                 //{
                 //    AssignedWorkerFunction = WorkerFunctionId,
                 //    Email = Input.Email,
@@ -67,7 +67,7 @@ namespace ProjectIO.Pages
 
                 //// Dodaj komunikat informacyjny
                 //ErrorMessage = "New worker created. Please log in again.";
-                return Page();
+                //return Page();
             }
 
             var passwordHasherForVerification = new PasswordHasher<Worker>();

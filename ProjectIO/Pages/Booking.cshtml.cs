@@ -92,8 +92,8 @@ namespace ProjectIO.Pages
                     SelectedObjectId = selectedObject.FacilityId;
                     SelectedObjectName = selectedObject.FacilityName;
 
-                    HttpContext.Session.Remove("selectedObjectId");
-                    HttpContext.Session.SetInt32("selectedObjectId", (int) SelectedObjectId);
+                    HttpContext.Session.Remove("SelectedObjectId");
+                    HttpContext.Session.SetInt32("SelectedObjectId", (int) SelectedObjectId);
                     
                 }
             }
@@ -172,7 +172,7 @@ namespace ProjectIO.Pages
 
             
 
-            int? selectedObjectId = HttpContext.Session.GetInt32("selectedObjectId");
+            int? selectedObjectId = HttpContext.Session.GetInt32("SelectedObjectId");
 
             var facility = Facilities.FirstOrDefault(f => f.FacilityId == selectedObjectId);
             if (facility == null)
