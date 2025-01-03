@@ -12,7 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<SportCenterContext>(options =>
 {
 
-    // Computer name (default local database name)
+    // Computer Name (default local database Name)
     String machineName = Environment.MachineName;
     options.UseSqlServer($"Server={machineName};Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });

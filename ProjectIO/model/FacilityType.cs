@@ -8,11 +8,11 @@ namespace ProjectIO.model
     public class FacilityType
     {
         [Key]
-        public int typeId { get; set; }
+        public int TypeId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string typeName { get; set; }
+        public required string TypeName { get; set; }
     }
 }
 

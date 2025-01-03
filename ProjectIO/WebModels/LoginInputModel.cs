@@ -6,9 +6,9 @@ namespace ProjectIO.model
     {
         [Required]
         [EmailAddress]
-        public string email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
-        public string password { get; set; }
+        public required string Password { get; set; }
     }
 }

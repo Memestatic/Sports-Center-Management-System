@@ -8,16 +8,16 @@ namespace ProjectIO.model
     public class Pass
     {
         [Key]
-        public int passId { get; set; }
+        public int PassId { get; set; }
 
-        [ForeignKey("passTypeId")]
-        public PassType passType { get; set; }
+        [ForeignKey("PassTypeId")]
+        public required PassType PassType { get; set; }
 
-        [ForeignKey("userId")]
-        public User user { get; set; }
+        [ForeignKey("UserId")]
+        public required User PassUser { get; set; }
 
         [Required]
-        public int passEntriesLeft { get; set; }
+        public int PassEntriesLeft { get; set; }
 
     }
 }

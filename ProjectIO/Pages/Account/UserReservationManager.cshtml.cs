@@ -37,10 +37,10 @@ namespace ProjectIO.Pages.Account
             currentUser = (User)CurrentPerson.GetInstance();
 
             reservations = _context.Reservations
-                .Include(r => r.facility) // £aduje obiekt facility
-                .ThenInclude(f => f.sportsCenter) // £aduje obiekt sportsCenter wewn¹trz facility
-                .Include(r => r.user) // £aduje obiekt user
-                .Where(r => r.user.userId == currentUser.userId)
+                .Include(r => r.ReservationFacility) // ï¿½aduje obiekt ReservationFacility
+                .ThenInclude(f => f.FacilitySportsCenter) // ï¿½aduje obiekt FacilitySportsCenter wewnï¿½trz ReservationFacility
+                .Include(r => r.ReservationUser) // ï¿½aduje obiekt PassUser
+                .Where(r => r.ReservationUser.UserId == currentUser.UserId)
                 .ToList();
 
             Console.WriteLine(reservations);
@@ -55,23 +55,23 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnPostDenyHandler(int reservationId)
         {
-            // ZnajdŸ rezerwacjê o podanym ID w bazie danych
-            var reservationToRemove = _context.Reservations.FirstOrDefault(r => r.reservationId == reservationId);
+            // Znajdï¿½ rezerwacjï¿½ o podanym ID w bazie danych
+            var reservationToRemove = _context.Reservations.FirstOrDefault(r => r.ReservationId == reservationId);
 
             if (reservationToRemove == null)
             {
-                // Jeœli rezerwacja nie istnieje, mo¿esz wyœwietliæ b³¹d lub przekierowaæ
+                // Jeï¿½li rezerwacja nie istnieje, moï¿½esz wyï¿½wietliï¿½ bï¿½ï¿½d lub przekierowaï¿½
                 ModelState.AddModelError("", "Reservation not found.");
                 return Page();
             }
 
-            // Usuñ rezerwacjê z bazy danych
+            // Usuï¿½ rezerwacjï¿½ z bazy danych
             _context.Reservations.Remove(reservationToRemove);
 
             // Zapisz zmiany w bazie danych
             _context.SaveChanges();
 
-            // Prze³aduj stronê, aby odœwie¿yæ listê rezerwacji
+            // Przeï¿½aduj stronï¿½, aby odï¿½wieï¿½yï¿½ listï¿½ rezerwacji
             return RedirectToPage();
         }
     }

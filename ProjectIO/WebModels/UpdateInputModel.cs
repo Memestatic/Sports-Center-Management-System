@@ -7,18 +7,18 @@ namespace ProjectIO.WebModels
     {
         [Required]
         [MaxLength(50)]
-        public string name { get; set; }
+        public required string Name { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string surname { get; set; }
+        public required string Surname { get; set; }
 
         [Required]
-        public Gender gender { get; set; }
+        public Gender DeclaredGender { get; set; }
 
         [Required]
         [ValidatePhone]
-        public string phone { get; set; }
+        public required string PhoneNumber { get; set; }
 
 
     }

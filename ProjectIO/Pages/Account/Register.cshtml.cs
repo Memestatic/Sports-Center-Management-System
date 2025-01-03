@@ -35,7 +35,7 @@ namespace ProjectIO.Pages.Account
                 return Page(); // Jeśli model jest niepoprawny, wróć do formularza
             }
 
-            User u = _context.Users.FirstOrDefault(u => u.email.Equals(Input.email));
+            User u = _context.Users.FirstOrDefault(u => u.Email.Equals(Input.Email));
 
             if (u != null)
             {
@@ -47,16 +47,16 @@ namespace ProjectIO.Pages.Account
 
             User user = new User
             {
-                name = Input.name,
-                surname = Input.surname,
-                gender = Input.gender,
-                phone = Input.phone,
-                email = Input.email,
-                password = Input.password
+                Name = Input.Name,
+                Surname = Input.Surname,
+                DeclaredGender = Input.DeclaredGender,
+                PhoneNumber = Input.PhoneNumber,
+                Email = Input.Email,
+                Password = Input.Password
             };
 
             // Hashowanie hasła
-            user.password = passwordHasher.HashPassword(user, user.password);
+            user.Password = passwordHasher.HashPassword(user, user.Password);
 
             // Dodanie użytkownika do bazy danych z zahashowanym hasłem
             _context.Users.Add(user);

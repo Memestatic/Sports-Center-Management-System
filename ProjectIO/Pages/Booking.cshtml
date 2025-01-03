@@ -18,9 +18,9 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title text-center">@center.centerName</h5>
+                            <h5 class="card-title text-center">@center.Name</h5>
                             <div class="d-flex justify-content-center mt-3">
-                                <a class="btn btn-primary" asp-page="/Booking" asp-route-centerId="@center.centerId">View Facilities</a>
+                                <a class="btn btn-primary" asp-page="/Booking" asp-route-centerId="@center.SportsCenterId">View Facilities</a>
                             </div>
                         </div>
                     </div>
@@ -38,8 +38,8 @@
                 @foreach (var facility in Model.Facilities)
                 {
                     <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                       asp-page="/Booking" asp-route-centerId="@Model.SelectedCenterId" asp-route-objectId="@facility.facilityId">
-                        @facility.facilityName
+                       asp-page="/Booking" asp-route-centerId="@Model.SelectedCenterId" asp-route-objectId="@facility.FacilityId">
+                        @facility.FacilityName
                         <span class="badge bg-primary">View Calendar</span>
                     </a>
                 }
@@ -120,7 +120,7 @@
 </div>
 
 <script>
-    function selectDay(input) {
+    AssignedAssignedWorkerFunction selectDay(input) {
         
         // Odczytaj wybraną datę
         const selectedDate = input.value;

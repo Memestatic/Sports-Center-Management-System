@@ -8,32 +8,32 @@ namespace ProjectIO.model
     public class Facility
     {
         [Key]
-        public int facilityId { get; set; }
+        public int FacilityId { get; set; }
 
-        [ForeignKey("typeId")]
-        public FacilityType facilityType { get; set; }
+        [ForeignKey("TypeId")]
+        public required FacilityType FacilityType { get; set; }
 
-        [ForeignKey("centerId")]
-        public SportsCenter sportsCenter { get; set; }
+        [ForeignKey("SportsCenterId")]
+        public required SportsCenter FacilitySportsCenter { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string facilityName { get; set; }
+        public required string FacilityName { get; set; }
 
         [Required]
-        public bool isChangingRoomAvailable { get; set; }
+        public bool IsChangingRoom { get; set; }
 
         [Required]
-        public bool isEquipmentAvailable { get; set; }
+        public bool IsEquipment { get; set; }
 
         [Required]
-        public DateTime promoStart { get; set; }
+        public DateTime PromoStart { get; set; }
 
         [Required]
-        public DateTime promoEnd { get; set; }
+        public DateTime PromoEnd { get; set; }
 
         [Required]
-        public double promoRate { get; set; }
+        public double PromoRate { get; set; }
 
 
 

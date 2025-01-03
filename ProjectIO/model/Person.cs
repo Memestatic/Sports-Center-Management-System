@@ -7,26 +7,26 @@ namespace ProjectIO.model
     {
         [Required]
         [MaxLength(50)]
-        public string name { get; set; }
+        public required string Name { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string surname { get; set; }
+        public required string Surname { get; set; }
 
         [Required]
-        public Gender gender { get; set; }
+        public Gender DeclaredGender { get; set; }
 
         [Required]
         [ValidatePhone]
-        public string phone { get; set; }
+        public required string PhoneNumber { get; set; }
 
         [Required]
         [EmailAddress]
-        public string email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
         [MaxLength(255)]
         [ValidatePassword]
-        public string password { get; set; }
+        public required string Password { get; set; }
     }
 }

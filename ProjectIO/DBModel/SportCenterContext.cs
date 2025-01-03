@@ -28,18 +28,18 @@ namespace ProjectIO.model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WorkerTrainingSession>()
-            .HasKey(wts => new { wts.workerId, wts.sessionId }); 
+            .HasKey(wts => new { workerId = wts.AssignedWorkerId, sessionId = wts.SessionId }); 
 
             modelBuilder.Entity<WorkerTrainingSession>()
-                .HasOne(wts => wts.Worker)
+                .HasOne(wts => wts.AssignedWorker)
                 .WithMany()
-                .HasForeignKey(wts => wts.workerId)
+                .HasForeignKey(wts => wts.AssignedWorkerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<WorkerTrainingSession>()
                 .HasOne(wts => wts.TrainingSession)
                 .WithMany()
-                .HasForeignKey(wts => wts.sessionId)
+                .HasForeignKey(wts => wts.SessionId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

@@ -1,29 +1,29 @@
 ﻿@page
 @model ProjectIO.Pages.WorkLoginModel
 @{
-    ViewData["Title"] = "Worker Login";
+    ViewData["Title"] = "AssignedWorker Login";
 }
 
 <div class="container-fluid mt-5 mb-2">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4 border p-5">
-            <h2 class="text-center mb-4">Worker Login</h2>
+            <h2 class="text-center mb-4">AssignedWorker Login</h2>
             <form method="post">
                 <!-- Display validation errors -->
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
                 <!-- Email field -->
                 <div class="form-group row p-2">
-                    <label asp-for="Input.email">Email Address:</label>
-                    <input type="email" asp-for="Input.email" class="form-control" placeholder="Enter your email" required />
-                    <span class="text-danger" asp-validation-for="Input.email"></span>
+                    <label asp-for="Input.Email">Email Address:</label>
+                    <input type="Email" asp-for="Input.Email" class="form-control" placeholder="Enter your Email" required />
+                    <span class="text-danger" asp-validation-for="Input.Email"></span>
                 </div>
 
                 <!-- Password field -->
                 <div class="form-group row p-2">
-                    <label asp-for="Input.password">Password:</label>
-                    <input type="password" asp-for="Input.password" class="form-control" placeholder="Enter your password" required />
-                    <span class="text-danger" asp-validation-for="Input.password"></span>
+                    <label asp-for="Input.Password">Password:</label>
+                    <input type="Password" asp-for="Input.Password" class="form-control" placeholder="Enter your Password" required />
+                    <span class="text-danger" asp-validation-for="Input.Password"></span>
                 </div>
 
                 <!-- Remember Me checkbox -->
@@ -39,7 +39,7 @@
                     <button type="submit" class="btn btn-primary w-100">Login</button>
                 </div>
 
-                <!-- Forgot password link -->
+                <!-- Forgot Password link -->
                 <div class="form-group row p-2">
                     <a href="/ForgotPassword" class="text-center d-block">Forgot Password?</a>
                 </div>

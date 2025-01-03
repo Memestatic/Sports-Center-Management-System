@@ -31,21 +31,21 @@
                 @foreach (var res in Model.reservations)
                 {
                     <tr>
-                        <td>@res.reservationId</td>
-                        <td>@res.facility.sportsCenter.centerName</td>
-                        <td>@res.facility.facilityName</td>
-                        <td>@res.reservationDate</td>
-                        <td>@res.reservationStatus.ToString()</td>
+                        <td>@res.ReservationId</td>
+                        <td>@res.ReservationFacility.FacilitySportsCenter.Name</td>
+                        <td>@res.ReservationFacility.FacilityName</td>
+                        <td>@res.ReservationDate</td>
+                        <td>@res.CurrentReservationStatus.ToString()</td>
                         <td class="d-flex gap-2">
                             <form method="post" asp-page-handler="payHandler">
-                                <input type="hidden" name="reservationId" value="@res.reservationId" />
+                                <input type="hidden" name="ReservationId" value="@res.ReservationId" />
                                 <button type="submit" class="btn btn-success btn-sm"
-                                @(res.reservationStatus != ReservationStatus.Pending ? "disabled" : "")>
+                                @(res.CurrentReservationStatus != ReservationStatus.Pending ? "disabled" : "")>
                                     Pay Now
                                 </button>
                             </form>
                             <form method="post" asp-page-handler="denyHandler">
-                                <input type="hidden" name="reservationId" value="@res.reservationId" />
+                                <input type="hidden" name="ReservationId" value="@res.ReservationId" />
                                 <button type="submit" class="btn btn-danger btn-sm">Deny</button>
                             </form>
                         </td>

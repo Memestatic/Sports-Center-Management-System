@@ -48,8 +48,8 @@ namespace ProjectIO.Pages
             var perms = CurrentPerson.GetInstance() as Worker;
 
             Permissions = _context.Workers
-               .Where(w => w.workerId == perms.workerId)
-               .Select(w => w.function.functionId)
+               .Where(w => w.WorkerId == perms.WorkerId)
+               .Select(w => w.AssignedWorkerFunction.WorkerFunctionId)
                .FirstOrDefault();
 
 
@@ -67,14 +67,14 @@ namespace ProjectIO.Pages
             }
 
 
-            // Obs³uga ró¿nych zak³adek
+            // Obsï¿½uga rï¿½nych zakï¿½adek
             switch (tab)
             {
                 case "tab1":
-                    SportsCenters = _context.SportsCenters.ToList(); // Przyk³ad dla zak³adki 1
+                    SportsCenters = _context.SportsCenters.ToList(); // Przykï¿½ad dla zakï¿½adki 1
                     break;
                 case "tab2":
-                    Facilities = _context.Facilities.ToList(); // Przyk³ad dla zak³adki 2
+                    Facilities = _context.Facilities.ToList(); // Przykï¿½ad dla zakï¿½adki 2
                     break;
                 case "tab3":
                     Users = _context.Users.ToList();
@@ -91,7 +91,7 @@ namespace ProjectIO.Pages
                 case "tab7":
                     Reservations = _context.Reservations.ToList();
                     break;
-                // Dodaj wiêcej przypadków dla pozosta³ych zak³adek
+                // Dodaj wiï¿½cej przypadkï¿½w dla pozostaï¿½ych zakï¿½adek
                 default:
                     // SportsCenters = _context.SportsCenters.ToList(); 
                     // Facilities = _context.Facilities.ToList();
@@ -113,7 +113,7 @@ namespace ProjectIO.Pages
                 _context.SportsCenters.Remove(sc);
                 _context.SaveChanges();
             }
-            return RedirectToPage(); // Przekierowanie po usuniêciu
+            return RedirectToPage(); // Przekierowanie po usuniï¿½ciu
         }
 
         public IActionResult OnPostEdit(int id, string centerName, string centerStreet, string centerStreetNumber, string centerCity, string centerState, string centerZip)
@@ -121,12 +121,12 @@ namespace ProjectIO.Pages
             var sc = _context.SportsCenters.Find(id);
             if (sc != null)
             {
-                sc.centerName = centerName;
-                sc.centerStreet = centerStreet;
-                sc.centerStreetNumber = centerStreetNumber;
-                sc.centerCity = centerCity;
-                sc.centerState = centerState;
-                sc.centerZip = centerZip;
+                sc.Name = centerName;
+                sc.Street = centerStreet;
+                sc.StreetNumber = centerStreetNumber;
+                sc.City = centerCity;
+                sc.State = centerState;
+                sc.ZipCode = centerZip;
                 _context.SaveChanges();
             }
 
@@ -137,12 +137,12 @@ namespace ProjectIO.Pages
         {
             var sc = new SportsCenter
             {
-                centerName = centerName,
-                centerStreet = centerStreet,
-                centerStreetNumber = centerStreetNumber,
-                centerCity = centerCity,
-                centerState = centerState,
-                centerZip = centerZip
+                Name = centerName,
+                Street = centerStreet,
+                StreetNumber = centerStreetNumber,
+                City = centerCity,
+                State = centerState,
+                ZipCode = centerZip
             };
 
             _context.SportsCenters.Add(sc);
@@ -154,15 +154,15 @@ namespace ProjectIO.Pages
         public IActionResult OnPostAddF(string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
         {
             // Znalezienie SportsCenter na podstawie nazwy
-            var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.centerName == centerName);
+            var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == centerName);
             if (sportsCenter == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Sports Center not found.");
                 return RedirectToPage();
             }
 
-            // Znalezienie FacilityType na podstawie typu (typeName)
-            var facilityType = _context.FacilityTypes.FirstOrDefault(ft => ft.typeName == typeName);
+            // Znalezienie FacilityType na podstawie typu (TypeName)
+            var facilityType = _context.FacilityTypes.FirstOrDefault(ft => ft.TypeName == typeName);
             if (facilityType == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Facility Type not found.");
@@ -179,14 +179,14 @@ namespace ProjectIO.Pages
             // Tworzenie nowego obiektu Facility
             var facility = new Facility
             {
-                facilityName = facilityName,
-                sportsCenter = sportsCenter,
-                facilityType = facilityType,
-                isChangingRoomAvailable = isChangingRoomAvailable,
-                isEquipmentAvailable = isEquipmentAvailable,
-                promoStart = promoStart,
-                promoEnd = promoEnd,
-                promoRate = promoRate
+                FacilityName = facilityName,
+                FacilitySportsCenter = sportsCenter,
+                FacilityType = facilityType,
+                IsChangingRoom = isChangingRoomAvailable,
+                IsEquipment = isEquipmentAvailable,
+                PromoStart = promoStart,
+                PromoEnd = promoEnd,
+                PromoRate = promoRate
             };
 
             // Dodanie nowego Facility do bazy danych
@@ -203,29 +203,29 @@ namespace ProjectIO.Pages
             var facility = _context.Facilities.Find(id);
             if (facility != null)
             {
-                _context.Facilities.Remove(facility); // Usuniêcie obiektu z kontekstu
+                _context.Facilities.Remove(facility); // Usuniï¿½cie obiektu z kontekstu
                 _context.SaveChanges(); // Zapisanie zmian w bazie danych
             }
-            return RedirectToPage(); // Przekierowanie po usuniêciu
+            return RedirectToPage(); // Przekierowanie po usuniï¿½ciu
         }
 
         public IActionResult OnPostEditF(int id, string facilityName, string centerName, string typeName, bool isChangingRoomAvailable, bool isEquipmentAvailable, DateTime promoStart, DateTime promoEnd, double promoRate)
         {
             var fac = _context.Facilities
-                              .Include(f => f.sportsCenter)
-                              .Include(f => f.facilityType)
-                              .FirstOrDefault(f => f.facilityId == id);
+                              .Include(f => f.FacilitySportsCenter)
+                              .Include(f => f.FacilityType)
+                              .FirstOrDefault(f => f.FacilityId == id);
 
             if (fac != null)
             {
-                fac.facilityName = facilityName;
-                fac.sportsCenter.centerName = centerName;
-                fac.facilityType.typeName = typeName;
-                fac.isChangingRoomAvailable = isChangingRoomAvailable;
-                fac.isEquipmentAvailable = isEquipmentAvailable;
-                fac.promoStart = promoStart;
-                fac.promoEnd = promoEnd;
-                fac.promoRate = promoRate;
+                fac.FacilityName = facilityName;
+                fac.FacilitySportsCenter.Name = centerName;
+                fac.FacilityType.TypeName = typeName;
+                fac.IsChangingRoom = isChangingRoomAvailable;
+                fac.IsEquipment = isEquipmentAvailable;
+                fac.PromoStart = promoStart;
+                fac.PromoEnd = promoEnd;
+                fac.PromoRate = promoRate;
                 _context.SaveChanges();
             }
 
@@ -241,7 +241,7 @@ namespace ProjectIO.Pages
                 _context.Users.Remove(usr);
                 _context.SaveChanges();
             }
-            return RedirectToPage(); // Przekierowanie po usuniêciu
+            return RedirectToPage(); // Przekierowanie po usuniï¿½ciu
         }
 
         public IActionResult OnPostEditUser(int id, string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
@@ -250,19 +250,19 @@ namespace ProjectIO.Pages
 
             if (usr != null)
             {
-                // Aktualizacja danych u¿ytkownika
-                usr.name = userName;
-                usr.surname = userSurname;
-                usr.gender = userGender;
-                usr.phone = userPhone;
-                usr.email = userEmail;
+                // Aktualizacja danych uï¿½ytkownika
+                usr.Name = userName;
+                usr.Surname = userSurname;
+                usr.DeclaredGender = userGender;
+                usr.PhoneNumber = userPhone;
+                usr.Email = userEmail;
 
-                // Sprawdzenie, czy has³o zosta³o podane
+                // Sprawdzenie, czy hasï¿½o zostaï¿½o podane
                 if (!string.IsNullOrWhiteSpace(userPassword))
                 {
-                    // Haszowanie has³a przed zapisem
+                    // Haszowanie hasï¿½a przed zapisem
                     var passwordHasher = new PasswordHasher<User>();
-                    usr.password = passwordHasher.HashPassword(null, userPassword);
+                    usr.Password = passwordHasher.HashPassword(null, userPassword);
                 }
 
                 // Zapis zmian w bazie danych
@@ -274,22 +274,22 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostAddUser(string userName, string userSurname, Gender userGender, string userPhone, string userEmail, string userPassword)
         {
-            // Utwórz instancjê PasswordHasher
+            // Utwï¿½rz instancjï¿½ PasswordHasher
             var passwordHasher = new PasswordHasher<User>();
 
-            // Tworzenie u¿ytkownika
+            // Tworzenie uï¿½ytkownika
             var usr = new User
             {
-                name = userName,
-                surname = userSurname,
-                gender = userGender,
-                phone = userPhone,
-                email = userEmail,
-                // Haszowanie has³a
-                password = passwordHasher.HashPassword(null, userPassword)
+                Name = userName,
+                Surname = userSurname,
+                DeclaredGender = userGender,
+                PhoneNumber = userPhone,
+                Email = userEmail,
+                // Haszowanie hasï¿½a
+                Password = passwordHasher.HashPassword(null, userPassword)
             };
 
-            // Dodanie u¿ytkownika do bazy danych
+            // Dodanie uï¿½ytkownika do bazy danych
             _context.Users.Add(usr);
             _context.SaveChanges();
 
@@ -305,31 +305,31 @@ namespace ProjectIO.Pages
                 _context.Workers.Remove(wrk);
                 _context.SaveChanges();
             }
-            return RedirectToPage(); // Przekierowanie po usuniêciu
+            return RedirectToPage(); // Przekierowanie po usuniï¿½ciu
         }
 
         public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
         {
             // Pobranie funkcji pracownika
-            var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == workerFunction);
+            var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == workerFunction);
             var wrk = _context.Workers.Find(id);
 
             if (wrk != null)
             {
                 // Aktualizacja danych pracownika
-                wrk.function = functionId;
-                wrk.name = workerName;
-                wrk.surname = workerSurname;
-                wrk.gender = workerGender;
-                wrk.phone = workerPhone;
-                wrk.email = workerEmail;
+                wrk.AssignedWorkerFunction = functionId;
+                wrk.Name = workerName;
+                wrk.Surname = workerSurname;
+                wrk.DeclaredGender = workerGender;
+                wrk.PhoneNumber = workerPhone;
+                wrk.Email = workerEmail;
 
-                // Sprawdzenie, czy has³o zosta³o podane
+                // Sprawdzenie, czy hasï¿½o zostaï¿½o podane
                 if (!string.IsNullOrWhiteSpace(workerPassword))
                 {
-                    // Haszowanie has³a przed zapisem
+                    // Haszowanie hasï¿½a przed zapisem
                     var passwordHasher = new PasswordHasher<Worker>();
-                    wrk.password = passwordHasher.HashPassword(null, workerPassword);
+                    wrk.Password = passwordHasher.HashPassword(null, workerPassword);
                 }
 
                 // Zapis zmian w bazie danych
@@ -341,23 +341,23 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostAddWorker(int workerFunction, string workerName, string workerSurname, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
         {
-            // Pobierz odpowiedni¹ funkcjê pracownika
-            var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.functionId == workerFunction);
+            // Pobierz odpowiedniï¿½ funkcjï¿½ pracownika
+            var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == workerFunction);
 
-            // Utwórz hasher hase³
+            // Utwï¿½rz hasher haseï¿½
             var passwordHasher = new PasswordHasher<Worker>();
 
-            // Utwórz nowego pracownika
+            // Utwï¿½rz nowego pracownika
             var wrk = new Worker
             {
-                function = functionId,
-                name = workerName,
-                surname = workerSurname,
-                gender = workerGender,
-                phone = workerPhone,
-                email = workerEmail,
-                // Zhashowanie has³a przed zapisem
-                password = passwordHasher.HashPassword(null, workerPassword)
+                AssignedWorkerFunction = functionId,
+                Name = workerName,
+                Surname = workerSurname,
+                DeclaredGender = workerGender,
+                PhoneNumber = workerPhone,
+                Email = workerEmail,
+                // Zhashowanie hasï¿½a przed zapisem
+                Password = passwordHasher.HashPassword(null, workerPassword)
             };
 
             // Dodanie pracownika do bazy danych

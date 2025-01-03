@@ -6,6 +6,6 @@ public class RegisterInputModel: Person
 {
 
     [Required]
-    [Compare("password", ErrorMessage = "Passwords do not match.")]
-    public string Verifypassword { get; set; }
+    [Compare("Password", ErrorMessage = "Passwords do not match.")]
+    public required string VerifyPassword { get; set; }
 }

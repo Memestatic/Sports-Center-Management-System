@@ -21,18 +21,18 @@ namespace ProjectIO.Pages.Account
         [BindProperty]
         public LoginInputModel Input { get; set; }
 
-        // Komunikat o b³êdzie
+        // Komunikat o bï¿½ï¿½dzie
         public string ErrorMessage { get; set; }
 
         public IActionResult OnGet()
         {
             if (CurrentPerson.GetInstance() != null)
             {
-                // Jeœli u¿ytkownik jest ju¿ zalogowany, przekieruj go do panelu klienta
+                // Jeï¿½li uï¿½ytkownik jest juï¿½ zalogowany, przekieruj go do panelu klienta
                 return RedirectToPage("/Account/ClientPanel");
             }
 
-            // Wyczyszczenie komunikatu o b³êdzie przy za³adowaniu strony
+            // Wyczyszczenie komunikatu o bï¿½ï¿½dzie przy zaï¿½adowaniu strony
             ErrorMessage = string.Empty;
 
             return Page();
@@ -42,31 +42,31 @@ namespace ProjectIO.Pages.Account
         {
             if (!ModelState.IsValid)
             {
-                return Page(); // Jeœli dane s¹ niepoprawne, wróæ na stronê
+                return Page(); // Jeï¿½li dane sï¿½ niepoprawne, wrï¿½ï¿½ na stronï¿½
             }
 
-            // Wyszukiwanie u¿ytkownika w bazie danych
+            // Wyszukiwanie uï¿½ytkownika w bazie danych
             var user = _context.Users
-                .FirstOrDefault(u => u.email == Input.email);
+                .FirstOrDefault(u => u.Email == Input.Email);
 
             if (user == null)
             {
-                // Jeœli u¿ytkownik nie zosta³ znaleziony
-                ModelState.AddModelError("Input.email", "The email address is not registered.");
+                // Jeï¿½li uï¿½ytkownik nie zostaï¿½ znaleziony
+                ModelState.AddModelError("Input.Email", "The Email address is not registered.");
                 return Page();
             }
 
             var passwordHasher = new PasswordHasher<User>();
 
-            var result = passwordHasher.VerifyHashedPassword(user, user.password, Input.password);
+            var result = passwordHasher.VerifyHashedPassword(user, user.Password, Input.Password);
 
             if (result == PasswordVerificationResult.Failed)
             {
-                ModelState.AddModelError("Input.password", "The password is incorrect.");
+                ModelState.AddModelError("Input.Password", "The Password is incorrect.");
                 return Page();
             }
 
-            CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u¿ytkownika
+            CurrentPerson.SetInstance(user); // Ustawienie zalogowanego uï¿½ytkownika
 
             return RedirectToPage("/Account/ClientPanel");
         }

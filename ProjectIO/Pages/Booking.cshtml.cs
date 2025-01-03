@@ -49,10 +49,10 @@ namespace ProjectIO.Pages
 
         public void OnGet(int? centerId, int? objectId, string? selectedDay)
         {
-            // Minimalna data to dziœ
+            // Minimalna data to dziï¿½
             MinDate = DateTime.Now.ToString("yyyy-MM-dd");
 
-            // Maksymalna data - np. rezerwacje tylko do 3 miesiêcy naprzód
+            // Maksymalna data - np. rezerwacje tylko do 3 miesiï¿½cy naprzï¿½d
             MaxDate = DateTime.Now.AddMonths(3).ToString("yyyy-MM-dd");
 
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
@@ -69,31 +69,31 @@ namespace ProjectIO.Pages
 
             SelectedDay = selectedDay ?? DateTime.Now.ToString("yyyy-MM-dd");
 
-            // Obs³uga wybranego oœrodka
+            // Obsï¿½uga wybranego oï¿½rodka
             if (centerId.HasValue)
             {
-                var selectedCenter = SportsCenters.FirstOrDefault(c => c.centerId == centerId.Value);
+                var selectedCenter = SportsCenters.FirstOrDefault(c => c.SportsCenterId == centerId.Value);
                 if (selectedCenter != null)
                 {
-                    SelectedCenterId = selectedCenter.centerId;
-                    SelectedCenterName = selectedCenter.centerName;
+                    SelectedCenterId = selectedCenter.SportsCenterId;
+                    SelectedCenterName = selectedCenter.Name;
 
-                    // Filtrowanie obiektów przypisanych do wybranego oœrodka
-                    Facilities = Facilities.Where(f => f.sportsCenter.centerId == centerId.Value).ToList();
+                    // Filtrowanie obiektï¿½w przypisanych do wybranego oï¿½rodka
+                    Facilities = Facilities.Where(f => f.FacilitySportsCenter.SportsCenterId == centerId.Value).ToList();
                 }
             }
 
-            // Obs³uga wybranego obiektu
+            // Obsï¿½uga wybranego obiektu
             if (objectId.HasValue && Facilities.Any())
             {
-                selectedObject = Facilities.FirstOrDefault(f => f.facilityId == objectId.Value);
+                selectedObject = Facilities.FirstOrDefault(f => f.FacilityId == objectId.Value);
                 if (selectedObject != null)
                 {
-                    SelectedObjectId = selectedObject.facilityId;
-                    SelectedObjectName = selectedObject.facilityName;
+                    SelectedObjectId = selectedObject.FacilityId;
+                    SelectedObjectName = selectedObject.FacilityName;
 
-                    HttpContext.Session.Remove("selectedObjectId");
-                    HttpContext.Session.SetInt32("selectedObjectId", (int) SelectedObjectId);
+                    HttpContext.Session.Remove("SelectedObjectId");
+                    HttpContext.Session.SetInt32("SelectedObjectId", (int) SelectedObjectId);
                     
                 }
             }
@@ -103,7 +103,7 @@ namespace ProjectIO.Pages
             else
                 Console.WriteLine("Nie ustawiono");
 
-            // Obs³uga wybranego dnia
+            // Obsï¿½uga wybranego dnia
             if (!string.IsNullOrEmpty(SelectedDay) && SelectedObjectId.HasValue)
             {
                 DateTime selectedDate;
@@ -111,12 +111,12 @@ namespace ProjectIO.Pages
                 {
                     foreach (var reservation in Reservations)
                     {
-                        if (reservation.facility.sportsCenter.centerId == SelectedCenterId &&
-                            reservation.facility.facilityId == SelectedObjectId &&
-                            reservation.reservationDate.Date == selectedDate.Date &&
-                            reservation.reservationStatus == ReservationStatus.Approved)
+                        if (reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId == SelectedCenterId &&
+                            reservation.ReservationFacility.FacilityId == SelectedObjectId &&
+                            reservation.ReservationDate.Date == selectedDate.Date &&
+                            reservation.CurrentReservationStatus == ReservationStatus.Approved)
                         {
-                            string slot = $"{reservation.facility.sportsCenter.centerId} {reservation.facility.facilityId} {reservation.reservationDate:yyyy-MM-dd HH}";
+                            string slot = $"{reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId} {reservation.ReservationFacility.FacilityId} {reservation.ReservationDate:yyyy-MM-dd HH}";
                             if (!TakenSlots.Contains(slot))
                             {
                                 TakenSlots.Add(slot);
@@ -124,7 +124,7 @@ namespace ProjectIO.Pages
                         }
                     }
 
-                    // Dodaj przesz³e godziny dla bie¿¹cego dnia jako "zajête"
+                    // Dodaj przeszï¿½e godziny dla bieï¿½ï¿½cego dnia jako "zajï¿½te"
                     if (selectedDate.Date == DateTime.Now.Date)
                     {
                         for (int pastHour = 0; pastHour < DateTime.Now.Hour; pastHour++)
@@ -164,7 +164,7 @@ namespace ProjectIO.Pages
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
             Facilities = _context.Facilities.ToList();
 
-            // Upewnij siê, ¿e Facilities nie jest null
+            // Upewnij siï¿½, ï¿½e Facilities nie jest null
             if (Facilities == null || !Facilities.Any())
             {
                 return BadRequest("Facilities list is not available or empty.");
@@ -172,9 +172,9 @@ namespace ProjectIO.Pages
 
             
 
-            int? selectedObjectId = HttpContext.Session.GetInt32("selectedObjectId");
+            int? selectedObjectId = HttpContext.Session.GetInt32("SelectedObjectId");
 
-            var facility = Facilities.FirstOrDefault(f => f.facilityId == selectedObjectId);
+            var facility = Facilities.FirstOrDefault(f => f.FacilityId == selectedObjectId);
             if (facility == null)
             {
                 return BadRequest("Facility not found.");
@@ -190,16 +190,16 @@ namespace ProjectIO.Pages
 
             var reservation = new Reservation
             {
-                facility = facility,
-                user = currentPerson,
-                reservationDate = reservationDate,
-                reservationStatus = ReservationStatus.Pending
+                ReservationFacility = facility,
+                ReservationUser = currentPerson,
+                ReservationDate = reservationDate,
+                CurrentReservationStatus = ReservationStatus.Pending
             };
 
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
 
-            return RedirectToPage("/Payment", new { reservationId = reservation.reservationId });
+            return RedirectToPage("/Payment", new { reservationId = reservation.ReservationId });
         }
 
     }

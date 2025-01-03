@@ -8,20 +8,20 @@ namespace ProjectIO.model
     public class TrainingSession
     {
         [Key]
-        public int sessionId { get; set; }
+        public int TrainingSessionId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string sessionName { get; set; }
+        public required string Name { get; set; }
 
         [Required]
-        public DateTime sessionDate { get; set; }
+        public DateTime Date { get; set; }
 
         [Required]
-        public int sessionDuration { get; set; }
+        public int Duration { get; set; }
 
         [Required]
-        public int sessionCapacity { get; set; }
+        public int GroupCapacity { get; set; }
 
 
     }
