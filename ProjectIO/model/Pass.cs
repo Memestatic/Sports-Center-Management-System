@@ -20,6 +20,9 @@ namespace ProjectIO.model
 
         [Required]
         public int PassEntriesLeft { get; set; }
+        
+        [Required]
+        public Status CurrentStatus { get; set; }
 
     }
 }

@@ -33,17 +33,18 @@ public class BuyPass : PageModel
     {
         User user = (User)CurrentPerson.GetInstance();
         PassType Chosen = _context.PassTypes.FirstOrDefault(p => p.PassTypeId == PassTypeId);
-
+        _context.Attach(user);
         Pass UserPass = new Pass()
         {
             PassUser = user,
             PassType = Chosen,
-            PassEntriesLeft = Chosen.PassTypeDuration
+            PassEntriesLeft = Chosen.PassTypeDuration,
+            CurrentStatus = Status.Pending
         };
         
         _context.Passes.Add(UserPass);
         _context.SaveChanges();
-        return RedirectToPage("/Account/ClientPanel");
+        return RedirectToPage("/Payment", new {OrderId = "p" + UserPass.PassId.ToString()});
         
     }
 }

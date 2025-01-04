@@ -1,0 +1,62 @@
+@page
+@model ProjectIO.Pages.Account.ChoosePaymentMethod
+
+@{
+
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Choose Your Payment Option</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <img src="/assets/BLIK.png" class="card-img-top w-50 h-auto mx-auto d-block" alt="BLIK Option Image">
+                <div class="card-body text-center">
+                    <h5 class="card-title">BLIK Payment</h5>
+                    <p class="card-text">Pay instantly and securely using our quick payment option.</p>
+                    <form method="post" asp-page-handler="QuickPayment">
+                        <input type="hidden" name="OrderId" value="@Model.OrderId">
+                        <button type="submit" class="btn btn-primary">Go to BLIK Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Select a Pass</h5>
+                    <p class="card-text text-center">Choose a pass and proceed to payment.</p>
+                    
+                    <div class="d-flex flex-column gap-3">
+                       
+                        @if (Model.Passes.Any())
+                        {
+                            @foreach (var pass in Model.Passes)
+                            {
+                                <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                    <span>@pass.PassType.PassTypeName</span>
+                                    <span>Number of entries Left: @pass.PassEntriesLeft</span>
+                                    <form method="post" asp-page-handler="PayWithPass">
+                                        <input type="hidden" name="selected" value="@pass.PassId">
+                                        <input type="hidden" name="OrderId" value="@Model.OrderId">
+                                        <button type="submit" class="btn btn-success btn-sm">Buy</button>
+                                    </form>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="card-text text-center">You don't have any passes.</p>
+                        }
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
