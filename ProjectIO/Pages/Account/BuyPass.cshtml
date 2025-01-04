@@ -1,0 +1,50 @@
+@page
+@model ProjectIO.Pages.Account.BuyPass
+
+@{
+}
+<div class="container mt-5">
+    <h2 class="mb-4">Buy a pass for multiple entries to any Facility!</h2>
+
+    @if (Model.PassTypes == null || !Model.PassTypes.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            We don't sell any Passes yet. Follow recent changes to the site and be alerted.
+        </div>
+        
+    }
+    else
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th class="col-3">Pass Name</th> 
+                <th class="col-1">Number of entries</th> 
+                <th class="col-1">User Actions</th> 
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var type in Model.PassTypes)
+            {
+                <tr>
+                    <td>@type.PassTypeName</td>
+                    <td>@type.PassTypeDuration</td>
+                        
+                    <td class="d-flex ">
+                        <form method="post">
+                            <input type="hidden" name="PassTypeId" value="@type.PassTypeId" />
+                            <button type="submit" class="btn btn-primary btn-sm">Buy now</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    
+
+
+</div>
+<div class="d-flex justify-content-center align-items-center ">
+    <a href="/Account/ClientPanel" class="btn btn-danger mb-2">Leave</a>
+</div>

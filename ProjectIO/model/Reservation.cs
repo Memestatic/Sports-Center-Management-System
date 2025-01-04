@@ -21,7 +21,7 @@ namespace ProjectIO.model
         public DateTime ReservationDate { get; set; }
 
         [Required]
-        public ReservationStatus CurrentReservationStatus { get; set; }
+        public Status CurrentStatus { get; set; }
         
         [Required]
         public bool IsChangingRoomReserved { get; set; }

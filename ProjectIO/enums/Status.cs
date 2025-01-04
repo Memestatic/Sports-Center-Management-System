@@ -1,6 +1,6 @@
 ﻿namespace ProjectIO.model
 {
-    public enum ReservationStatus
+    public enum Status
     {
         Pending,
         Approved,

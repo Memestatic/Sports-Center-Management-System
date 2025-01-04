@@ -50,7 +50,7 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnPostPayHandler(int reservationId)
         {
-            return RedirectToPage("/Payment", new { reservationId });
+            return RedirectToPage("/Account/ChoosePaymentMethod", new { orderId = "r" + reservationId });
         }
 
         public IActionResult OnPostDenyHandler(int reservationId)

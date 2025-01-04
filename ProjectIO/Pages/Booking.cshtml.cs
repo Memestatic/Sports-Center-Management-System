@@ -122,7 +122,7 @@ namespace ProjectIO.Pages
                         if (reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId == SelectedCenterId &&
                             reservation.ReservationFacility.FacilityId == SelectedObjectId &&
                             reservation.ReservationDate.Date == selectedDate.Date &&
-                            reservation.CurrentReservationStatus == ReservationStatus.Approved)
+                            reservation.CurrentStatus == Status.Approved)
                         {
                             string slot = $"{reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId} {reservation.ReservationFacility.FacilityId} {reservation.ReservationDate:yyyy-MM-dd HH}";
                             if (!TakenSlots.Contains(slot))
@@ -201,7 +201,7 @@ namespace ProjectIO.Pages
                 ReservationFacility = facility,
                 ReservationUser = currentPerson,
                 ReservationDate = reservationDate,
-                CurrentReservationStatus = ReservationStatus.Pending,
+                CurrentStatus = Status.Pending,
                 IsChangingRoomReserved = IsLockroom,
                 IsEquipmentReserved = IsGear
             };
@@ -209,7 +209,7 @@ namespace ProjectIO.Pages
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
 
-            return RedirectToPage("/Payment", new { reservationId = reservation.ReservationId });
+            return RedirectToPage("/Account/ChoosePaymentMethod", new { OrderId = "r" + reservation.ReservationId });
         }
 
     }

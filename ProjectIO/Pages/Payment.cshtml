@@ -15,11 +15,11 @@
                 </div>
 
                 <div>
-                    <p class="lead">Your reservation number: @Model.reservationId</p>
+                    <p class="lead">Your order number: @Model.OrderId</p>
                 </div>
 
                 <form id="paymentForm" method="post">
-                    <input type="hidden" name="ReservationId" value="@Model.reservationId" />
+                    <input type="hidden" name="ReservationId" value="@Model.OrderId" />
                     <div class="form-group mb-3">
                         <label for="paymentCode" class="form-label">Payment code (6 digits)</label>
                         <input type="text" id="paymentCode" class="form-control" placeholder="Enter code" maxlength="6" required>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using ProjectIO.model;
 
 namespace ProjectIO.Pages
@@ -9,9 +10,15 @@ namespace ProjectIO.Pages
     {
         [BindProperty]
         public int reservationId { get; set; }
+        
+        [BindProperty]
+        public int PassId { get; set; }
 
         [BindProperty]
         public Reservation reservation { get; set; }
+        
+        [BindProperty]
+        public string OrderId { get; set; }
 
         private readonly SportCenterContext _context;
 
@@ -19,47 +26,68 @@ namespace ProjectIO.Pages
         {
             _context = context;
         }
-        public void OnGet(int reservationId)
+        public void OnGet(string orderId)
         {
-            //this.ReservationId. = ReservationId;
-            this.reservationId = reservationId;
-            reservation = _context.Reservations.FirstOrDefault(r => r.ReservationId == reservationId);
+            OrderId = orderId;
 
 
         }
 
         public IActionResult OnPost()
         {
-            var reservation = _context.Reservations
+            if (OrderId.StartsWith('r'))
+            {
+                reservationId = int.Parse(OrderId.Substring(1));
+                var reservation = _context.Reservations
                     .Include(r => r.ReservationFacility) 
                     .FirstOrDefault(r => r.ReservationId == reservationId);
 
-            if (reservation == null)
+                if (reservation == null)
+                {
+                    return NotFound("Rezerwacja nie znaleziona");
+                }
+
+                if (reservation.CurrentStatus != Status.Pending)
+                {
+                    return NotFound("Rezerwacja nie jest w stanie oczekuj�cym");
+                }
+
+                reservation.CurrentStatus = Status.Approved;
+
+                List<Reservation> toCancel = _context.Reservations
+                    .Where(r => r.ReservationDate == reservation.ReservationDate
+                                && r.ReservationFacility.FacilityId == reservation.ReservationFacility.FacilityId
+                                && r.ReservationId != reservationId)
+                    .ToList();
+
+                foreach(var r in toCancel)
+                {
+                    r.CurrentStatus = Status.Denied;
+                }
+
+                _context.SaveChanges();
+
+                return RedirectToPage("/Account/ClientPanel");
+            }
+            
+            PassId = int.Parse(OrderId.Substring(1));
+
+            var Pass = _context.Passes
+                .First(p => p.PassId == PassId);
+            
+            if (Pass == null)
             {
-                return NotFound("Rezerwacja nie znaleziona");
+                return NotFound("Karnet nie znaleziony");
             }
 
-            if (reservation.CurrentReservationStatus != ReservationStatus.Pending)
+            if (Pass.CurrentStatus != Status.Pending)
             {
-                return NotFound("Rezerwacja nie jest w stanie oczekuj�cym");
+                return NotFound("Karnet nie jest w stanie oczekującym");
             }
-
-            reservation.CurrentReservationStatus = ReservationStatus.Approved;
-
-            List<Reservation> toCancel = _context.Reservations
-                .Where(r => r.ReservationDate == reservation.ReservationDate
-                && r.ReservationFacility.FacilityId == reservation.ReservationFacility.FacilityId
-                && r.ReservationId != reservationId)
-                .ToList();
-
-            foreach(var r in toCancel)
-            {
-                r.CurrentReservationStatus = ReservationStatus.Denied;
-            }
-
+            
+            Pass.CurrentStatus = Status.Approved;
             _context.SaveChanges();
-
-            return RedirectToPage("/Account/UserReservationManager");
+            return RedirectToPage("/Account/ClientPanel");
         }
 
         

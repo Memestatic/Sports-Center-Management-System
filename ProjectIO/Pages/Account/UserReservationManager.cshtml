@@ -35,12 +35,12 @@
                         <td>@res.ReservationFacility.FacilitySportsCenter.Name</td>
                         <td>@res.ReservationFacility.FacilityName</td>
                         <td>@res.ReservationDate</td>
-                        <td>@res.CurrentReservationStatus.ToString()</td>
+                        <td>@res.CurrentStatus.ToString()</td>
                         <td class="d-flex gap-2">
                             <form method="post" asp-page-handler="payHandler">
                                 <input type="hidden" name="ReservationId" value="@res.ReservationId" />
                                 <button type="submit" class="btn btn-success btn-sm"
-                                @(res.CurrentReservationStatus != ReservationStatus.Pending ? "disabled" : "")>
+                                @(res.CurrentStatus != Status.Pending ? "disabled" : "")>
                                     Pay Now
                                 </button>
                             </form>
@@ -54,5 +54,7 @@
             </tbody>
         </table>
     }
-    <a href="/Booking" class="btn btn-primary mb-2">Make a Reservation</a>
+    <div class="d-flex justify-content-center align-items-center ">
+        <a href="/Booking" class="btn btn-primary mb-2">Make a Reservation</a>
+    </div>
 </div>
