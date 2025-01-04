@@ -10,6 +10,8 @@ namespace ProjectIO.model
     {
         [Key]
         public int UserId { get; set; }
+
+        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }
 

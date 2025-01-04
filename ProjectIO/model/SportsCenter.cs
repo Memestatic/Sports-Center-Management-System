@@ -34,7 +34,7 @@ namespace ProjectIO.model
         [MaxLength(50)]
         public required string ZipCode { get; set; }
 
-
+        public ICollection<Facility> Facilities { get; set; } = new List<Facility>();
 
 
     }

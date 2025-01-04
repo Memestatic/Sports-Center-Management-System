@@ -35,9 +35,7 @@ namespace ProjectIO.model
         [Required]
         public double PromoRate { get; set; }
 
-
-
+        public ICollection<TrainingSession> TrainingSessions { get; set; } = new List<TrainingSession>();
     }
-
 }
 
