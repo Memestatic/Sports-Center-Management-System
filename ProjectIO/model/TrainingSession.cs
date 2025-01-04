@@ -10,6 +10,9 @@ namespace ProjectIO.model
         [Key]
         public int TrainingSessionId { get; set; }
 
+        [ForeignKey("FacilityId")]
+        public required Facility Facility { get; set; }
+
         [Required]
         [MaxLength(50)]
         public required string Name { get; set; }
@@ -22,6 +25,9 @@ namespace ProjectIO.model
 
         [Required]
         public int GroupCapacity { get; set; }
+
+       // [Required]
+       // public int Repeatability { get; set; }
 
 
     }
