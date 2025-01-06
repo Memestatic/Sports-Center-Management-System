@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MimeKit;
 using ProjectIO.model;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection.Metadata;
+using MailKit.Net.Smtp;
 
 namespace ProjectIO.Pages
 {
@@ -155,19 +157,15 @@ namespace ProjectIO.Pages
                 return BadRequest("Login into your customer account first");
             }
 
-            if (!DateTime.TryParseExact(
-                $"{SelectedDay} {SelectedHour}:00:00",
-                "yyyy-MM-dd HH:mm:ss",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var reservationDate))
+            if (!DateTime.TryParse(
+            $"{SelectedDay} {SelectedHour}:00",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out var reservationDate))
             {
                 return BadRequest("Invalid date or time format.");
             }
-            if (reservationDate < DateTime.Now)
-            {
-                return BadRequest("Cannot book a past time.");
-            }
+
 
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
             Facilities = _context.Facilities.ToList();
@@ -211,7 +209,44 @@ namespace ProjectIO.Pages
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
 
+            // Send confirmation email
+            try
+            {
+                SendConfirmationEmail(reservation);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and inform the user
+                Console.WriteLine($"Error sending email: {ex.Message}");
+            }
+
             return RedirectToPage("/Account/ChoosePaymentMethod", new { OrderId = "r" + reservation.ReservationId });
+        }
+
+        private void SendConfirmationEmail(Reservation reservation)
+        {
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress("EVERSPORT", "customersupport@kziaja.site"));
+            email.To.Add(new MailboxAddress(reservation.ReservationUser.Name, reservation.ReservationUser.Email));
+            email.Subject = "Reservation Confirmation";
+            email.Body = new TextPart("plain")
+            {
+                Text = $"Dear {reservation.ReservationUser.Name},\n\n" +
+                       $"Your reservation has been successfully created.\n\n" +
+                       $"Reservation Details:\n" +
+                       $"- Facility: {reservation.ReservationFacility.FacilityName}\n" +
+                       $"- Date: {reservation.ReservationDate:yyyy-MM-dd}\n" +
+                       $"- Time: {reservation.ReservationDate:HH:mm}\n" +
+                       $"- Changing Room Reserved: {(reservation.IsChangingRoomReserved ? "Yes" : "No")}\n" +
+                       $"- Equipment Reserved: {(reservation.IsEquipmentReserved ? "Yes" : "No")}\n\n" +
+                       $"Thank you for choosing us!\n\nBest regards,\nEversport Team"
+            };
+
+            using var smtp = new SmtpClient();
+            smtp.Connect("mail.privateemail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("customersupport@kziaja.site", "iLe7$S,!iFYQ!/,");
+            smtp.Send(email);
+            smtp.Disconnect(true);
         }
 
     }
