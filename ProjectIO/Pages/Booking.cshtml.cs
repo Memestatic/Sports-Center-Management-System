@@ -194,12 +194,14 @@ namespace ProjectIO.Pages
                 return Unauthorized();
             }
 
-            _context.Users.Attach(currentPerson);
+            //_context.Users.Attach(currentPerson);
+            
+            User client = _context.Users.FirstOrDefault(u => u.UserId == user.UserId);
 
             var reservation = new Reservation
             {
                 ReservationFacility = facility,
-                ReservationUser = currentPerson,
+                ReservationUser = client,
                 ReservationDate = reservationDate,
                 CurrentStatus = Status.Pending,
                 IsChangingRoomReserved = IsLockroom,
