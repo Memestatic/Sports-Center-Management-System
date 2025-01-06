@@ -22,7 +22,7 @@ public class BuyPass : PageModel
     {
         if (CurrentPerson.GetInstance() == null)
         {
-            return RedirectToPage("/Login");
+            return RedirectToPage("/Account/Login");
         }
         
         PassTypes = _context.PassTypes.ToList();
