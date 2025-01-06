@@ -4,6 +4,8 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using ProjectIO.model;
 
 
 namespace ProjectIO.Pages
@@ -18,6 +20,13 @@ namespace ProjectIO.Pages
 
         public string StatusMessage { get; set; }
 
+        private readonly IConfiguration _configuration;
+
+        public ContactModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -26,9 +35,12 @@ namespace ProjectIO.Pages
                 return Page();
             }
 
+            // Pobierz ustawienia z appsettings.json
+            var emailSettings = _configuration.GetSection("EmailSettings").Get<EmailSettings>();
+
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Contact Form", "customersupport@kziaja.site"));
-            emailMessage.To.Add(new MailboxAddress("Admin", "customersupport@kziaja.site"));
+            emailMessage.From.Add(new MailboxAddress("Contact Form", emailSettings.SenderEmail));
+            emailMessage.To.Add(new MailboxAddress("Admin", emailSettings.SenderEmail));
             emailMessage.Subject = "New message from contact form";
             emailMessage.Body = new TextPart("plain")
             {
@@ -39,8 +51,8 @@ namespace ProjectIO.Pages
             {
                 using (var client = new SmtpClient())
                 {
-                    await client.ConnectAsync("mail.privateemail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync("customersupport@kziaja.site", "iLe7$S,!iFYQ!/,");
+                    await client.ConnectAsync(emailSettings.SmtpServer, emailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync(emailSettings.SenderEmail, emailSettings.Password);
                     await client.SendAsync(emailMessage);
                     await client.DisconnectAsync(true);
                 }
@@ -54,5 +66,6 @@ namespace ProjectIO.Pages
 
             return Page();
         }
+
     }
 }

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection.Metadata;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 
 namespace ProjectIO.Pages
 {
@@ -38,6 +39,7 @@ namespace ProjectIO.Pages
 
 
         private readonly SportCenterContext _context;
+        private readonly IConfiguration _configuration;
 
         public string MinDate { get; set; }
         public string MaxDate { get; set; }
@@ -49,9 +51,10 @@ namespace ProjectIO.Pages
         public bool IsGear { get; set; }
 
 
-        public BookingModel(SportCenterContext context)
+        public BookingModel(SportCenterContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
             IsLockroom = false;
             IsGear = false;
         }
@@ -225,8 +228,10 @@ namespace ProjectIO.Pages
 
         private void SendConfirmationEmail(Reservation reservation)
         {
+            var emailSettings = _configuration.GetSection("EmailSettings").Get<EmailSettings>();
+
             var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("EVERSPORT", "customersupport@kziaja.site"));
+            email.From.Add(new MailboxAddress("EVERSPORT", emailSettings.SenderEmail));
             email.To.Add(new MailboxAddress(reservation.ReservationUser.Name, reservation.ReservationUser.Email));
             email.Subject = "Reservation Confirmation";
             email.Body = new TextPart("plain")
@@ -243,8 +248,8 @@ namespace ProjectIO.Pages
             };
 
             using var smtp = new SmtpClient();
-            smtp.Connect("mail.privateemail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("customersupport@kziaja.site", "iLe7$S,!iFYQ!/,");
+            smtp.Connect(emailSettings.SmtpServer, emailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate(emailSettings.SenderEmail, emailSettings.Password);
             smtp.Send(email);
             smtp.Disconnect(true);
         }
