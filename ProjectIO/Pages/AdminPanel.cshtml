@@ -15,86 +15,86 @@
         <button class="nav-link" id="nav-price-tab" data-bs-toggle="tab" data-bs-target="#nav-price" type="button" role="tab" aria-controls="nav-price" aria-selected="false">Pricing</button>
         <button class="nav-link" id="nav-promotions-tab" data-bs-toggle="tab" data-bs-target="#nav-promotions" type="button" role="tab" aria-controls="nav-promotions" aria-selected="false">Promotions</button>
         <button class="nav-link" id="nav-reservations-tab" data-bs-toggle="tab" data-bs-target="#nav-reservations" type="button" role="tab" aria-controls="nav-reservations" aria-selected="false">Reservations</button>
+        <button class="nav-link" id="nav-workerSession-tab" data-bs-toggle="tab" data-bs-target="#nav-workerSession" type="button" role="tab" aria-controls="nav-workerSession" aria-selected="false">Worker Sessions</button>
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
     <!--SPORTSCENTER-TAB------------------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-sportscenter" role="tabpanel" aria-labelledby="nav-sportscenter-tab" tabindex="0">
-        <!-- ADD NEW RECORD FORM -->
-        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.SportsCenterId">Add New Record</button>
+        <div class="text-center mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.SportsCenterId">Add New Record</button>
+        </div>
         <div id="addForm-Model.SportsCenterId" class="collapse">
-            <form method="post" asp-page-handler="Add">
+            <!-- Form for adding new records -->
+            <form method="post" asp-page-handler="Add" class="text-center">
                 <div class="form-group">
                     <label>Nazwa Ośrodka:</label>
-                    <input type="text" name="Name" value="" class="form-control" required />
+                    <input type="text" name="Name" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label>Ulica:</label>
-                    <input type="text" name="Street" value="" class="form-control" required />
+                    <input type="text" name="Street" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label>Numer Ulicy:</label>
-                    <input type="text" name="StreetNumber" value="" class="form-control" required />
+                    <input type="text" name="StreetNumber" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label>Miasto:</label>
-                    <input type="text" name="City" value="" class="form-control" required />
+                    <input type="text" name="City" class="form-control" required />
                 </div>
                 <div class="form-group">
-                    <label>Wojewódzctwo:</label>
-                    <input type="text" name="State" value="" class="form-control" required />
+                    <label>Województwo:</label>
+                    <input type="text" name="State" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label>Kod Pocztowy:</label>
-                    <input type="text" name="ZipCode" value="" class="form-control" required />
+                    <input type="text" name="ZipCode" class="form-control" required />
                 </div>
-
-                <button type="submit" class="btn btn-success">Add</button>
+                <button type="submit" class="btn btn-success mt-2">Add</button>
             </form>
         </div>
+        <br>
 
-        <br> 
-        <!--LIST-VALUES-->
         @if (Model.SportsCenters != null && Model.SportsCenters.Count > 0)
         {
-            @foreach (var center in Model.SportsCenters)
-            {
-                <tr>
-                    <td>@center.SportsCenterId</td>
-                    <td>@center.Name</td>
-                    <td>@center.Street</td>
-                    <td>@center.StreetNumber</td>
-                    <td>@center.City</td>
-                    <td>@center.State</td>
-                    <td>@center.ZipCode</td>
-                </tr>
-                <!-- DELETE BUTTON -->
-                <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@center.SportsCenterId">Delete</button>
+            <table class="table table-striped table-bordered table-hover text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Street</th>
+                        <th>Street Number</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Zip Code</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var center in Model.SportsCenters)
+                    {
+                        <tr>
+                            <td>@center.SportsCenterId</td>
+                            <td>@center.Name</td>
+                            <td>@center.Street</td>
+                            <td>@center.StreetNumber</td>
+                            <td>@center.City</td>
+                            <td>@center.State</td>
+                            <td>@center.ZipCode</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <!-- Edit button -->
+                                    <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@center.SportsCenterId">Edit</button>
+                                    <!-- Delete button -->
+                                    <button type="button" class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@center.SportsCenterId">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
 
-                <!-- POPUP CONFIRM MENU -->
-                <div class="modal fade" id="confirmDeleteModal-@center.SportsCenterId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@center.SportsCenterId" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmDeleteModalLabel-@center.SportsCenterId">Confirm Deletion</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to delete this item?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <form method="post" id="deleteForm-@center.SportsCenterId" asp-page-handler="Delete" asp-route-id="@center.SportsCenterId" style="display:inline;">
-                                    <button type="submit" id="confirmDeleteButton-@center.SportsCenterId" class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--EDIT-BUTTON-->
-                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@center.SportsCenterId">Edit</button>
-                <!--POPUP-EDIT-FORM-->
-                    <div id="editForm-@center.SportsCenterId" class="collapse">
+                        <!-- Edit form -->
+                        <tr id="editForm-@center.SportsCenterId" class="collapse">
+                            <td colspan="8">
                                 <form method="post" asp-page-handler="Edit" asp-route-id="@center.SportsCenterId">
                                     <div class="form-group">
                                         <label>Nazwa Ośrodka:</label>
@@ -113,26 +113,49 @@
                                         <input type="text" name="City" value="@center.City" class="form-control" required />
                                     </div>
                                     <div class="form-group">
-                                        <label>Stan:</label>
+                                        <label>Województwo:</label>
                                         <input type="text" name="State" value="@center.State" class="form-control" required />
                                     </div>
                                     <div class="form-group">
                                         <label>Kod Pocztowy:</label>
                                         <input type="text" name="ZipCode" value="@center.ZipCode" class="form-control" required />
                                     </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </td>
+                        </tr>
 
-                                    <button type="submit" class="btn btn-primary-warning">Save Changes</button>
-                                 </form>
-                     </div>
-
-                <br>
-            }
+                        <!-- Delete modal -->
+                        <div class="modal fade" id="confirmDeleteModal-@center.SportsCenterId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@center.SportsCenterId" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmDeleteModalLabel-@center.SportsCenterId">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this item?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@center.SportsCenterId" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
         }
         else
         {
-            <p>Brak danych o obiektach.</p>
+            <p class="text-muted text-center">Brak danych o obiektach.</p>
         }
     </div>
+
+
     <!--SPORTSOBJECT/FACILITY-TAB---------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-sportsobject" role="tabpanel" aria-labelledby="nav-sportsobject-tab" tabindex="0">
 
@@ -627,5 +650,519 @@
             <p>Brak danych o rezerwacjach.</p>
         }
     </div>
+
+
+
+
+        <div class="tab-pane fade" id="nav-workerSession" role="tabpanel" aria-labelledby="nav-workerSession-tab" tabindex="0">
+        <div class="container">
+            <div class="row my-4">
+                <!-- Sekcja kalendarza po lewej -->
+                <div class="col-md-3">
+                    <h3 class="mb-3">Select a Day</h3>
+                    <form method="post" asp-page-handler="ChangeDate">
+                        <input type="hidden" name="SelectedCenterId" value="@Model.SelectedCenterId" />
+                        <input type="hidden" name="SelectedObjectId" value="@Model.SelectedObjectId" />
+                        <input id="startDate"
+                               class="form-control"
+                               style="max-width: 180px;"
+                               type="date"
+                               name="SelectedDay"
+                               value="@Model.SelectedDay"
+                               min="@Model.MinDate"
+                               max="@Model.MaxDate"
+                               onchange="this.form.submit();" />
+                    </form>
+                </div>
+
+                <!-- Sekcja godzin na środku -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="text-center mb-3">Hours for <span id="selected-day" class="text-primary">@Model.SelectedDay</span></h3>
+                        <ul class="list-group">
+                            @for (int hour = 9; hour <= 20; hour++)
+                            {
+                                bool isTaken = Model.OccupiedHours.Contains(hour);
+
+                                DateTime selectedDate = DateTime.Parse(Model.SelectedDay);
+                                DateTime currentDate = DateTime.Now.Date;
+
+                                bool isPastDate = selectedDate < currentDate;
+                                bool isToday = selectedDate == currentDate;
+                                bool isPastHour = isToday && hour <= DateTime.Now.Hour;
+
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @hour:00 - @hour:59
+                                    <div>
+                                        @if (isTaken)
+                                        {
+                                            <form method="post" asp-page-handler="EditFormState">
+                                                <input type="hidden" name="selectedHour" value="@hour" />
+                                                <input type="hidden" name="selectedDay" value="@Model.SelectedDay" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Check</button>
+                                            </form>
+                                        }
+                                        else if (isPastDate || isPastHour)
+                                        {
+                                            <button class="btn btn-secondary btn-sm" disabled>Expired</button>
+                                        }
+                                        else
+                                        {
+                                            <!-- Przy kliknięciu przekazujemy wybraną datę i godzinę -->
+                                            <form method="post" asp-page-handler="ChangeFormState">
+                                                <input type="hidden" name="selectedHour" value="@hour" />
+                                                <input type="hidden" name="selectedDay" value="@Model.SelectedDay" />
+                                                <button type="submit" class="btn btn-success btn-sm">Add</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (Model.IsAddFormVisible == "Adding")
+                    {
+                        <div class="col-md-6">
+                            <div id="addForm" class="static-form">
+                                <h4 class="mb-3">Add Training Session</h4>
+                                <form method="post" asp-page-handler="AddTrainingSession">
+                                    <div class="form-group">
+                                        <label for="FacilityId">Facility:</label>
+                                        <select name="FacilityId" id="FacilityId" class="form-control" required>
+                                            <option value="">Select Facility</option>
+                                            @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                                            {
+                                                @foreach (var facility in Model.Facilities)
+                                                {
+                                                    <option value="@facility.FacilityId">@facility.FacilityName</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="Trainer">Trainer:</label>
+                                        @if (Model.Permissions == 1)
+                                        {
+                                            <select name="TrainerId" id="TrainerId" class="form-control" required>
+                                                <option value="">Select Trainer</option>
+                                                @if (Model.Workers != null && Model.Workers.Count > 0)
+                                                {
+                                                    @foreach (var worker in Model.Workers.Where(w => w.AssignedWorkerFunction.WorkerFunctionId == 2))
+                                                    {
+                                                        <option value="@worker.WorkerId">@worker.Name @worker.Surname</option>
+                                                    }
+                                                }
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <input type="hidden" name="TrainerId" value="@Model.perms.WorkerId" />
+                                            <input type="text" class="form-control" value="@Model.perms.Name @Model.perms.Surname" readonly />
+                                        }
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="Name">Training Name:</label>
+                                        <input type="text" name="Name" id="Name" class="form-control" maxlength="50" required />
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="Date">Date:</label>
+                                        <input type="datetime-local"
+                                               name="Date"
+                                               id="Date"
+                                               class="form-control"
+                                               value="@($"{Model.SelectedDay}T{Model.SelectedHour:D2}:00")"
+                                               readonly />
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="Duration">Duration (minutes):</label>
+                                        <input type="number" name="Duration" id="Duration" class="form-control" min="1" required />
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="GroupCapacity">Group Capacity:</label>
+                                        <input type="number" name="GroupCapacity" id="GroupCapacity" class="form-control" min="1" required />
+                                    </div>
+                                    <button type="submit" class="btn btn-success mt-3">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else if (Model.IsAddFormVisible == "Edit")
+                    {
+                        <div class="col-md-6">
+                            <div id="editForm" class="static-form">
+                                <h4 class="mb-3">Edit Training Session</h4>
+                                <form method="post" asp-page-handler="EditTrainingSession" asp-route-id="@Model.EditingWorkerSession.TrainingSession.TrainingSessionId">
+                                    <div class="form-group">
+                                        <label for="FacilityId">Facility:</label>
+                                            <select name="FacilityId" id="FacilityId" class="form-control" required>
+                                            <!-- Domyślna wartość -->
+                                            <option value="@Model.EditingWorkerSession.TrainingSession.Facility.FacilityId" selected>
+                                                                        @Model.EditingWorkerSession.TrainingSession.Facility.FacilityName
+                                            </option>
+                                            <!-- Inne dostępne opcje -->
+                                            @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                                            {
+                                                @foreach (var facility in Model.Facilities.Where(f => f.FacilityId != Model.EditingWorkerSession.TrainingSession.Facility.FacilityId))
+                                                {
+                                                    <option value="@facility.FacilityId">@facility.FacilityName</option>
+                                                }
+                                            }
+                                            </select>
+                            </div>
+                                    <div class="form-group mt-2">
+                                        <label for="TrainerId">Trainer:</label>
+                                        <select name="TrainerId" id="TrainerId" class="form-control" required>
+                                            <!-- Domyślna wartość -->
+                                            <option value="@Model.EditingWorkerSession.AssignedWorker.WorkerId" selected>
+                                                @Model.EditingWorkerSession.AssignedWorker.Name @Model.EditingWorkerSession.AssignedWorker.Surname
+                                            </option>
+                                            <!-- Inne dostępne opcje, jeśli użytkownik ma odpowiednie uprawnienia -->
+                                            @if (Model.Permissions == 1 && Model.Workers != null && Model.Workers.Count > 0)
+                                            {
+                                                @foreach (var worker in Model.Workers.Where(w => w.AssignedWorkerFunction.WorkerFunctionId == 2 && w.WorkerId != Model.EditingWorkerSession.AssignedWorker.WorkerId))
+                                                {
+                                                    <option value="@worker.WorkerId">@worker.Name @worker.Surname</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+
+                                <div class="form-group mt-2">
+                                    <label for="Name">Training Name:</label>
+                                    <input type="text" name="Name" id="Name" class="form-control" value="@Model.EditingWorkerSession.TrainingSession.Name" maxlength="50" required />
+                                </div>
+                                <!-- Date -->
+                                <div class="form-group mt-2">
+                                    <label for="Date">Date:</label>
+                                    <input type="datetime-local"
+                                           name="Date"
+                                           id="Date"
+                                           class="form-control"
+                                           value="@Model.EditingWorkerSession.TrainingSession.Date.ToString("yyyy-MM-ddTHH:mm")"
+                                           required />
+                                </div>
+                                    <div class="form-group mt-2">
+                                        <label for="Duration">Duration (minutes):</label>
+                                        <input type="number" name="Duration" id="Duration" class="form-control" value="@Model.EditingWorkerSession.TrainingSession.Duration" min="1" required />
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="GroupCapacity">Group Capacity:</label>
+                                        <input type="number" name="GroupCapacity" id="GroupCapacity" class="form-control" value="@Model.EditingWorkerSession.TrainingSession.GroupCapacity" min="1" required />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                    <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@Model.EditingWorkerSession.TrainingSession.TrainingSessionId-@Model.EditingWorkerSession.AssignedWorker.WorkerId">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Modal for Confirming Deletion -->
+                        <div class="modal fade" id="confirmDeleteModal-@Model.EditingWorkerSession.TrainingSession.TrainingSessionId-@Model.EditingWorkerSession.AssignedWorker.WorkerId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@Model.EditingWorkerSession.TrainingSession.TrainingSessionId-@Model.EditingWorkerSession.AssignedWorker.WorkerId" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmDeleteModalLabel-@Model.EditingWorkerSession.TrainingSession.TrainingSessionId-@Model.EditingWorkerSession.AssignedWorker.WorkerId">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this training session and assigned worker?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form method="post" asp-page-handler="DeleteWorkerTrainingSession" asp-route-sessionid="@Model.EditingWorkerSession.TrainingSession.TrainingSessionId" asp-route-workerid="@Model.EditingWorkerSession.AssignedWorker.WorkerId" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @* <div class="tab-pane fade" id="nav-workerSession" role="tabpanel" aria-labelledby="nav-workerSession-tab" tabindex="0">
+        <div class="container">
+            <div class="row my-4">
+                <!-- Sekcja kalendarza po lewej -->
+                <div class="col-md-3">
+                    <h3 class="mb-3">Select a Day</h3>
+                    <form method="get" asp-page-handler="ChangeDate">
+                        <input type="hidden" name="SelectedCenterId" value="@Model.SelectedCenterId" />
+                        <input type="hidden" name="SelectedObjectId" value="@Model.SelectedObjectId" />
+                        <input id="startDate"
+                               class="form-control"
+                               style="max-width: 180px;"
+                               type="date"
+                               name="SelectedDay"
+                               value="@Model.SelectedDay"
+                               min="@Model.MinDate"
+                               max="@Model.MaxDate"
+                               onchange="this.form.submit();" />
+                    </form>
+                </div>
+
+                <!-- Sekcja godzin na środku -->
+                <div class="col-md-5">
+                    <h3 class="mb-3">Hours for <span class="text-primary">@Model.SelectedDay</span></h3>
+                    <ul class="list-group">
+                        @for (int hour = 9; hour <= 20; hour++)
+                        {
+                            bool isTaken = Model.OccupiedHours.Contains(hour);
+
+                            // Sprawdzenie, czy godzina jest przeszła w bieżącym dniu
+                            DateTime selectedDate = DateTime.Parse(Model.SelectedDay);
+                            DateTime currentDate = DateTime.Now.Date;
+
+                            bool isPastDate = selectedDate < currentDate;
+                            bool isToday = selectedDate == currentDate;
+                            bool isPastHour = isToday && hour <= DateTime.Now.Hour;
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @hour:00 - @hour:59
+                                <div>
+                                    @if (isTaken)
+                                    {
+                                        <button class="btn btn-danger btn-sm">Check</button>
+                                    }
+                                    else if (isPastDate || isPastHour)
+                                    {
+                                        <button class="btn btn-secondary btn-sm" disabled>Expired</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-success btn-sm" onclick="showForm('@hour', '@Model.SelectedDay')">Add</button>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Sekcja formularza po prawej -->
+                <div class="col-md-4" id="formContainer" style="display: none;">
+                    <h3 class="mb-3">Add Training Session</h3>
+                    <form method="post" asp-page-handler="AddTrainingSession">
+                        <div class="form-group">
+                            <label for="FacilityId">Facility:</label>
+                            <select name="FacilityId" id="FacilityId" class="form-control" required>
+                                <option value="">Select Facility</option>
+                                @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                                {
+                                    @foreach (var facility in Model.Facilities)
+                                    {
+                                        <option value="@facility.FacilityId">@facility.FacilityName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="Trainer">Trainer:</label>
+                            @if (Model.Permissions == 1)
+                            {
+                                <select name="TrainerId" id="TrainerId" class="form-control" required>
+                                    <option value="">Select Trainer</option>
+                                    @if (Model.Workers != null && Model.Workers.Count > 0)
+                                    {
+                                        @foreach (var worker in Model.Workers.Where(w => w.AssignedWorkerFunction.WorkerFunctionId == 2))
+                                        {
+                                            <option value="@worker.WorkerId">@worker.Name @worker.Surname</option>
+                                        }
+                                    }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="hidden" name="TrainerId" value="@Model.perms.WorkerId" />
+                                <input type="text" class="form-control" value="@Model.perms.Name @Model.perms.Surname" readonly />
+                            }
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="Name">Training Name:</label>
+                            <input type="text" name="Name" id="Name" class="form-control" maxlength="50" required />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="Date">Date:</label>
+                            <input type="datetime-local" name="Date" id="Date" class="form-control" required />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="Duration">Duration (minutes):</label>
+                            <input type="number" name="Duration" id="Duration" class="form-control" value="0" readonly />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="GroupCapacity">Group Capacity:</label>
+                            <input type="number" name="GroupCapacity" id="GroupCapacity" class="form-control" min="1" required />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-3">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> *@
+
+    
+
+
+
+        <!-- ADD NEW RECORD FORM -->
+        <!-- ADD NEW TRAINING SESSION FORM -->
+        @* @* @* <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-TrainingSession">Add New Training Session</button>
+        <div id="addForm-TrainingSession" class="collapse mt-3">
+            <form method="post" asp-page-handler="AddTrainingSession">
+                <div class="form-group">
+                    <label for="FacilityId">Facility:</label>
+                    <select name="FacilityId" id="FacilityId" class="form-control" required>
+                        <option value="">Select Facility</option>
+                        @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                        {
+                            @foreach (var facility in Model.Facilities)
+                            {
+                                <option value="@facility.FacilityId">@facility.FacilityName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="Trainer">Trainer:</label>
+                    @if (Model.Permissions == 1)
+                    {
+                        <select name="TrainerId" id="TrainerId" class="form-control" required>
+                            <option value="">Select Trainer</option>
+                            @if (Model.Workers != null && Model.Workers.Count > 0)
+                            {
+                                @foreach (var worker in Model.Workers.Where(w => w.AssignedWorkerFunction.WorkerFunctionId == 2))
+                                {
+                                    <option value="@worker.WorkerId">@worker.Name @worker.Surname</option>
+                                }
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input type="hidden" name="TrainerId" value="@Model.perms.WorkerId" />
+                        <input type="text" class="form-control" value="@Model.perms.Name @Model.perms.Surname" readonly />
+                    }
+                </div>
+                <div class="form-group mt-2">
+                    <label for="Name">Training Name:</label>
+                    <input type="text" name="Name" id="Name" class="form-control" maxlength="50" required />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="Date">Date:</label>
+                    <input type="datetime-local" name="Date" id="Date" class="form-control" required />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="Duration">Duration (minutes):</label>
+                    <input type="number" name="Duration" id="Duration" class="form-control" min="1" required />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="GroupCapacity">Group Capacity:</label>
+                    <input type="number" name="GroupCapacity" id="GroupCapacity" class="form-control" min="1" required />
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Add</button>
+            </form>
+        </div>
+
+        @if (Model.WorkerTrainingSessions != null && Model.WorkerTrainingSessions.Count > 0)
+        {
+            @foreach (var trainingSession in Model.WorkerTrainingSessions)
+            {
+                <tr>
+                    <td>@trainingSession.TrainingSession.TrainingSessionId</td>
+                    <td>@trainingSession.AssignedWorker.WorkerId</td>
+                    <td>@trainingSession.TrainingSession.Name</td>
+                    <td>@trainingSession.TrainingSession.Date</td>
+                    <td>@trainingSession.TrainingSession.Duration</td>
+                    <td>@trainingSession.TrainingSession.GroupCapacity</td>
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
+                    <!--EDIT BUTTON-->
+                    @* <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@trainingSession.TrainingSessionId">Edit</button>
+
+                    <!--POPUP-EDIT-FORM-->
+                    <div id="editForm-@trainingSession.TrainingSessionId" class="collapse">
+                        <form method="post" asp-page-handler="EditTrainingSession" asp-route-id="@trainingSession.TrainingSessionId">
+                            <div class="form-group">
+                                <label for="FacilityId">Facility:</label>
+                                <select name="FacilityId" class="form-control" required>
+                                    @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                                    {
+                                        @foreach (var facility in Model.Facilities)
+                                        {
+                                            <option value="@facility.FacilityId" @(facility.FacilityId == trainingSession.Facility.FacilityId ? "selected" : "")>
+                                                @facility.Name
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Name">Training Name:</label>
+                                <input type="text" name="Name" value="@trainingSession.Name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Date">Date:</label>
+                                <input type="datetime-local" name="Date" value="@trainingSession.Date.ToString("yyyy-MM-ddTHH:mm")" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Duration">Duration (minutes):</label>
+                                <input type="number" name="Duration" value="@trainingSession.Duration" class="form-control" min="1" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="GroupCapacity">Group Capacity:</label>
+                                <input type="number" name="GroupCapacity" value="@trainingSession.GroupCapacity" class="form-control" min="1" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="TrainerId">Trainer:</label>
+                                @if (Model.Permissions == 1)
+                                {
+                                    <select name="TrainerId" class="form-control" required>
+                                        @foreach (var worker in Model.Workers.Where(w => w.AssignedWorkerFunction.WorkerFunctionId == 2))
+                                        {
+                                            <option value="@worker.WorkerId" @(worker.WorkerId == trainingSession.Trainer.WorkerId ? "selected" : "")>
+                                                @worker.Name @worker.Surname
+                                            </option>
+                                        }
+                                    }
+                                    </select>
+                                }
+                                else
+                                {
+                                    <input type="hidden" name="TrainerId" value="@Model.Perms.WorkerId" />
+                                    <input type="text" class="form-control" value="@Model.Perms.Name @Model.Perms.Surname" readonly />
+                                }
+                            </div>
+                            <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                        </form>
+                    </div> 
+
+                    <br>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Brak danych o rezerwacjach.</p>
+        } *@ 
+    </div>
+
+
     <!---------------------------------------------------------------------------------------------------->
 </div>

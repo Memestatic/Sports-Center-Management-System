@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Org.BouncyCastle.Asn1.Esf;
 using ProjectIO.model;
 using System.Collections;
 using System.ComponentModel;
@@ -26,8 +27,29 @@ namespace ProjectIO.Pages
         public List<Reservation> Reservations { get; set; }
         public List<WorkerFunction> WorkerFunctions { get; set; }
 
+        public List<WorkerTrainingSession> WorkerTrainingSessions { get; set; }
+
+        public List<WorkerTrainingSession> WorkerTrainingSessionsDay { get; set; }
+        public List<TrainingSession> TrainingSessions { get; set; }
+
         public string ActiveTab { get; set; }
         public int Permissions { get; set; }
+
+        public int ActiveUserId { get; set; }
+
+        [BindProperty(SupportsGet = true)] public string SelectedDay { get; set; }
+        [BindProperty(SupportsGet = true)] public int SelectedCenterId { get; set; }
+        [BindProperty(SupportsGet = true)] public int SelectedObjectId { get; set; }
+
+
+
+        // Zakres dat do wyboru w kalendarzu
+        public string MinDate => DateTime.Now.ToString("yyyy-MM-dd");
+        public string MaxDate => DateTime.Now.AddDays(30).ToString("yyyy-MM-dd");
+
+        public List<int> OccupiedHours { get; set; } = new List<int>();
+
+        public Worker perms = CurrentPerson.GetInstance() as Worker;
 
         private readonly SportCenterContext _context;
         public AdminPanel(SportCenterContext context)
@@ -35,8 +57,118 @@ namespace ProjectIO.Pages
             _context = context;
         }
 
+        public TrainingSession EditingSession { get; set; }
+        public WorkerTrainingSession EditingWorkerSession { get; set; }
+
+        // TESY /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [BindProperty(SupportsGet = true)]
+        public string IsAddFormVisible { get; set; }
+        public int SelectedHour { get; set; }
+        public string PlaceholderMessage { get; set; } // Pole na placeholder
+
+
+
+        public void OnPostChangeFormState(string selectedDay, int selectedHour)
+        {
+            TempData["SelectedDay"] = selectedDay;
+            TempData["SelectedHour"] = selectedHour;
+            TempData["IsAddFormVisible"] = "Adding";
+            OnGet("nav-workerSession");
+
+
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private void LoadDataForSelectedDate()
+        {
+
+            if (TempData["SelectedDay"] != null)
+            {
+                SelectedDay = TempData["SelectedDay"].ToString();
+            }
+
+            if (TempData["SelectedHour"] != null)
+            {
+                SelectedHour = (int)TempData["SelectedHour"];
+            }
+
+            if (TempData["IsAddFormVisible"] != null)
+            {
+                IsAddFormVisible = TempData["IsAddFormVisible"].ToString();
+            }
+            // Pobierz dane powiązane z wybraną datą
+            var date = DateTime.Parse(SelectedDay);
+
+            WorkerTrainingSessionsDay = _context.WorkerTrainingSessions
+                .Include(wts => wts.TrainingSession) // Ładowanie powiązanej tabeli
+                .Where(wts => wts.TrainingSession.Date.Date == date.Date)
+                .ToList();
+
+            // Przypisz godziny rozpoczęcia do listy OccupiedHours
+            OccupiedHours = WorkerTrainingSessionsDay
+                    .Select(wts => wts.TrainingSession.Date.Hour)
+                    .Distinct()
+                    .ToList();
+        }
+
+        public void OnPostChangeDate(string selectedDay, int selectedCenterId, int selectedObjectId)
+        {
+            PlaceholderMessage = null; // Resetuj placeholder
+
+            SelectedDay = selectedDay;
+            SelectedCenterId = selectedCenterId;
+            SelectedObjectId = selectedObjectId;
+
+            // Załaduj dane dla wybranej daty
+            LoadDataForSelectedDate();
+        }
+
+        public IActionResult OnPostEditFormState(string selectedDay, int selectedHour)
+        {
+            SelectedDay = selectedDay;
+            SelectedHour = selectedHour;
+            var parsedDate = DateTime.Parse(SelectedDay); // Parsuj SelectedDay na obiekt DateTime
+            // Załaduj istniejącą sesję treningową dla podanych danych
+            var session = _context.WorkerTrainingSessions
+                .Include(wts => wts.TrainingSession) // Ładowanie TrainingSession
+                .Include(wts => wts.AssignedWorker)  // Ładowanie AssignedWorker
+                .Where(wts => wts.TrainingSession.Date.Date == parsedDate.Date // Filtruj po dniu
+                              && wts.TrainingSession.Date.Hour == SelectedHour) // Filtruj po godzinie
+                .FirstOrDefault(); // Pobierz pierwszy pasujący obiekt lub null
+
+            if (session != null)
+            {
+                //EditingSession = new TrainingSession
+                //{
+                //    Facility = session.TrainingSession.Facility,
+                //    Name = session.TrainingSession.Name,
+                //    Date = session.TrainingSession.Date,
+                //    Duration = session.TrainingSession.Duration,
+                //    GroupCapacity = session.TrainingSession.GroupCapacity,
+                //};
+                EditingWorkerSession = new WorkerTrainingSession
+                {
+                    TrainingSession = session.TrainingSession,
+                    AssignedWorker = session.AssignedWorker,
+                    SessionId = session.TrainingSession.TrainingSessionId,
+                    AssignedWorkerId = session.AssignedWorker.WorkerId
+                };
+
+            }
+
+            IsAddFormVisible = "Edit"; // Zmień stan na edytowalny
+            OnGet("nav-workerSession"); // Załaduj dane potrzebne do widoku
+            return Page();
+        }
+
+
+
         public IActionResult OnGet(string tab)
         {
+            SelectedDay = SelectedDay ?? DateTime.Now.ToString("yyyy-MM-dd");
+            LoadDataForSelectedDate();
+
+
             if (CurrentPerson.GetInstance() == null)
             {
                 return RedirectToPage("/WorkLogin");
@@ -47,13 +179,14 @@ namespace ProjectIO.Pages
                 return BadRequest("Login into your worker account first");
             }
 
-            var perms = CurrentPerson.GetInstance() as Worker;
+
 
             Permissions = _context.Workers
                .Where(w => w.WorkerId == perms.WorkerId)
                .Select(w => w.AssignedWorkerFunction.WorkerFunctionId)
                .FirstOrDefault();
 
+            ActiveUserId = perms.WorkerId;
 
             SportsCenters = _context.SportsCenters.ToList();
             Facilities = _context.Facilities.ToList();
@@ -62,6 +195,8 @@ namespace ProjectIO.Pages
             Workers = _context.Workers.ToList();
             Reservations = _context.Reservations.ToList();
             WorkerFunctions = _context.WorkerFunctions.ToList();
+            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
 
             if (!string.IsNullOrEmpty(tab))
             {
@@ -156,7 +291,7 @@ namespace ProjectIO.Pages
         public IActionResult OnPostAddF(string FacilityName, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
         {
             //Znalezienie SportsCenter na podstawie nazwy
-           var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == Name);
+            var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == Name);
             if (sportsCenter == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Sports Center not found.");
@@ -367,6 +502,111 @@ namespace ProjectIO.Pages
             _context.SaveChanges();
 
             return RedirectToPage();
+        }
+
+        public IActionResult OnPostAddTrainingSession(int FacilityId, string Name, DateTime Date, int Duration, int GroupCapacity, int TrainerId)
+        {
+            // Pobierz obiekt Facility z bazy danych
+            var facility = _context.Facilities.FirstOrDefault(f => f.FacilityId == FacilityId);
+            if (facility == null)
+            {
+                ModelState.AddModelError("", "Invalid Facility selected.");
+                return Page();
+            }
+
+            // Pobierz obiekt Worker (trenera) z bazy danych na podstawie TrainerId
+            var trainer = _context.Workers
+                .FirstOrDefault(w => w.WorkerId == TrainerId && w.AssignedWorkerFunction.WorkerFunctionId == 2);
+            if (trainer == null)
+            {
+                ModelState.AddModelError("", "Invalid Trainer selected.");
+                return Page();
+            }
+            var aaa = new TrainingSession
+            {
+                Facility = facility,
+                Name = Name,
+                Date = Date,
+                Duration = Duration,
+                GroupCapacity = GroupCapacity
+            };
+            // Utwórz nową sesję treningową
+            var trainingSession = new WorkerTrainingSession
+            {
+                AssignedWorker = trainer,
+                TrainingSession = aaa,
+                SessionId = aaa.TrainingSessionId,
+                AssignedWorkerId = trainer.WorkerId
+
+            };
+
+            // Dodaj sesję treningową do bazy danych
+            _context.TrainingSessions.Add(aaa);
+            _context.WorkerTrainingSessions.Add(trainingSession);
+            _context.SaveChanges();
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostEditTrainingSession(int id, int FacilityId, string Name, DateTime Date, int Duration, int GroupCapacity, int TrainerId)
+        {
+            // Znajdź istniejącą sesję w bazie danych wraz z powiązaną placówką (Facility)
+            var trainingSessionId = id;
+
+            var trainingSession = _context.TrainingSessions
+                .Include(ts => ts.Facility)
+                .FirstOrDefault(ts => ts.TrainingSessionId == trainingSessionId);
+
+
+            if (trainingSession == null)
+            {
+                return NotFound("Training session not found.");
+            }
+
+            // Znajdź powiązaną relację w WorkerTrainingSessions wraz z przypisanym pracownikiem i sesją
+            var workerTrainingSession = _context.WorkerTrainingSessions
+                .Include(wts => wts.AssignedWorker)  // Ładowanie przypisanego pracownika
+                .Include(wts => wts.TrainingSession) // Ładowanie powiązanej sesji treningowej
+                .FirstOrDefault(wts => wts.SessionId == trainingSession.TrainingSessionId);
+
+            if (workerTrainingSession == null)
+            {
+                return NotFound("WorkerTrainingSession not found.");
+            }
+
+            // Aktualizacja danych sesji treningowej
+            trainingSession.Facility = _context.Facilities.FirstOrDefault(f => f.FacilityId == FacilityId)
+                                        ?? throw new InvalidOperationException("Facility not found.");
+            trainingSession.Name = Name;
+            trainingSession.Date = Date;
+            trainingSession.Duration = Duration;
+            trainingSession.GroupCapacity = GroupCapacity;
+
+            // Aktualizacja przypisanego trenera
+            workerTrainingSession.AssignedWorker = _context.Workers
+                .Include(w => w.AssignedWorkerFunction) // Ładowanie funkcji przypisanego pracownika
+                .FirstOrDefault(w => w.WorkerId == TrainerId)
+                ?? throw new InvalidOperationException("Trainer not found.");
+
+            // Zapisz zmiany w bazie danych
+            _context.SaveChanges();
+
+            // Przekierowanie po zapisaniu zmian
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDeleteWorkerTrainingSession(int sessionid, int workerid)
+        {
+            var workerTrainingSession = _context.WorkerTrainingSessions
+                .FirstOrDefault(wts => wts.SessionId == sessionid && wts.AssignedWorkerId == workerid);
+
+            if (workerTrainingSession != null)
+            {
+                _context.WorkerTrainingSessions.Remove(workerTrainingSession);
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage(); // Przekierowanie po usunięciu
         }
 
     }
