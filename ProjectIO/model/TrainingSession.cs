@@ -22,7 +22,7 @@ namespace ProjectIO.model
 
         [Required]
         public int Duration { get; set; }
-
+    
         [Required]
         public int GroupCapacity { get; set; }
 
