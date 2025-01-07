@@ -11,6 +11,9 @@ namespace ProjectIO.model
         [Key]
         public int UserId { get; set; }
 
+        [Required]
+        public bool MarketingConsent { get; set; } = false;
+
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

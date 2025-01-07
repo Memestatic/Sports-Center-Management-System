@@ -39,7 +39,6 @@
                 </div>
             </div>
         </div>
- 
     </div>
 
     <div class="row mt-4">
@@ -54,6 +53,31 @@
             </div>
         </div>
 
+        <!-- Marketing Consent -->
+        <div class="col-md-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Marketing Preferences</h5>
+                    <p class="card-text">Manage your marketing communication preferences.</p>
+                    <form method="post" class="text-left">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="MarketingConsent"
+                                   name="MarketingConsent"
+                                   value="true"
+                            @(Model.MarketingConsent ? "checked" : "")>
+                            <label class="form-check-label" for="MarketingConsent">
+                                I agree to receive marketing messages.
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Save Preferences</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
         <!-- Help -->
         <div class="col-md-4 d-flex align-items-stretch">
             <div class="card w-100">
@@ -64,7 +88,9 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <div class="row mt-4">
         <!-- Logout -->
         <div class="col-md-4 d-flex align-items-stretch">
             <div class="card w-100">
@@ -77,5 +103,3 @@
         </div>
     </div>
 </div>
-
-
