@@ -42,6 +42,8 @@ namespace ProjectIO.Pages
         [BindProperty(SupportsGet = true)] public string? SelectedCenterName { get; set; }
         [BindProperty(SupportsGet = true)] public int? SelectedObjectId { get; set; }
 
+        public List<string> TakenSlots { get; set; } = new List<string>();
+
         public Facility selectedObject { get; set; }
 
         public string? SelectedObjectName { get; set; }
@@ -73,6 +75,7 @@ namespace ProjectIO.Pages
 
         public void OnPostChangeFormState(int? centerId, int? objectId, string selectedDay, int selectedHour)
         {
+            InitializeData(centerId, objectId, "workerSession");
             TempData["SelectedDay"] = selectedDay;
             TempData["SelectedHour"] = selectedHour;
             TempData["IsAddFormVisible"] = "Adding";
@@ -102,18 +105,86 @@ namespace ProjectIO.Pages
             // Pobierz dane powiązane z wybraną datą
             var date = DateTime.Parse(SelectedDay);
 
-            WorkerTrainingSessionsDay = _context.WorkerTrainingSessions
-                .Include(wts => wts.TrainingSession)         // Ładowanie TrainingSession
-                .Include(wts => wts.TrainingSession.Facility)          // Ładowanie Facility powiązanej z TrainingSession
-                .Where(wts => wts.TrainingSession.Date.Date == date.Date 
-                              && wts.TrainingSession.Facility.FacilityId == objectId) // Filtrowanie po FacilityId
-                .ToList();
+            //WorkerTrainingSessionsDay = _context.WorkerTrainingSessions
+            //    .Include(wts => wts.TrainingSession)         // Ładowanie TrainingSession
+            //    .Include(wts => wts.TrainingSession.Facility)          // Ładowanie Facility powiązanej z TrainingSession
+            //    .Where(wts => wts.TrainingSession.Date.Date == date.Date 
+            //                  && wts.TrainingSession.Facility.FacilityId == objectId) // Filtrowanie po FacilityId
+            //    .ToList();
 
-            // Przypisz godziny rozpoczęcia do listy OccupiedHours
-            OccupiedHours = WorkerTrainingSessionsDay
-                    .Select(wts => wts.TrainingSession.Date.Hour)
-                    .Distinct()
-                    .ToList();
+            //// Przypisz godziny rozpoczęcia do listy OccupiedHours
+            //OccupiedHours = WorkerTrainingSessionsDay
+            //        .Select(wts => wts.TrainingSession.Date.Hour)
+            //        .Distinct()
+            //        .ToList();
+        }
+
+        private void InitializeData(int? centerId, int? objectId, string tab)
+        {
+            LoadDataForSelectedDate(objectId);
+
+            SportsCenters = _context.SportsCenters.ToList();
+            Facilities = _context.Facilities.ToList();
+            FacilityTypes = _context.FacilityTypes.ToList();
+            Users = _context.Users.ToList();
+            Workers = _context.Workers.ToList();
+            Reservations = _context.Reservations.ToList();
+            WorkerFunctions = _context.WorkerFunctions.ToList();
+            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
+            SelectedCenterId = centerId;
+            SelectedObjectId = objectId;
+            ActiveTab = "workerSession";
+
+            // Obs�uga wybranego dnia
+            if (!string.IsNullOrEmpty(SelectedDay) && SelectedObjectId.HasValue)
+            {
+                DateTime selectedDate;
+                if (DateTime.TryParse(SelectedDay, out selectedDate))
+                {
+                    foreach (var reservation in Reservations)
+                    {
+                        if (reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId == SelectedCenterId &&
+                            reservation.ReservationFacility.FacilityId == SelectedObjectId &&
+                            reservation.ReservationDate.Date == selectedDate.Date &&
+                            reservation.CurrentStatus == Status.Approved)
+                        {
+                            string slot = $"{reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId} {reservation.ReservationFacility.FacilityId} {reservation.ReservationDate:yyyy-MM-dd HH} U";
+                            if (!TakenSlots.Contains(slot))
+                            {
+                                TakenSlots.Add(slot);
+                            }
+                        }
+                    }
+
+                    foreach (var session in TrainingSessions)
+                    {
+                        if (session.Facility.FacilitySportsCenter.SportsCenterId == SelectedCenterId &&
+                            session.Facility.FacilityId == SelectedObjectId &&
+                            session.Date.Date == selectedDate.Date)
+                        {
+                            string slot = $"{session.Facility.FacilitySportsCenter.SportsCenterId} {session.Facility.FacilityId} {session.Date:yyyy-MM-dd HH} W";
+                            if (!TakenSlots.Contains(slot))
+                            {
+                                TakenSlots.Add(slot);
+                            }
+                        }
+                    }
+
+                    // Dodaj przesz�e godziny dla bie��cego dnia jako "zaj�te"
+                    if (selectedDate.Date == DateTime.Now.Date)
+                    {
+                        for (int pastHour = 0; pastHour < DateTime.Now.Hour; pastHour++)
+                        {
+                            string pastSlot = $"{SelectedCenterId} {SelectedObjectId} {selectedDate:yyyy-MM-dd} {pastHour:00} T";
+                            if (!TakenSlots.Contains(pastSlot))
+                            {
+                                TakenSlots.Add(pastSlot);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void OnPostChangeDate(string selectedDay, int selectedCenterId, int? selectedObjectId)
@@ -121,16 +192,19 @@ namespace ProjectIO.Pages
             PlaceholderMessage = null; // Resetuj placeholder
 
             SelectedDay = selectedDay;
-            SelectedCenterId = selectedCenterId;
-            SelectedObjectId = selectedObjectId;
-            ActiveTab = "workerSession";
+
+            InitializeData(selectedCenterId, selectedObjectId, "workerSession");
 
             // Załaduj dane dla wybranej daty
             LoadDataForSelectedDate(selectedObjectId);
+
+            
         }
 
         public IActionResult OnPostEditFormState(int? centerId, int? objectId, string selectedDay, int selectedHour)
         {
+            InitializeData(centerId, objectId, "workerSession");
+
             SelectedDay = selectedDay;
             SelectedHour = selectedHour;
             var parsedDate = DateTime.Parse(SelectedDay); // Parsuj SelectedDay na obiekt DateTime

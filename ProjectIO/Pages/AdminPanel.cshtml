@@ -737,19 +737,26 @@
                         <ul class="list-group">
                             @for (int hour = 9; hour <= 20; hour++)
                             {
-                                bool isTaken = Model.OccupiedHours.Contains(hour);
+                               @*  bool isTaken = Model.OccupiedHours.Contains(hour);
 
                                 DateTime selectedDate = DateTime.Parse(Model.SelectedDay);
                                 DateTime currentDate = DateTime.Now.Date;
 
                                 bool isPastDate = selectedDate < currentDate;
                                 bool isToday = selectedDate == currentDate;
-                                bool isPastHour = isToday && hour <= DateTime.Now.Hour;
+                                bool isPastHour = isToday && hour <= DateTime.Now.Hour; *@
+
+                                    var slotKeyByUser = $"{Model.SelectedCenterId} {Model.SelectedObjectId} {Model.SelectedDay} {hour:00} U";
+                                    var slotKeyByWorker = $"{Model.SelectedCenterId} {Model.SelectedObjectId} {Model.SelectedDay} {hour:00} W";
+                                    bool isTakenByUser = Model.TakenSlots.Contains(slotKeyByUser);
+                                    bool isTakenByWorker = Model.TakenSlots.Contains(slotKeyByWorker);
+                                    // Sprawdzenie, czy godzina jest przeszła w bieżącym dniu
+                                    bool isPastHour = Model.SelectedDay == DateTime.Now.ToString("yyyy-MM-dd") && hour <= DateTime.Now.Hour;
 
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     @hour:00 - @hour:59
                                     <div>
-                                        @if (isTaken)
+                                            @if (isTakenByWorker)
                                         {
                                                 
                                                 
@@ -759,10 +766,14 @@
                                                         <input type="hidden" name="selectedHour" value="@hour" />
                                                         <input type="hidden" name="selectedDay" value="@Model.SelectedDay" />
                                                         <button type="submit" class="btn btn-danger btn-sm">Check</button>
-                                                    </form>
-                                                
+                                                </form>
+
                                             }
-                                        else if (isPastDate || isPastHour)
+                                            else if (isTakenByUser)
+                                            {
+                                                <button class="btn btn-secondary btn-sm" disabled>Taken by User</button>
+                                            }
+                                            else if (isPastHour)
                                         {
                                             <button class="btn btn-secondary btn-sm" disabled>Expired</button>
                                         }
