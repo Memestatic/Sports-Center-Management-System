@@ -25,6 +25,7 @@ namespace ProjectIO.Pages
         public string? SelectedObjectName { get; set; }
 
         public List<Reservation> Reservations { get; set; }
+        public List<TrainingSession> TrainingSessions { get; set; }
 
         public List<string> TakenSlots { get; set; } = new List<string>();
 
@@ -71,8 +72,9 @@ namespace ProjectIO.Pages
             SportsCenters = SportsCenters = _context.SportsCenters.ToList() ?? new List<SportsCenter>();
             Facilities = _context.Facilities.ToList();
             Reservations = _context.Reservations.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
 
-            if(CurrentPerson.GetInstance() != null)
+            if (CurrentPerson.GetInstance() != null)
             {
                 isUserLogged = true;
             }
@@ -130,6 +132,20 @@ namespace ProjectIO.Pages
                             reservation.CurrentStatus == Status.Approved)
                         {
                             string slot = $"{reservation.ReservationFacility.FacilitySportsCenter.SportsCenterId} {reservation.ReservationFacility.FacilityId} {reservation.ReservationDate:yyyy-MM-dd HH}";
+                            if (!TakenSlots.Contains(slot))
+                            {
+                                TakenSlots.Add(slot);
+                            }
+                        }
+                    }
+
+                    foreach (var session in TrainingSessions)
+                    {
+                        if (session.Facility.FacilitySportsCenter.SportsCenterId == SelectedCenterId &&
+                            session.Facility.FacilityId == SelectedObjectId &&
+                            session.Date.Date == selectedDate.Date)
+                        {
+                            string slot = $"{session.Facility.FacilitySportsCenter.SportsCenterId} {session.Facility.FacilityId} {session.Date:yyyy-MM-dd HH}";
                             if (!TakenSlots.Contains(slot))
                             {
                                 TakenSlots.Add(slot);

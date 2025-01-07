@@ -44,7 +44,7 @@ namespace ProjectIO.Pages
             if (worker == null)
             {
                 /// !!! UWAGA - ODKOMENTOWA� ABY DODA� PIERWSZEGO ADMINISTRATORA !!! ///
-                
+
 
                 // Je�li u�ytkownik nie zosta� znaleziony, dodaj nowego pracownika
                 //var passwordHasher = new PasswordHasher<Worker>();
@@ -67,7 +67,7 @@ namespace ProjectIO.Pages
 
                 //// Dodaj komunikat informacyjny
                 //ErrorMessage = "New worker created. Please log in again.";
-                //return Page();
+                return RedirectToPage();
             }
 
             var passwordHasherForVerification = new PasswordHasher<Worker>();
