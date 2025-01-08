@@ -19,15 +19,24 @@ public class ChoosePaymentMethod : PageModel
         _context = context;
     }
     
-    public void OnGet(string orderId)
+    public IActionResult OnGet(string orderId)
     {
         OrderId = orderId;
-        User user = (User)CurrentPerson.GetInstance();
+        int? id = HttpContext.Session.GetInt32("userID");
+            
+        if (id == null)
+        {
+            return RedirectToPage("/Account/Login");
+        }
+        
+        User user = _context.Users.FirstOrDefault(u => u.UserId == id);
+        
         Passes = _context.Passes
             .Where(p => p.PassUser.UserId == user.UserId)
             .Where(p => p.CurrentStatus == Status.Approved)
             .Include(p => p.PassType)
             .ToList();
+        return Page();
     }
 
     public IActionResult OnPostQuickPayment()

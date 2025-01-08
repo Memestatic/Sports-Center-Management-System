@@ -74,7 +74,7 @@ namespace ProjectIO.Pages
             Reservations = _context.Reservations.ToList();
             TrainingSessions = _context.TrainingSessions.ToList();
 
-            if (CurrentPerson.GetInstance() != null)
+            if (HttpContext.Session.GetInt32("userID") != null || HttpContext.Session.GetInt32("workerID") != null)
             {
                 isUserLogged = true;
             }
@@ -171,9 +171,16 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPost()
         {
-            if (CurrentPerson.GetInstance() is Worker)
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
             {
-                return BadRequest("Login into your customer account first");
+                return RedirectToPage("/Account/Login");
+            }
+
+            if (HttpContext.Session.GetInt32("workerID") != null)
+            {
+                return BadRequest("Login into your client account first");
             }
 
             if (!DateTime.TryParse(
@@ -205,7 +212,7 @@ namespace ProjectIO.Pages
                 return BadRequest("Facility not found.");
             }
 
-            var currentPerson = (User)CurrentPerson.GetInstance();
+            var currentPerson = _context.Users.FirstOrDefault(u => u.UserId == id);
             if (currentPerson is not User user)
             {
                 return Unauthorized();

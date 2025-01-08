@@ -26,9 +26,8 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnGet()
         {
-            if (CurrentPerson.GetInstance() != null)
+            if (HttpContext.Session.GetInt32("UserId") != null)
             {
-                // Je�li u�ytkownik jest ju� zalogowany, przekieruj go do panelu klienta
                 return RedirectToPage("/Account/ClientPanel");
             }
 
@@ -65,9 +64,12 @@ namespace ProjectIO.Pages.Account
                 ModelState.AddModelError("Input.Password", "The Password is incorrect.");
                 return Page();
             }
-
-            CurrentPerson.SetInstance(user); // Ustawienie zalogowanego u�ytkownika
-
+            
+            HttpContext.Session.SetInt32("userID", user.UserId);
+            /*if (HttpContext.Session.GetInt32("workerID") != null)
+            {
+                HttpContext.Session.Remove("workerID");
+            }*/
             return RedirectToPage("/Account/ClientPanel");
         }
     }

@@ -20,7 +20,9 @@ public class BuyPass : PageModel
     
     public IActionResult OnGet()
     {
-        if (CurrentPerson.GetInstance() == null)
+        int? id = HttpContext.Session.GetInt32("userID");
+            
+        if (id == null)
         {
             return RedirectToPage("/Account/Login");
         }
@@ -31,9 +33,15 @@ public class BuyPass : PageModel
 
     public IActionResult OnPost()
     {
-        User user = (User)CurrentPerson.GetInstance();
+        int? id = HttpContext.Session.GetInt32("userID");
+            
+        if (id == null)
+        {
+            return RedirectToPage("/Account/Login");
+        }
+        
+        User user = _context.Users.FirstOrDefault(u => u.UserId == id);
         PassType Chosen = _context.PassTypes.FirstOrDefault(p => p.PassTypeId == PassTypeId);
-        _context.Attach(user);
         Pass UserPass = new Pass()
         {
             PassUser = user,

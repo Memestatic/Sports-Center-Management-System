@@ -99,7 +99,7 @@
                                     {
                                         <span class="badge bg-success me-2">Available</span>
 
-                                        @if (Model.isUserLogged && CurrentPerson.GetInstance() is not Worker)
+                                        @if (Model.isUserLogged && HttpContext.Session.GetInt32("workerID") == null)
                                         {
                                             <form method="post" class="d-flex align-items-center">
                                                 <input type="hidden" name="SelectedDay" value="@Model.SelectedDay" />
@@ -153,7 +153,8 @@
 </div>
 
 <script>
-    AssignedAssignedWorkerFunction selectDay(input) {
+    AssignedAssignedWorkerFunction selectDay(input) 
+    {
         
         // Odczytaj wybraną datę
         const selectedDate = input.value;

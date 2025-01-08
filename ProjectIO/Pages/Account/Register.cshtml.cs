@@ -20,9 +20,10 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnGet()
         {
-            if (CurrentPerson.GetInstance() != null)
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id != null)
             {
-                // Jeśli użytkownik jest już zalogowany, przekieruj go do panelu klienta
                 return RedirectToPage("/Account/ClientPanel");
             }
             return Page();

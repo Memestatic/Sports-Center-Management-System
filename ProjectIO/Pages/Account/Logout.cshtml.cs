@@ -8,16 +8,21 @@ namespace ProjectIO.Pages.Account
     {
         public IActionResult OnGet()
         {
-            if (CurrentPerson.GetInstance() == null)
+            if (HttpContext.Session.GetInt32("workerID") != null)
             {
-                return RedirectToPage("/Index"); // Strona g³ówna
+                HttpContext.Session.Remove("workerID");
+                return RedirectToPage("/Index");
             }
-
-            // Usuniêcie instancji u¿ytkownika
-            CurrentPerson.EndInstance();
-
-            // Przekierowanie na stronê g³ówn¹ lub logowania
-            return RedirectToPage("/Index"); // Strona g³ówna
+            else if (HttpContext.Session.GetInt32("userID") == null)
+            {
+                HttpContext.Session.Remove("userID");
+                return RedirectToPage("/Index");
+            }
+            else
+            {
+                return RedirectToPage("/Index");
+            }
+            
         }
     }
 }

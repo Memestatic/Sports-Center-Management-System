@@ -24,17 +24,19 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnGet()
         {
-            if (CurrentPerson.GetInstance() == null)
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
             {
                 return RedirectToPage("/Account/Login");
             }
 
-            if (CurrentPerson.GetInstance() is Worker)
+            if (HttpContext.Session.GetInt32("workerID") != null)
             {
                 return BadRequest("Login into your customer account first");
             }
 
-            currentUser = (User)CurrentPerson.GetInstance();
+            currentUser = _context.Users.FirstOrDefault(u => u.UserId == id);
 
             reservations = _context.Reservations
                 .Include(r => r.ReservationFacility) // �aduje obiekt ReservationFacility

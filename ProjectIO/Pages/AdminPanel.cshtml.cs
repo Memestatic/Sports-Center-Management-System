@@ -54,12 +54,27 @@ namespace ProjectIO.Pages
 
         public List<int> OccupiedHours { get; set; } = new List<int>();
 
-        public Worker perms = CurrentPerson.GetInstance() as Worker;
+        [BindProperty]
+        public Worker perms { get; set; }
 
         private readonly SportCenterContext _context;
+        
+       
+
+        public bool redirect;
         public AdminPanel(SportCenterContext context)
         {
             _context = context;
+            int? id = HttpContext.Session.GetInt32("workerID");
+            if (id != null)
+            {
+                perms = _context.Workers.FirstOrDefault(w => w.WorkerId == id);
+                redirect = false;
+            }
+            else
+            {
+                redirect = true;
+            }
         }
 
         public TrainingSession EditingSession { get; set; }
@@ -247,16 +262,16 @@ namespace ProjectIO.Pages
 
         public IActionResult OnGet(int? centerId, int? objectId, string tab)
         {
+            if (redirect)
+            {
+                return Redirect("/WorkLogin");
+            }
+            
             SelectedDay = SelectedDay ?? DateTime.Now.ToString("yyyy-MM-dd");
             LoadDataForSelectedDate(objectId);
+            
 
-
-            if (CurrentPerson.GetInstance() == null)
-            {
-                return RedirectToPage("/WorkLogin");
-            }
-
-            if (CurrentPerson.GetInstance() is User)
+            if (HttpContext.Session.GetInt32("userID") != null)
             {
                 return BadRequest("Login into your worker account first");
             }

@@ -18,13 +18,16 @@ namespace ProjectIO.Pages.Account
             _context = context;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            if(CurrentPerson.GetInstance().Equals(null))
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
             {
-                Response.Redirect("/Login");
+                return RedirectToPage("/Account/Login");
             }
-            User user = (User)CurrentPerson.GetInstance();
+        
+            User user = _context.Users.FirstOrDefault(u => u.UserId == id);
 
             Input = new UpdateInputModel
             {
@@ -33,23 +36,32 @@ namespace ProjectIO.Pages.Account
                 PhoneNumber = user.PhoneNumber,
                 DeclaredGender = user.DeclaredGender
             };
-
+            return Page();
         }
 
         public IActionResult OnPost()
         {
+            
+
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
+            {
+                return RedirectToPage("/Account/Login");
+            }
+            
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
-            User user = (User)CurrentPerson.GetInstance();
+        
+            User user = _context.Users.FirstOrDefault(u => u.UserId == id);
+            
             user.Name = Input.Name;
             user.Surname = Input.Surname;
             user.PhoneNumber = Input.PhoneNumber;
             user.DeclaredGender = Input.DeclaredGender;
-
-            _context.Attach(user).State = EntityState.Modified;
+            
             _context.SaveChanges();
 
             return RedirectToPage("/Account/ClientPanel");

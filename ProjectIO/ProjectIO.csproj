@@ -21,4 +21,10 @@
     <None Include="wwwroot\assets\heroimage.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="LaunchApp\obj\LaunchApp.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="LaunchApp\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="LaunchApp\obj\project.packagespec.json" />
+  </ItemGroup>
+
 </Project>

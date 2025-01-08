@@ -21,20 +21,23 @@ namespace ProjectIO.Pages.Account
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (CurrentPerson.GetInstance() == null)
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
             {
                 return RedirectToPage("/Account/Login");
             }
-            else if (CurrentPerson.GetInstance() is Worker)
+            
+            if (HttpContext.Session.GetInt32("workerID")!= null)
             {
                 return BadRequest("Login into your client account first");
             }
 
-            var user = CurrentPerson.GetInstance() as User;
+            var user = _context.Users.FirstOrDefault(u => u.UserId == id);
 
             var userId = user.UserId;
 
-            // Pobieranie karnetów u¿ytkownika
+            // Pobieranie karnetï¿½w uï¿½ytkownika
             UserPasses = await _context.Passes
                 .Include(p => p.PassType)
                 .Where(p => p.PassUser.UserId == userId)
@@ -53,7 +56,7 @@ namespace ProjectIO.Pages.Account
             var pass = await _context.Passes.FindAsync(passId);
             if (pass != null)
             {
-                // Odrzuæ karnet
+                // Odrzuï¿½ karnet
                 _context.Passes.Remove(pass);
                 await _context.SaveChangesAsync();
             }

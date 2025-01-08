@@ -11,6 +11,7 @@ namespace ProjectIO.Pages.Account
         {
             _context = context;
         }
+        [BindProperty]
         public User CurrentUser { get; set; }
 
         [BindProperty]
@@ -18,51 +19,39 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnGet()
         {
-            var currentUser = CurrentPerson.GetInstance();
-            if (currentUser == null)
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
             {
                 return RedirectToPage("/Account/Login");
             }
-
-            if (currentUser is Worker)
-            {
-                return BadRequest("Login into your customer account first");
-            }
-
-            CurrentUser = currentUser as User;
-
-            // Pobierz wartoœæ zgody marketingowej z bazy danych
-            var userFromDb = _context.Users.FirstOrDefault(u => u.UserId == CurrentUser.UserId);
-            if (userFromDb != null)
-            {
-                MarketingConsent = userFromDb.MarketingConsent; // Pobierz aktualn¹ wartoœæ
-            }
-
+            
+            CurrentUser = _context.Users.FirstOrDefault(u => u.UserId == id);
+            
+            MarketingConsent = CurrentUser.MarketingConsent; // Pobierz aktualnï¿½ wartoï¿½ï¿½
+            
+            
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            var currentUser = CurrentPerson.GetInstance();
-            if (currentUser == null)
+            int? id = HttpContext.Session.GetInt32("userID");
+            
+            if (id == null)
             {
                 return RedirectToPage("/Account/Login");
             }
+            
+            var currentUser = _context.Users.FirstOrDefault(u => u.UserId == id);
 
             if (currentUser is Worker)
             {
                 return BadRequest("Login into your customer account first");
             }
-
-            CurrentUser = currentUser as User;
-
-            // Aktualizuj zgodê marketingow¹
-            var userFromDb = _context.Users.FirstOrDefault(u => u.UserId == CurrentUser.UserId);
-            if (userFromDb != null)
-            {
-                userFromDb.MarketingConsent = MarketingConsent; // Aktualizacja zgody
-                _context.SaveChanges(); // Zapisz zmiany w bazie danych
-            }
+            
+            currentUser.MarketingConsent = MarketingConsent; // Aktualizacja zgody
+            _context.SaveChanges(); // Zapisz zmiany w bazie danych
 
             return RedirectToPage("/Account/ClientPanel");
         }
