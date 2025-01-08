@@ -415,7 +415,7 @@ namespace ProjectIO.Pages
         }
 
         //FACILITY/SPORTSOBJECT/////////////////////////////////////////////////////////////
-        public IActionResult OnPostAddF(string FacilityName, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
+        public IActionResult OnPostAddF(string FacilityName, double Price, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
         {
             //Znalezienie SportsCenter na podstawie nazwy
             var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == Name);
@@ -450,7 +450,8 @@ namespace ProjectIO.Pages
                 IsEquipment = IsEquipment,
                 PromoStart = PromoStart,
                 PromoEnd = PromoEnd,
-                PromoRate = PromoRate
+                PromoRate = PromoRate,
+                Price = Price
             };
 
             // Dodanie nowego Facility do bazy danych
@@ -473,7 +474,7 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
 
-        public IActionResult OnPostEditF(int id, string FacilityName, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
+        public IActionResult OnPostEditF(int id, double Price, string FacilityName, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
         {
             var fac = _context.Facilities
                               .Include(f => f.FacilitySportsCenter)
@@ -490,6 +491,7 @@ namespace ProjectIO.Pages
                 fac.PromoStart = PromoStart;
                 fac.PromoEnd = PromoEnd;
                 fac.PromoRate = PromoRate;
+                fac.Price = Price;
                 _context.SaveChanges();
             }
 
@@ -654,7 +656,6 @@ namespace ProjectIO.Pages
                 Facility = facility,
                 Name = Name,
                 Date = Date,
-                Duration = Duration,
                 GroupCapacity = GroupCapacity
             };
             // Utwórz nową sesję treningową
@@ -706,7 +707,6 @@ namespace ProjectIO.Pages
                                         ?? throw new InvalidOperationException("Facility not found.");
             trainingSession.Name = Name;
             trainingSession.Date = Date;
-            trainingSession.Duration = Duration;
             trainingSession.GroupCapacity = GroupCapacity;
 
             // Aktualizacja przypisanego trenera
