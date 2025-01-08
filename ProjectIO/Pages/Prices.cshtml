@@ -1,0 +1,58 @@
+﻿@page
+@model ProjectIO.Pages.PricesModel
+@{
+    ViewData["Title"] = "Price List";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Price List</h1>
+
+    @foreach (var center in Model.SportsCenters)
+    {
+        if (center.Facilities.Any())
+        {
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8">
+                    <h2 class="text-center">@center.Name</h2>
+                    <table class="table table-striped table-bordered text-center small">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Facility</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var facility in Model.Facilities.Where(f => f.FacilitySportsCenter.SportsCenterId == center.SportsCenterId))
+                            {
+                                <tr>
+                                    <td>@facility.FacilityName</td>
+                                    <td>
+                                        @{
+                                            var now = DateTime.Now;
+                                            if (now >= facility.PromoStart && now <= facility.PromoEnd)
+                                            {
+                                                var discountedPrice = facility.Price - (facility.Price * facility.PromoRate / 100);
+                                                <span class="text-muted text-decoration-line-through me-2">
+                                                    @facility.Price.ToString("C", new System.Globalization.CultureInfo("pl-PL"))
+                                                </span>
+                                                <span class="fw-bold text-success">
+                                                    @discountedPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                @facility.Price.ToString("C", new System.Globalization.CultureInfo("pl-PL"))
+                                                ;
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+    }
+</div>

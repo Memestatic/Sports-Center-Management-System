@@ -58,13 +58,16 @@ namespace ProjectIO.Pages
         public Worker perms { get; set; }
 
         private readonly SportCenterContext _context;
-        
-       
+
+        private readonly IConfiguration _configuration;
+
+
 
         public bool redirect;
-        public AdminPanel(SportCenterContext context)
+        public AdminPanel(SportCenterContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public TrainingSession EditingSession { get; set; }
@@ -457,6 +460,13 @@ namespace ProjectIO.Pages
             _context.Facilities.Add(facility);
             _context.SaveChanges();
 
+            var now = DateTime.Now;
+            if (now >= PromoStart && now <= PromoEnd)
+            {
+                Marketing marketing = new Marketing(this._context, this._configuration);
+                marketing.SendMarketingEmails(facility);
+            }
+
             // Przekierowanie po udanej operacji
             return RedirectToPage();
         }
@@ -491,6 +501,13 @@ namespace ProjectIO.Pages
                 fac.PromoEnd = PromoEnd;
                 fac.PromoRate = PromoRate;
                 _context.SaveChanges();
+
+                var now = DateTime.Now;
+                if (now >= PromoStart && now <= PromoEnd)
+                {
+                    Marketing marketing = new Marketing(this._context, this._configuration);
+                    marketing.SendMarketingEmails(fac);
+                }
             }
 
             return RedirectToPage();
@@ -654,7 +671,6 @@ namespace ProjectIO.Pages
                 Facility = facility,
                 Name = Name,
                 Date = Date,
-                Duration = Duration,
                 GroupCapacity = GroupCapacity
             };
             // Utwórz nową sesję treningową
@@ -706,7 +722,6 @@ namespace ProjectIO.Pages
                                         ?? throw new InvalidOperationException("Facility not found.");
             trainingSession.Name = Name;
             trainingSession.Date = Date;
-            trainingSession.Duration = Duration;
             trainingSession.GroupCapacity = GroupCapacity;
 
             // Aktualizacja przypisanego trenera

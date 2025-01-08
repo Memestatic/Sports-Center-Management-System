@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using ProjectIO.model;
+using System.Data;
 
 namespace ProjectIO.Pages
 {
@@ -20,6 +21,9 @@ namespace ProjectIO.Pages
         [BindProperty]
         public string OrderId { get; set; }
 
+        [BindProperty]
+        public double ReservationPrice { get; set; }
+
         private readonly SportCenterContext _context;
 
         public PaymentModel(SportCenterContext context)
@@ -30,7 +34,14 @@ namespace ProjectIO.Pages
         {
             OrderId = orderId;
 
-
+            if (OrderId.StartsWith('r'))
+            {
+                var reservationId = int.Parse(orderId.Substring(1));
+                var reservation = _context.Reservations
+                    .Include(r => r.ReservationFacility)
+                    .FirstOrDefault(r => r.ReservationId == reservationId);
+                ReservationPrice = reservation.ReservationFacility.Price - (reservation.ReservationFacility.Price * reservation.ReservationFacility.PromoRate / 100);
+            }
         }
 
         public IActionResult OnPost()
@@ -59,6 +70,7 @@ namespace ProjectIO.Pages
                                 && r.ReservationFacility.FacilityId == reservation.ReservationFacility.FacilityId
                                 && r.ReservationId != reservationId)
                     .ToList();
+
 
                 foreach(var r in toCancel)
                 {
