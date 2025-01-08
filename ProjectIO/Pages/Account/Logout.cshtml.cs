@@ -13,7 +13,7 @@ namespace ProjectIO.Pages.Account
                 HttpContext.Session.Remove("workerID");
                 return RedirectToPage("/Index");
             }
-            else if (HttpContext.Session.GetInt32("userID") == null)
+            else if (HttpContext.Session.GetInt32("userID") != null)
             {
                 HttpContext.Session.Remove("userID");
                 return RedirectToPage("/Index");

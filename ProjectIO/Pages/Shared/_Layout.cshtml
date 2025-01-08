@@ -1,5 +1,7 @@
 ﻿@using System.Net
-@using ProjectIO.model
+@using ProjectIO.model;
+@{
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,32 +41,32 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="/Contact">Contact</a>
                         </li>
-                        @if (true) //zmienic
+                        @if (ViewContext.HttpContext.Session.GetInt32("userID") == null && ViewContext.HttpContext.Session.GetInt32("workerID") == null) // Brak zalogowanego użytkownika
                         {
                             <li class="nav-item">
                                 <a class="nav-link active" href="/Account/Login">Log in</a>
                             </li>
                         }
-                        else
+                        else if (ViewContext.HttpContext.Session.GetInt32("userID") != null) // Zalogowany użytkownik
                         {
-                            var currentUser = @Model.perms;
-                            if (currentUser is User)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="/Account/ClientPanel">Profile</a>
-                                </li>
-                            }
-                            else if (currentUser is Worker)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="/AdminPanel">Admin panel</a>
-                                </li>
-                            }
-
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/Account/ClientPanel">Profile</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link active" href="/Account/Logout">Log out</a>
                             </li>
                         }
+                        else if (ViewContext.HttpContext.Session.GetInt32("workerID") != null) // Zalogowany pracownik
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/AdminPanel">Admin panel</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/Account/Logout">Log out</a>
+                            </li>
+                        }
+
+
                     </ul>
 
                 </div>

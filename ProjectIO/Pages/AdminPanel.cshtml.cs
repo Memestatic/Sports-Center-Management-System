@@ -65,16 +65,6 @@ namespace ProjectIO.Pages
         public AdminPanel(SportCenterContext context)
         {
             _context = context;
-            int? id = HttpContext.Session.GetInt32("workerID");
-            if (id != null)
-            {
-                perms = _context.Workers.FirstOrDefault(w => w.WorkerId == id);
-                redirect = false;
-            }
-            else
-            {
-                redirect = true;
-            }
         }
 
         public TrainingSession EditingSession { get; set; }
@@ -262,6 +252,17 @@ namespace ProjectIO.Pages
 
         public IActionResult OnGet(int? centerId, int? objectId, string tab)
         {
+            int? id = HttpContext.Session.GetInt32("workerID");
+            if (id != null)
+            {
+                perms = _context.Workers.FirstOrDefault(w => w.WorkerId == id);
+                redirect = false;
+            }
+            else
+            {
+                redirect = true;
+            }
+
             if (redirect)
             {
                 return Redirect("/WorkLogin");

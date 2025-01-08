@@ -2,9 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
-using ProjectIO.model;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace ProjectIO.Pages.Account
 {
@@ -26,7 +23,7 @@ namespace ProjectIO.Pages.Account
 
         public IActionResult OnGet()
         {
-            if (HttpContext.Session.GetInt32("UserId") != null)
+            if (HttpContext.Session.GetInt32("userID") != null)
             {
                 return RedirectToPage("/Account/ClientPanel");
             }
