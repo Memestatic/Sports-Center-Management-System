@@ -23,9 +23,6 @@ namespace ProjectIO.model
         [Required]
         public int GroupCapacity { get; set; }
 
-       // [Required]
-       // public int Repeatability { get; set; }
-
 
     }
 

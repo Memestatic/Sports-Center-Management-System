@@ -194,6 +194,10 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label for="promoRate">Cena [zł]:</label>
+                    <input type="number" id="Price" name="Price" class="form-control" required step="0.01" min="0" placeholder="np. 40">
+                </div>
+                <div class="form-group">
                     <label>Przebieralnia:</label>
                     <input class="form-check-input" type="checkbox" id="isChangingRoomAvailable" name="IsChangingRoom" value="true">
                 </div>
@@ -226,8 +230,9 @@
                 <tr>
                     <td>@facility.FacilityId</td>
                     <td>@facility.FacilityName</td>
-                    <td>@facility.FacilityType.TypeName</td> 
+                    <td>@facility.FacilityType.TypeName</td>
                     <td>@facility.FacilitySportsCenter.Name</td>
+                    <td>@facility.Price</td>
                     <td>@facility.IsChangingRoom</td>
                     <td>@facility.IsEquipment</td>
                     <td>@facility.PromoStart</td>
@@ -290,6 +295,10 @@
                                 }
                             </select>
                         </div>
+                            <div class="form-group">
+                                <label for="promoRate">Cena [zł]:</label>
+                                <input type="number" id="Price" name="Price" value="@facility.Price" class="form-control" required step="0.01" min="0" placeholder="np. 40">
+                            </div>
                         <div class="form-group">
                             <label>Przebieralnia:</label>
                             <input class="form-check-input" type="checkbox" id="isChangingRoomAvailable" name="IsChangingRoom" @(facility.IsChangingRoom ? "checked" : "")>
