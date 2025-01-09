@@ -127,28 +127,12 @@ namespace ProjectIO.Pages
             //        .ToList();
         }
 
-        private void InitializeData(int? centerId, int? objectId, string tab)
+        private void updateTakenSlots(string selectedDay)
         {
-            LoadDataForSelectedDate(objectId);
-
-            SportsCenters = _context.SportsCenters.ToList();
-            Facilities = _context.Facilities.ToList();
-            FacilityTypes = _context.FacilityTypes.ToList();
-            Users = _context.Users.ToList();
-            Workers = _context.Workers.ToList();
-            Reservations = _context.Reservations.ToList();
-            WorkerFunctions = _context.WorkerFunctions.ToList();
-            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
-            TrainingSessions = _context.TrainingSessions.ToList();
-            SelectedCenterId = centerId;
-            SelectedObjectId = objectId;
-            ActiveTab = "workerSession";
-
-            // Obs�uga wybranego dnia
-            if (!string.IsNullOrEmpty(SelectedDay) && SelectedObjectId.HasValue)
+            if (!string.IsNullOrEmpty(selectedDay) && SelectedObjectId.HasValue)
             {
                 DateTime selectedDate;
-                if (DateTime.TryParse(SelectedDay, out selectedDate))
+                if (DateTime.TryParse(selectedDay, out selectedDate))
                 {
                     foreach (var reservation in Reservations)
                     {
@@ -193,6 +177,29 @@ namespace ProjectIO.Pages
                     }
                 }
             }
+        }
+
+        private void InitializeData(int? centerId, int? objectId, string tab)
+        {
+            LoadDataForSelectedDate(objectId);
+
+            SportsCenters = _context.SportsCenters.ToList();
+            Facilities = _context.Facilities.ToList();
+            FacilityTypes = _context.FacilityTypes.ToList();
+            Users = _context.Users.ToList();
+            Workers = _context.Workers.ToList();
+            Reservations = _context.Reservations.ToList();
+            WorkerFunctions = _context.WorkerFunctions.ToList();
+            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
+            SelectedCenterId = centerId;
+            SelectedObjectId = objectId;
+            ActiveTab = "workerSession";
+
+            // Obs�uga wybranego dnia
+            updateTakenSlots(SelectedDay);
+
+
         }
 
         public void OnPostChangeDate(string selectedDay, int selectedCenterId, int? selectedObjectId)
@@ -255,6 +262,7 @@ namespace ProjectIO.Pages
 
         public IActionResult OnGet(int? centerId, int? objectId, string tab)
         {
+
             int? id = HttpContext.Session.GetInt32("workerID");
             if (id != null)
             {
@@ -303,7 +311,10 @@ namespace ProjectIO.Pages
             {
                 ActiveTab = tab;
             }
-
+            if(tab == "workerSession")
+            {
+                InitializeData(centerId, objectId, tab);
+            }
 
             // Obs�uga r�nych zak�adek
             switch (tab)
@@ -337,6 +348,7 @@ namespace ProjectIO.Pages
                     // Workers = _context.Workers.ToList();
                     // Reservations = _context.Reservations.ToList();
                     break;
+                    
             }
 
             // Obs�uga wybranego o�rodka
@@ -539,6 +551,7 @@ namespace ProjectIO.Pages
                 usr.DeclaredGender = PassUserGender;
                 usr.PhoneNumber = PassUserPhone;
                 usr.Email = PassUserEmail;
+                usr.IsActive = true;
 
                 // Sprawdzenie, czy has�o zosta�o podane
                 if (!string.IsNullOrWhiteSpace(PassUserPassword))
@@ -569,7 +582,8 @@ namespace ProjectIO.Pages
                 PhoneNumber = PassUserPhone,
                 Email = PassUserEmail,
                 // Haszowanie has�a
-                Password = passwordHasher.HashPassword(null, PassUserPassword)
+                Password = passwordHasher.HashPassword(null, PassUserPassword),
+                IsActive = true
             };
 
             // Dodanie u�ytkownika do bazy danych
@@ -649,6 +663,63 @@ namespace ProjectIO.Pages
 
             return RedirectToPage();
         }
+
+        public IActionResult OnPostAddReservation(int facilityId, int userId, DateTime reservationDate, string status, bool isChangingRoomReserved, bool isEquipmentReserved)
+        {
+            Enum.TryParse(status, out Status statusS);
+            // Tworzenie nowej rezerwacji
+            var reservation = new Reservation
+            {
+                ReservationFacility = _context.Facilities.Find(facilityId),
+                ReservationUser = _context.Users.Find(userId),
+                ReservationDate = reservationDate,
+                CurrentStatus = statusS,
+                IsChangingRoomReserved = isChangingRoomReserved,
+                IsEquipmentReserved = isEquipmentReserved
+            };
+
+            // Dodanie do bazy danych
+            _context.Reservations.Add(reservation);
+            _context.SaveChanges();
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostEditReservation(int id, int facilityId, int userId, DateTime reservationDate, string status, bool isChangingRoomReserved, bool isEquipmentReserved)
+        {
+            // Pobranie istniejącej rezerwacji
+            var reservation = _context.Reservations.Find(id);
+            Enum.TryParse(status, out Status statusS);
+            if (reservation != null)
+            {
+                reservation.ReservationFacility = _context.Facilities.Find(facilityId);
+                reservation.ReservationUser = _context.Users.Find(userId);
+                reservation.ReservationDate = reservationDate;
+                reservation.CurrentStatus = statusS;
+                reservation.IsChangingRoomReserved = isChangingRoomReserved;
+                reservation.IsEquipmentReserved = isEquipmentReserved;
+
+                // Zapisanie zmian
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDeleteReservation(int id)
+        {
+            // Znalezienie rezerwacji
+            var reservation = _context.Reservations.Find(id);
+            if (reservation != null)
+            {
+                // Usunięcie rezerwacji
+                _context.Reservations.Remove(reservation);
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
+
 
         public IActionResult OnPostAddTrainingSession(int FacilityId, string Name, DateTime Date, int Duration, int GroupCapacity, int TrainerId)
         {
@@ -744,9 +815,20 @@ namespace ProjectIO.Pages
             var workerTrainingSession = _context.WorkerTrainingSessions
                 .FirstOrDefault(wts => wts.SessionId == sessionid && wts.AssignedWorkerId == workerid);
 
+            var TrainingSession = _context.TrainingSessions
+                .FirstOrDefault(wts => wts.TrainingSessionId == sessionid);
+
+
+
             if (workerTrainingSession != null)
             {
                 _context.WorkerTrainingSessions.Remove(workerTrainingSession);
+                _context.SaveChanges();
+            }
+
+            if (TrainingSession != null)
+            {
+                _context.TrainingSessions.Remove(TrainingSession);
                 _context.SaveChanges();
             }
 

@@ -638,29 +638,181 @@
     </div>
     <!---------------------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-reservations" role="tabpanel" aria-labelledby="nav-reservations-tab" tabindex="0">
-        @if (Model.Reservations != null && Model.Reservations.Count > 0)
-        {
-            @foreach (var res in Model.Reservations)
-            {
-                <tr>
-                    <td>@res.ReservationId</td>
-                    <td>@res.ReservationFacility.FacilityId</td>
-                    <td>@res.ReservationUser.UserId</td>
-                    <td>@res.ReservationDate</td>
-                    <td>@res.CurrentStatus</td>
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
-                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
-                    <br>
-                </tr>
-            }
-        }
-        else
-        {
-            <p>Brak danych o rezerwacjach.</p>
-        }
+
+    <!-- ADD NEW RESERVATION FORM -->
+    <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addReservationForm">Add New Reservation</button>
+    <div id="addReservationForm" class="collapse">
+        <form method="post" asp-page-handler="AddReservation">
+                <div class="form-group">
+                    <label>Facility:</label>
+                    <select name="facilityId" class="form-control" required>
+                        <option value="">Select Facility</option>
+                        @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                        {
+                            @foreach (var facility in Model.Facilities)
+                            {
+                                <option value="@facility.FacilityId">@facility.FacilityName (@facility.FacilityId)</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>User:</label>
+                    <select name="userId" class="form-control" required>
+                        <option value="">Select User</option>
+                        @if (Model.Users != null && Model.Users.Count > 0)
+                        {
+                            @foreach (var user in Model.Users)
+                            {
+                                <option value="@user.UserId">@user.Name @user.Surname (@user.UserId)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            <div class="form-group">
+                <label>Reservation Date:</label>
+                <input type="date" name="reservationDate" class="form-control" required />
+            </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <select name="status" class="form-control" required>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Denied">Denied</option>
+                    </select>
+                </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="isChangingRoomReserved" /> Is Changing Room Reserved
+                </label>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="isEquipmentReserved" /> Is Equipment Reserved
+                </label>
+            </div>
+            <button type="submit" class="btn btn-success">Add</button>
+        </form>
     </div>
+    <br>
 
+    <!-- LIST RESERVATIONS -->
+    @if (Model.Reservations != null && Model.Reservations.Count > 0)
+    {
+        @foreach (var res in Model.Reservations)
+        {
+            <tr>
+                <td>@res.ReservationId</td>
+                <td>@res.ReservationFacility.FacilityId</td>
+                <td>@res.ReservationUser.UserId</td>
+                <td>@res.ReservationDate</td>
+                <td>@res.CurrentStatus</td>
 
+                    <!-- DELETE BUTTON -->
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@res.ReservationId">Delete</button>
+
+                    <!-- POPUP CONFIRM MENU -->
+                    <div class="modal fade" id="confirmDeleteModal-@res.ReservationId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel-@res.ReservationId" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel-@res.ReservationId">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this item?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" id="deleteForm-@res.ReservationId" asp-page-handler="DeleteReservation" asp-route-id="@res.ReservationId" style="display:inline;">
+                                        <button type="submit" id="confirmDeleteButton-@res.ReservationId" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- EDIT BUTTON -->
+                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@res.ReservationId">Edit</button>
+
+                <!-- EDIT FORM -->
+                <div id="editForm-@res.ReservationId" class="collapse">
+                    <form method="post" asp-page-handler="EditReservation" asp-route-id="@res.ReservationId">
+                        <div class="form-group">
+                            <label>Facility:</label>
+                            <select name="facilityId" class="form-control" required>
+                                    <option value="res.ReservationFacility?.FacilityId">@res.ReservationFacility.FacilityName</option>
+                                @if (Model.Facilities != null && Model.Facilities.Count > 0)
+                                {
+                                    @foreach (var facility in Model.Facilities)
+                                    {
+                                        <option value="@facility.FacilityId">@facility.FacilityName (@facility.FacilityId)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>User:</label>
+                            <select name="userId" class="form-control" required>
+                                    <option value="res.ReservationUser?.UserId">@res.ReservationUser.Name @res.ReservationUser.Surname </option>
+                                @if (Model.Users != null && Model.Users.Count > 0)
+                                {
+                                    @foreach (var user in Model.Users)
+                                    {
+                                        <option value="@user.UserId">@user.Name @user.Surname (@user.UserId)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Reservation Date:</label>
+                                <input type="datetime-local" name="reservationDate" value="@res.ReservationDate.ToString("yyyy-MM-ddTHH:mm")" class="form-control" required />
+                        </div>
+                            <div class="form-group">
+                                <label for="facilityType">Status:</label>
+                                <select name="status" id="status" value="@res.CurrentStatus.ToString()" class="form-control" required>
+                                    @if (Model.Reservations != null && Model.Reservations.Count > 0)
+                                    {
+                                        <option value="@res.CurrentStatus.ToString()">@res.CurrentStatus.ToString()</option>
+                                        if ("Approved" != @res.CurrentStatus.ToString())
+                                        {
+                                            <option value="Approved">Approved</option>
+                                        }
+                                        if ("Pending" != @res.CurrentStatus.ToString())
+                                        {
+                                            <option value="Pending">Pending</option>
+                                        }
+                                        if ("Denied" != @res.CurrentStatus.ToString())
+                                        {
+                                            <option value="Denied">Denied</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="isChangingRoomReserved" @(res.IsChangingRoomReserved ? "checked" : "") /> Is Changing Room Reserved
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="isEquipmentReserved" @(res.IsEquipmentReserved ? "checked" : "") /> Is Equipment Reserved
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                    </form>
+                </div>
+
+                <br>
+            </tr>
+        }
+    }
+    else
+    {
+        <p>Brak danych o rezerwacjach.</p>
+    }
+</div>
 
 
     <div class="tab-pane fade" id="nav-workerSession" role="tabpanel" aria-labelledby="nav-workerSession-tab" tabindex="0">
