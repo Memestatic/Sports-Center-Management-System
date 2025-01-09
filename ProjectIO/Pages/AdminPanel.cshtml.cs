@@ -418,7 +418,7 @@ namespace ProjectIO.Pages
         }
 
         //FACILITY/SPORTSOBJECT/////////////////////////////////////////////////////////////
-        public IActionResult OnPostAddF(string FacilityName, double Price, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
+        public async Task<IActionResult> OnPostAddF(string FacilityName, double Price, string Name, string TypeName, bool IsChangingRoom, bool IsEquipment, DateTime PromoStart, DateTime PromoEnd, double PromoRate)
         {
             //Znalezienie SportsCenter na podstawie nazwy
             var sportsCenter = _context.SportsCenters.FirstOrDefault(sc => sc.Name == Name);
@@ -465,7 +465,7 @@ namespace ProjectIO.Pages
             if (now >= PromoStart && now <= PromoEnd)
             {
                 Marketing marketing = new Marketing(this._context, this._configuration);
-                marketing.SendMarketingEmails(facility);
+                await marketing.SendMarketingEmails(facility);
             }
 
             // Przekierowanie po udanej operacji

@@ -1,0 +1,36 @@
+﻿@page
+@model ProjectIO.Pages.Account.VerifyModel
+@{
+    ViewData["Title"] = "Account Verification";
+}
+
+<div class="container mt-5 mb-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="mb-0 text-center">@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center">
+                        @if (Model.Message == "Your account has been successfully verified!")
+                        {
+                            <span class="text-success">@Model.Message</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">@Model.Message</span>
+                        }
+                    </p>
+
+                    @if (Model.Message == "Your account has been successfully verified!")
+                    {
+                        <div class="text-center mt-4">
+                            <a href="/Account/Login" class="btn btn-success">Log in to Your Account</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

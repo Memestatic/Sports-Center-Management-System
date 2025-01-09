@@ -14,7 +14,13 @@ namespace ProjectIO.model
         [Required]
         public bool MarketingConsent { get; set; } = false;
 
+        [Required]
+        public bool IsActive { get; set; }
+
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+
+        public ICollection<VerificationToken> VerificationTokens { get; set; } = new List<VerificationToken>();
+
     }
 }
 

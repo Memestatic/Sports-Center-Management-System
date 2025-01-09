@@ -52,6 +52,12 @@ namespace ProjectIO.Pages.Account
                 return Page();
             }
 
+            if (user.IsActive == false)
+            {
+                ModelState.AddModelError("Input.Email", "The Email address is not verified.");
+                return Page();
+            }
+
             var passwordHasher = new PasswordHasher<User>();
 
             var result = passwordHasher.VerifyHashedPassword(user, user.Password, Input.Password);

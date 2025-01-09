@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Net;
 
 namespace ProjectIO.model
 {
@@ -17,7 +18,7 @@ namespace ProjectIO.model
             _context = context;
         }
 
-        public void SendMarketingEmails(Facility facility)
+        public async Task SendMarketingEmails(Facility facility)
         {
             // Pobierz użytkowników ze zgodą marketingową
             var usersWithConsent = _context.Users.Where(u => u.MarketingConsent).ToList();
@@ -64,5 +65,45 @@ namespace ProjectIO.model
                 }
             }
         }
+
+        public async Task SendVerificationEmail(string userName, string email, string verificationUrl)
+        {
+            var emailSettings = _configuration.GetSection("EmailSettings").Get<EmailSettings>();
+
+            try
+            {
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("EVERSPORT", emailSettings.SenderEmail));
+                emailMessage.To.Add(new MailboxAddress(userName, email));
+                emailMessage.Subject = "Confirm Your Registration";
+
+                emailMessage.Body = new TextPart("plain")
+                {
+                    Text = $"Dear User,\n\n" +
+                           $"Thank you for registering at EVERSPORT!\n\n" +
+                           $"Please confirm your account by clicking the link below:\n" +
+                           $"{verificationUrl}\n\n" +
+                           $"Once your account is confirmed, you can start enjoying our premium sports facilities and exclusive offers.\n\n" +
+                           $"If you have any questions, feel free to contact our support team.\n\n" +
+                           $"Thank you for choosing EVERSPORT!\n\n" +
+                           $"Best regards,\n" +
+                           $"The EVERSPORT Team"
+                };
+
+                using var smtp = new SmtpClient();
+                smtp.Connect(emailSettings.SmtpServer, emailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
+                smtp.Authenticate(emailSettings.SenderEmail, emailSettings.Password);
+                await smtp.SendAsync(emailMessage);
+                smtp.Disconnect(true);
+
+                Console.WriteLine($"Verification email sent successfully to {email}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send verification email to {email}: {ex.Message}");
+            }
+        }
+
     }
 }
+

@@ -20,6 +20,8 @@ namespace ProjectIO.model
         public DbSet<WorkerFunction> WorkerFunctions { get; set; }
         public DbSet<WorkerTrainingSession> WorkerTrainingSessions { get; set; }
 
+        public DbSet<VerificationToken> VerificationTokens { get; set; }
+
         //do SQLServer
         public SportCenterContext(DbContextOptions options) : base(options)
         {

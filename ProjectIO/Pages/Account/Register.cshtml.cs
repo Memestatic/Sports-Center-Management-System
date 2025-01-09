@@ -3,16 +3,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectIO.model;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
+using System.Net;
 
 namespace ProjectIO.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SportCenterContext _context;
+        [BindProperty]
+        public List<VerificationToken> VerificationTokens { get; set; }
 
-        public RegisterModel(SportCenterContext context)
+        private readonly SportCenterContext _context;
+        private readonly IConfiguration _configuration;
+
+        public RegisterModel(SportCenterContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -26,6 +33,9 @@ namespace ProjectIO.Pages.Account
             {
                 return RedirectToPage("/Account/ClientPanel");
             }
+
+            this.VerificationTokens = _context.VerificationTokens.ToList();
+
             return Page();
         }
 
@@ -53,7 +63,8 @@ namespace ProjectIO.Pages.Account
                 DeclaredGender = Input.DeclaredGender,
                 PhoneNumber = Input.PhoneNumber,
                 Email = Input.Email,
-                Password = Input.Password
+                Password = Input.Password,
+                IsActive = false
             };
 
             // Hashowanie hasła
@@ -63,8 +74,34 @@ namespace ProjectIO.Pages.Account
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            string token = Guid.NewGuid().ToString();
+
+            // Zapis tokena w bazie
+            VerificationToken verificationToken = new VerificationToken
+            {
+                VerifiedUser = user,
+                Token = token,
+                ExpirationDate = DateTime.UtcNow.AddHours(24) // Token ważny 24 godziny
+            };
+
+            _context.VerificationTokens.Add(verificationToken);
+            await _context.SaveChangesAsync();
+
+            // Wysyłanie e-maila weryfikacyjnego
+            var verificationUrl = Url.Page(
+                "/Account/Verify",
+                null,
+                new { token = token },
+                Request.Scheme);
+
+            var marketing = new Marketing(_context, _configuration);
+            await marketing.SendVerificationEmail(user.Name, user.Email, verificationUrl);
+
+
             return RedirectToPage("/Account/Login"); // Przekierowanie po sukcesie
         }
+
+        
     }
 
 }
