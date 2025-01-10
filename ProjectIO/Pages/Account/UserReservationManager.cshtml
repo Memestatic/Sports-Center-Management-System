@@ -48,7 +48,10 @@
                             </form>
                             <form method="post" asp-page-handler="denyHandler">
                                 <input type="hidden" name="ReservationId" value="@res.ReservationId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Deny</button>
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                @(res.CurrentStatus == Status.Denied ? "disabled" : "")>
+                                    Deny
+                                </button>
                             </form>
                         </td>
                     </tr>

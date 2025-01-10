@@ -58,9 +58,9 @@ namespace ProjectIO.Pages.Account
         public IActionResult OnPostDenyHandler(int reservationId)
         {
             // Znajd� rezerwacj� o podanym ID w bazie danych
-            var reservationToRemove = _context.Reservations.FirstOrDefault(r => r.ReservationId == reservationId);
+            var reservationToDeny = _context.Reservations.FirstOrDefault(r => r.ReservationId == reservationId);
 
-            if (reservationToRemove == null)
+            if (reservationToDeny == null)
             {
                 // Je�li rezerwacja nie istnieje, mo�esz wy�wietli� b��d lub przekierowa�
                 ModelState.AddModelError("", "Reservation not found.");
@@ -68,7 +68,7 @@ namespace ProjectIO.Pages.Account
             }
 
             // Usu� rezerwacj� z bazy danych
-            _context.Reservations.Remove(reservationToRemove);
+            reservationToDeny.CurrentStatus = Status.Denied;
 
             // Zapisz zmiany w bazie danych
             _context.SaveChanges();
