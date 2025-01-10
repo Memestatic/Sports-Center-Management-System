@@ -24,6 +24,7 @@
                     <th>Facility Name</th>
                     <th>Start Date</th>
                     <th>Reservation Status</th>
+                    <th>Cost</th>
                     <th>User Actions</th>
                 </tr>
             </thead>
@@ -36,6 +37,7 @@
                         <td>@res.ReservationFacility.FacilityName</td>
                         <td>@res.ReservationDate</td>
                         <td>@res.CurrentStatus.ToString()</td>
+                        <td>@res.Cost.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
                         <td class="d-flex gap-2">
                             <form method="post" asp-page-handler="payHandler">
                                 <input type="hidden" name="ReservationId" value="@res.ReservationId" />

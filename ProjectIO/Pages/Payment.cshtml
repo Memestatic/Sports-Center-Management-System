@@ -16,7 +16,7 @@
 
                 <div>
                     <p class="lead">Your order number: @Model.OrderId</p>
-                    <p class="lead">Reservation Price: <span class="fw-bold text-success">@Model.ReservationPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</span></p>
+                    <p class="lead">Reservation Price: <span class="fw-bold text-success">@Model.reservation.Cost.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</span></p>
                 </div>
 
                 <form id="paymentForm" method="post">

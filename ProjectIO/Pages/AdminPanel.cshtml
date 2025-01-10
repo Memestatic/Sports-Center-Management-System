@@ -707,6 +707,7 @@
                 <td>@res.ReservationUser.UserId</td>
                 <td>@res.ReservationDate</td>
                 <td>@res.CurrentStatus</td>
+                <td>@res.Cost.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
 
                     <!-- DELETE BUTTON -->
                     <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@res.ReservationId">Delete</button>

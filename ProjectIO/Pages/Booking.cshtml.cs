@@ -229,7 +229,8 @@ namespace ProjectIO.Pages
                 ReservationDate = reservationDate,
                 CurrentStatus = Status.Pending,
                 IsChangingRoomReserved = IsLockroom,
-                IsEquipmentReserved = IsGear
+                IsEquipmentReserved = IsGear,
+                Cost = facility.Price - (facility.Price * facility.PromoRate / 100)
             };
 
             _context.Reservations.Add(reservation);
