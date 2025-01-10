@@ -733,7 +733,7 @@ namespace ProjectIO.Pages
 
             // Pobierz obiekt Worker (trenera) z bazy danych na podstawie TrainerId
             var trainer = _context.Workers
-                .FirstOrDefault(w => w.WorkerId == TrainerId && w.AssignedWorkerFunction.WorkerFunctionId == 2);
+                .FirstOrDefault(w => w.WorkerId == TrainerId && w.AssignedWorkerFunction.WorkerFunctionId == 3);
             if (trainer == null)
             {
                 ModelState.AddModelError("", "Invalid Trainer selected.");
