@@ -29,6 +29,9 @@ namespace ProjectIO.model
         [Required]
         public bool IsEquipmentReserved { get; set; }
 
+        [Required]
+        public double Cost { get; set; }
+
     }
 }
 

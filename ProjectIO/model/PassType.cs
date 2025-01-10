@@ -16,6 +16,8 @@ namespace ProjectIO.model
 
         [Required]
         public int PassTypeDuration { get; set; }
+        [Required]
+        public double Price { get; set; }
     }
 }
 
