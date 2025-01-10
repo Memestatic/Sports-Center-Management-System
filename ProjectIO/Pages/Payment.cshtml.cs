@@ -21,13 +21,16 @@ namespace ProjectIO.Pages
         [BindProperty]
         public string OrderId { get; set; }
 
+        [BindProperty]
+        public double Price { get; set; }
+
         private readonly SportCenterContext _context;
 
         public PaymentModel(SportCenterContext context)
         {
             _context = context;
         }
-        public void OnGet(string orderId)
+        public IActionResult OnGet(string orderId)
         {
             OrderId = orderId;
 
@@ -37,6 +40,30 @@ namespace ProjectIO.Pages
                 this.reservation = _context.Reservations
                     .Include(r => r.ReservationFacility)
                     .FirstOrDefault(r => r.ReservationId == reservationId);
+
+                if (reservation == null)
+                    return RedirectToPage("/Account/ClientPanel");
+
+                this.Price = reservation.Cost;
+
+                return Page();
+            }
+            else if (OrderId.StartsWith('p'))
+            {
+                var passId = int.Parse(OrderId.Substring(1));
+                var pass = _context.Passes
+                    .Include(p => p.PassType)
+                    .FirstOrDefault(p => p.PassId == passId);
+
+                if (reservation == null)
+                    return RedirectToPage("/Account/ClientPanel");
+
+                this.Price = pass.PassType.Price;
+                return Page();
+            }
+            else
+            {
+                return RedirectToPage("/Account/ClientPanel");
             }
         }
 

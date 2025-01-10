@@ -19,7 +19,8 @@
             <thead class="table-dark">
             <tr>
                 <th class="col-3">Pass Name</th> 
-                <th class="col-1">Number of entries</th> 
+                <th class="col-1">Number of entries</th>
+                <th class="col-1">Price</th>
                 <th class="col-1">User Actions</th> 
             </tr>
             </thead>
@@ -29,7 +30,7 @@
                 <tr>
                     <td>@type.PassTypeName</td>
                     <td>@type.PassTypeDuration</td>
-                        
+                        <td>@type.Price.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
                     <td class="d-flex ">
                         <form method="post">
                             <input type="hidden" name="PassTypeId" value="@type.PassTypeId" />
