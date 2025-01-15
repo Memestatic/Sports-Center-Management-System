@@ -6,6 +6,21 @@
 @* <!-- @if (Model.Permissions == 1) {} --> *@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+@if (!string.IsNullOrEmpty(Model.alertMessage))
+{
+    <div class="alert alert-danger text-center" role="alert">
+        @Model.alertMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.confirmMessage))
+{
+    <div class="alert alert-success text-center" role="alert">
+        @Model.confirmMessage
+    </div>
+}
+
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" id="nav-sportscenter-tab" data-bs-toggle="tab" data-bs-target="#nav-sportscenter" type="button" role="tab" aria-controls="nav-sportscenter" aria-selected="false">Sports Center</button>
@@ -13,7 +28,7 @@
         <button class="nav-link" id="nav-users-tab" data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="false">Users</button>
         <button class="nav-link" id="nav-workers-tab" data-bs-toggle="tab" data-bs-target="#nav-workers" type="button" role="tab" aria-controls="nav-workers" aria-selected="false">AssignedWorkers</button>
         <button class="nav-link" id="nav-price-tab" data-bs-toggle="tab" data-bs-target="#nav-price" type="button" role="tab" aria-controls="nav-price" aria-selected="false">Pricing</button>
-        <button class="nav-link" id="nav-promotions-tab" data-bs-toggle="tab" data-bs-target="#nav-promotions" type="button" role="tab" aria-controls="nav-promotions" aria-selected="false">Promotions</button>
+        <button class="nav-link" id="nav-passes-tab" data-bs-toggle="tab" data-bs-target="#nav-passes" type="button" role="tab" aria-controls="nav-passes" aria-selected="false">passes</button>
         <button class="nav-link" id="nav-reservations-tab" data-bs-toggle="tab" data-bs-target="#nav-reservations" type="button" role="tab" aria-controls="nav-reservations" aria-selected="false">Reservations</button>
         <button class="nav-link" id="nav-workerSession-tab" data-bs-toggle="tab" data-bs-target="#nav-workerSession" type="button" role="tab" aria-controls="nav-workerSession" aria-selected="false">Worker Sessions</button>
     </div>
@@ -273,6 +288,11 @@
                         <div class="form-group">
                             <label for="facilityType">Typ Obiektu:</label>
                                 <select name="TypeName" id="facilityType" value="@facility.FacilityType.TypeName" class="form-control" required>
+
+                                    <option value="@facility.FacilityType.TypeId" selected>
+                                        @facility.FacilityType.TypeName
+                                    </option>
+
                                     @if (Model.FacilityTypes != null && Model.FacilityTypes.Count > 0)
                                     {
                                         @foreach (var type in Model.FacilityTypes)
@@ -286,6 +306,11 @@
                         <div class="form-group">
                             <label for="centerName">Nazwa Ośrodka:</label>
                             <select name="Name" id="centerName" value="@facility.FacilitySportsCenter.Name" class="form-control" required>
+
+                                    <option value="@facility.FacilitySportsCenter.SportsCenterId" selected>
+                                        @facility.FacilitySportsCenter.Name
+                                    </option>
+
                                 @if (Model.SportsCenters != null && Model.SportsCenters.Count > 0)
                                 {
                                     @foreach (var center in Model.SportsCenters)
@@ -427,8 +452,16 @@
                             <div class="form-group">
                                 <label>Gender:</label>
                                 <select name="PassUserGender" class="form-control" required>
-                                    <option value="77">Male</option>
-                                    <option value="70">Female</option>
+                                    @if (user.DeclaredGender.ToString() == "Male")
+                                    {
+                                        <option value="77">Male</option>
+                                        <option value="70">Female</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="70">Female</option>
+                                        <option value="77">Male</option>
+                                    }
                                 </select>
                             </div>
                             <div class="form-group">
@@ -557,6 +590,11 @@
                             <div class="form-group">
                                 <label>Function Type:</label>
                                 <select name="workerFunction" class="form-control" required>
+
+                                    <option value="@worker.AssignedWorkerFunction.WorkerFunctionId" selected>
+                                        @worker.AssignedWorkerFunction.WorkerFunctionName
+                                    </option>
+
                                     @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
                                     @if (Model.WorkerFunctions != null && Model.WorkerFunctions.Count > 0)
                                     {
@@ -567,6 +605,9 @@
                                     }
                                 </select>
                             </div>
+
+                            
+
                             <div class="form-group">
                                 <label>Name:</label>
                                 <input type="text" name="workerName" value="@worker.Name" class="form-control" required />
@@ -578,8 +619,16 @@
                             <div class="form-group">
                                 <label>Gender:</label>
                                 <select name="workerGender" class="form-control" required>
-                                    <option value="77">Male</option>
-                                    <option value="70">Female</option>
+                                    @if(worker.DeclaredGender.ToString() == "Male")
+                                    {
+                                        <option value="77">Male</option>
+                                        <option value="70">Female</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="70">Female</option>
+                                        <option value="77">Male</option>
+                                    }
                                 </select>
                             </div>
                             <div class="form-group">
@@ -613,22 +662,166 @@
         Nie ma takiej tabeli w BD
     </div>
     <!---------------------------------------------------------------------------------------------------->
-    <div class="tab-pane fade" id="nav-promotions" role="tabpanel" aria-labelledby="nav-promotions-tab" tabindex="0">
-        @if (Model.Facilities != null && Model.Facilities.Count > 0)
+    <div class="tab-pane fade" id="nav-passes" role="tabpanel" aria-labelledby="nav-passes-tab" tabindex="0">
+
+        <!--ADD NEW RECORD FORM-->
+        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.PassId">Add New Record</button>
+        <div id="addForm-Model.PassId" class="collapse">
+            <form method="post" asp-page-handler="AddPass">
+                <div class="form-group">
+                    <label>Pass Type:</label>
+                    <select name="passType" class="form-control" required>
+                        @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                        @if (Model.PassTypes != null && Model.PassTypes.Count > 0)
+                        {
+                            @foreach (var func in Model.PassTypes)
+                            {
+                                <option value="@func.PassTypeId">@func.PassTypeName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>User:</label>
+                    <select name="selectedUser" class="form-control" required>
+                        @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                        @if (Model.Users != null && Model.Users.Count > 0)
+                        {
+                            @foreach (var user in Model.Users)
+                            {
+                                <option value="@user.UserId">@user.Name @user.Surname</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="PassEntriesLeft">Pass Entries Left:</label>
+                    <input type="number" name="passEntriesLeft" id="passEntriesLeft" class="form-control" min="1" required />
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <select name="statusPass" class="form-control" required>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Denied">Denied</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Add</button>
+            </form>
+        </div>
+
+        @if (Model.Passes != null && Model.Passes.Count > 0)
         {
-            @foreach (var facility in Model.Facilities)
+            @foreach (var pass in Model.Passes)
             {
                 <tr>
-                    <td>@facility.FacilityId</td>
-                    <!--exception nullreference-->
-                    @* <td>@ReservationFacility.FacilityType.TypeName</td> *@
-                    <td>@facility.PromoStart</td>
-                    <td>@facility.PromoEnd</td>
-                    <td>@facility.PromoRate</td>
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init>Delete</button>
-                    <button type="button" class="btn btn-warning" data-mdb-ripple-init>Edit</button>
-                    <br>
+                    <td>@pass.PassId</td>
+                    <td>@pass.PassType</td>
+                    <td>@pass.PassUser.Name</td>
+                    <td>@pass.PassUser.Surname</td>
+                    <td>@pass.PassEntriesLeft</td>
+                    <td>@pass.CurrentStatus</td>
+
+                    <!-- DELETE BUTTON -->
+                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalPass-@pass.PassId">Delete</button>
+
+                    <!-- POPUP CONFIRM MENU -->
+                    <div class="modal fade" id="confirmDeleteModalPass-@pass.PassId" tabindex="-1" aria-labelledby="confirmDeleteModalLabelPass-@pass.PassId" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabelPass-@pass.PassId">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this item?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" id="deleteForm-@pass.PassId" asp-page-handler="DeletePass" asp-route-id="@pass.PassId" style="display:inline;">
+                                        <button type="submit" id="confirmDeleteButtonPass-@pass.PassId" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--EDIT BUTTON-->
+                    <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@pass.PassId">Edit</button>
+
+                    <!--POPUP-EDIT-FORM-->
+                    <div id="editForm-@pass.PassId" class="collapse">
+                        <form method="post" asp-page-handler="EditPass" asp-route-id="@pass.PassId">
+                            <div class="form-group">
+                                <label>Pass Type:</label>
+                                <select name="passType" class="form-control" required>
+
+                                    <option value="@pass.PassType.PassTypeId" selected>
+                                        @pass.PassType.PassTypeName
+                                    </option>
+
+                                    @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                                    @if (Model.PassTypes != null && Model.PassTypes.Count > 0)
+                                    {
+                                        @foreach (var func in Model.PassTypes)
+                                        {
+                                            <option value="@func.PassTypeId">@func.PassTypeName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>User:</label>
+                                <select name="selectedUser" class="form-control" required>
+
+                                    <option value="@pass.PassUser.UserId" selected>
+                                        @pass.PassUser.Name @pass.PassUser.Surname
+                                    </option>
+
+                                    @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                                    @if (Model.Users != null && Model.Users.Count > 0)
+                                    {
+                                        @foreach (var user in Model.Users)
+                                        {
+                                            <option value="@user.UserId">@user.Name @user.Surname</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="PassEntriesLeft">Pass Entries Left:</label>
+                                <input type="number" name="passEntriesLeft" value=@pass.PassEntriesLeft id="passEntriesLeft" class="form-control" min="1" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Status:</label>
+                                <select name="statusPass" value=@pass.CurrentStatus.ToString() class="form-control" required>
+                                    @if (Model.Reservations != null && Model.Reservations.Count > 0)
+                                    {
+                                        <option value="@pass.CurrentStatus.ToString()">@pass.CurrentStatus.ToString()</option>
+                                        if ("Approved" != @pass.CurrentStatus.ToString())
+                                        {
+                                            <option value="Approved">Approved</option>
+                                        }
+                                        if ("Pending" != @pass.CurrentStatus.ToString())
+                                        {
+                                            <option value="Pending">Pending</option>
+                                        }
+                                        if ("Denied" != @pass.CurrentStatus.ToString())
+                                        {
+                                            <option value="Denied">Denied</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-warning">Save Changes</button>
+                        </form>
+                    </div>
+
                 </tr>
+
+                
             }
         }
         else
@@ -669,10 +862,25 @@
                         }
                     </select>
                 </div>
-            <div class="form-group">
-                <label>Reservation Date:</label>
-                <input type="date" name="reservationDate" class="form-control" required />
-            </div>
+                <div class="form-group">
+                    <label>Reservation Date:</label>
+                    <input type="date" name="resDate" id="reservationDateDay" class="form-control" required />
+                    <select id="reservationTime" name="resTime" class="form-control" required>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:00">20:00</option>
+                        <option value="21:00">21:00</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Status:</label>
                     <select name="status" class="form-control" required>

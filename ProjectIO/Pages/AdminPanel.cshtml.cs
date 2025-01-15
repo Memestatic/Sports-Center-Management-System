@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Org.BouncyCastle.Asn1.Esf;
+using Org.BouncyCastle.Ocsp;
 using ProjectIO.model;
 using System.Collections;
 using System.ComponentModel;
@@ -13,6 +14,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProjectIO.Pages
 {
@@ -26,6 +28,10 @@ namespace ProjectIO.Pages
         public List<Worker> Workers { get; set; }
         public List<Reservation> Reservations { get; set; }
         public List<WorkerFunction> WorkerFunctions { get; set; }
+
+        public List<Pass> Passes { get; set; }
+
+        public List<PassType> PassTypes { get; set; }
 
         public List<WorkerTrainingSession> WorkerTrainingSessions { get; set; }
 
@@ -52,6 +58,9 @@ namespace ProjectIO.Pages
         public string MinDate => DateTime.Now.ToString("yyyy-MM-dd");
         public string MaxDate => DateTime.Now.AddDays(30).ToString("yyyy-MM-dd");
 
+        public string alertMessage { get; set; }
+
+        public string confirmMessage { get; set; }
         public List<int> OccupiedHours { get; set; } = new List<int>();
 
         [BindProperty]
@@ -192,6 +201,8 @@ namespace ProjectIO.Pages
             WorkerFunctions = _context.WorkerFunctions.ToList();
             WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
             TrainingSessions = _context.TrainingSessions.ToList();
+            Passes = _context.Passes.ToList();
+            PassTypes = _context.PassTypes.ToList();
             SelectedCenterId = centerId;
             SelectedObjectId = objectId;
             ActiveTab = "workerSession";
@@ -262,7 +273,10 @@ namespace ProjectIO.Pages
 
         public IActionResult OnGet(int? centerId, int? objectId, string tab)
         {
-
+            if (TempData["confirmMessage"] != null)
+            {
+                confirmMessage = TempData["confirmMessage"].ToString();
+            }
             int? id = HttpContext.Session.GetInt32("workerID");
             if (id != null)
             {
@@ -306,6 +320,8 @@ namespace ProjectIO.Pages
             WorkerFunctions = _context.WorkerFunctions.ToList();
             WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
             TrainingSessions = _context.TrainingSessions.ToList();
+            Passes = _context.Passes.ToList();
+            PassTypes = _context.PassTypes.ToList();
 
             if (!string.IsNullOrEmpty(tab))
             {
@@ -335,7 +351,7 @@ namespace ProjectIO.Pages
 
                     break;
                 case "tab6":
-                    Facilities = _context.Facilities.ToList();
+                    Passes = _context.Passes.ToList();
                     break;
                 case "tab7":
                     Reservations = _context.Reservations.ToList();
@@ -391,6 +407,7 @@ namespace ProjectIO.Pages
             {
                 _context.SportsCenters.Remove(sc);
                 _context.SaveChanges();
+                TempData["confirmMessage"] = "Sport Center deleted";
             }
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
@@ -664,15 +681,87 @@ namespace ProjectIO.Pages
             return RedirectToPage();
         }
 
-        public IActionResult OnPostAddReservation(int facilityId, int userId, DateTime reservationDate, string status, bool isChangingRoomReserved, bool isEquipmentReserved)
+        public IActionResult OnPostAddPass(int passType, int selectedUser, int passEntriesLeft, string statusPass)
+        {
+            // Pobierz odpowiedni� funkcj� pracownika
+            var passtypeId = _context.PassTypes.FirstOrDefault(fc => fc.PassTypeId == passType);
+
+            var passUserId = _context.Users.FirstOrDefault(fc => fc.UserId == selectedUser);
+
+            Enum.TryParse(statusPass, out Status statusS);
+
+            // Utw�rz nowego pracownika
+            var pass = new Pass
+            {
+                PassType = passtypeId,
+                PassUser = passUserId,
+                PassEntriesLeft = passEntriesLeft,
+                CurrentStatus = statusS
+            };
+
+            // Dodanie pracownika do bazy danych
+            _context.Passes.Add(pass);
+            _context.SaveChanges();
+
+            return RedirectToPage();
+
+        }
+
+        public IActionResult OnPostEditPass(int id, int passType, int selectedUser, int passEntriesLeft, string statusPass)
+        {
+
+            var pss = _context.Passes.Find(id);
+
+            // Pobierz odpowiedni� funkcj� pracownika
+            var passtypeId = _context.PassTypes.FirstOrDefault(fc => fc.PassTypeId == passType);
+
+            var passUserId = _context.Users.FirstOrDefault(fc => fc.UserId == selectedUser);
+
+            Enum.TryParse(statusPass, out Status statusS);
+
+
+
+            if (pss != null)
+            {
+                pss.PassType = passtypeId;
+                pss.PassUser = passUserId;
+                pss.PassEntriesLeft = passEntriesLeft;
+                pss.CurrentStatus = statusS;
+
+                // Zapis zmian w bazie danych
+                _context.SaveChanges();
+            }
+
+            return RedirectToPage();
+
+        }
+
+        public IActionResult OnPostDeletePass(int id)
+        {
+            var pass = _context.Passes.Find(id);
+            if (pass != null)
+            {
+                _context.Passes.Remove(pass);
+                _context.SaveChanges();
+            }
+            return RedirectToPage(); // Przekierowanie po usuni�ciu
+        }
+
+
+
+        //DateTime reservationDate
+        public IActionResult OnPostAddReservation(int facilityId, int userId, string resDate, string resTime, string status, bool isChangingRoomReserved, bool isEquipmentReserved)
         {
             Enum.TryParse(status, out Status statusS);
+
+            DateTime ReservationDateTime = DateTime.Parse($"{resDate} {resTime}");
+
             // Tworzenie nowej rezerwacji
             var reservation = new Reservation
             {
                 ReservationFacility = _context.Facilities.Find(facilityId),
                 ReservationUser = _context.Users.Find(userId),
-                ReservationDate = reservationDate,
+                ReservationDate = ReservationDateTime,
                 CurrentStatus = statusS,
                 IsChangingRoomReserved = isChangingRoomReserved,
                 IsEquipmentReserved = isEquipmentReserved
@@ -690,6 +779,9 @@ namespace ProjectIO.Pages
             // Pobranie istniejącej rezerwacji
             var reservation = _context.Reservations.Find(id);
             Enum.TryParse(status, out Status statusS);
+
+
+
             if (reservation != null)
             {
                 reservation.ReservationFacility = _context.Facilities.Find(facilityId);
