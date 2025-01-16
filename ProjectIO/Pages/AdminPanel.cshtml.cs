@@ -14,6 +14,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
+using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProjectIO.Pages
@@ -138,7 +139,7 @@ namespace ProjectIO.Pages
 
         private void updateTakenSlots(string selectedDay)
         {
-            if (!string.IsNullOrEmpty(selectedDay) && SelectedObjectId.HasValue)
+            if (!string.IsNullOrEmpty(selectedDay))
             {
                 DateTime selectedDate;
                 if (DateTime.TryParse(selectedDay, out selectedDate))
@@ -276,6 +277,10 @@ namespace ProjectIO.Pages
             if (TempData["confirmMessage"] != null)
             {
                 confirmMessage = TempData["confirmMessage"].ToString();
+            }
+            if (TempData["alertMessage"] != null)
+            {
+                alertMessage = TempData["alertMessage"].ToString();
             }
             int? id = HttpContext.Session.GetInt32("workerID");
             if (id != null)
@@ -423,7 +428,20 @@ namespace ProjectIO.Pages
                 sc.City = City;
                 sc.State = State;
                 sc.ZipCode = ZipCode;
-                _context.SaveChanges();
+
+                try
+                {
+                    _context.SaveChanges();
+                    TempData["confirmMessage"] = "The sports center details have been successfully updated.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while saving changes. Please try again.";
+                }
+            }
+            else
+            {
+                TempData["alertMessage"] = "Sports center not found. Unable to update details.";
             }
 
             return RedirectToPage();
@@ -441,8 +459,17 @@ namespace ProjectIO.Pages
                 ZipCode = ZipCode
             };
 
-            _context.SportsCenters.Add(sc);
-            _context.SaveChanges();
+            try
+            {
+                _context.SportsCenters.Add(sc);
+                _context.SaveChanges();
+                TempData["confirmMessage"] = "The sports center has been successfully added.";
+            }
+            catch (Exception ex)
+            {
+                TempData["alertMessage"] = "An error occurred while adding the sports center. Please try again.";
+            }
+
             return RedirectToPage();
         }
 
@@ -462,6 +489,12 @@ namespace ProjectIO.Pages
             if (facilityType == null)
             {
                 ModelState.AddModelError(string.Empty, "Specified Facility Type not found.");
+                return RedirectToPage();
+            }
+
+            if (PromoEnd <= PromoStart)
+            {
+                TempData["alertMessage"] = "Promotion end date must be later than the start date.";
                 return RedirectToPage();
             }
 
@@ -487,8 +520,17 @@ namespace ProjectIO.Pages
             };
 
             // Dodanie nowego Facility do bazy danych
-            _context.Facilities.Add(facility);
-            _context.SaveChanges();
+            try
+            {
+                // Add the new Facility to the database
+                _context.Facilities.Add(facility);
+                await _context.SaveChangesAsync();
+                TempData["confirmMessage"] = "Facility has been successfully added.";
+            }
+            catch (Exception ex)
+            {
+                TempData["alertMessage"] = "An error occurred while adding the facility. Please try again.";
+            }
 
             var now = DateTime.Now;
             if (now >= PromoStart && now <= PromoEnd)
@@ -509,6 +551,7 @@ namespace ProjectIO.Pages
             {
                 _context.Facilities.Remove(facility); // Usuni�cie obiektu z kontekstu
                 _context.SaveChanges(); // Zapisanie zmian w bazie danych
+                TempData["confirmMessage"] = "Object successfully deleted";
             }
             return RedirectToPage(); // Przekierowanie po usuni�ciu
         }
@@ -519,6 +562,19 @@ namespace ProjectIO.Pages
                               .Include(f => f.FacilitySportsCenter)
                               .Include(f => f.FacilityType)
                               .FirstOrDefault(f => f.FacilityId == id);
+
+            if (fac == null)
+            {
+                TempData["alertMessage"] = "Facility not found.";
+                return RedirectToPage();
+            }
+
+            // Validate promo date range
+            if (PromoEnd <= PromoStart)
+            {
+                TempData["alertMessage"] = "Promotion end date must be later than the start date.";
+                return RedirectToPage();
+            }
 
             if (fac != null)
             {
@@ -531,7 +587,15 @@ namespace ProjectIO.Pages
                 fac.PromoEnd = PromoEnd;
                 fac.PromoRate = PromoRate;
                 fac.Price = Price;
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    TempData["confirmMessage"] = "Facility has been successfully updated.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while updating the facility. Please try again.";
+                }
 
                 var now = DateTime.Now;
                 if (now >= PromoStart && now <= PromoEnd)
@@ -550,20 +614,48 @@ namespace ProjectIO.Pages
             var usr = _context.Users.Find(id);
             if (usr != null)
             {
-                _context.Users.Remove(usr);
-                _context.SaveChanges();
+                try
+                {
+                    _context.Users.Remove(usr);
+                    _context.SaveChanges();
+                    TempData["confirmMessage"] = "User has been successfully deleted.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while deleting the user. Please try again.";
+                }
             }
-            return RedirectToPage(); // Przekierowanie po usuni�ciu
+            else
+            {
+                TempData["alertMessage"] = "User not found.";
+            }
+
+            return RedirectToPage(); // Redirect after deletion
         }
 
         public IActionResult OnPostEditUser(int id, string PassUserName, string PassUserSurName, Gender PassUserGender, string PassUserPhone, string PassUserEmail, string PassUserPassword)
         {
+            if (!Regex.IsMatch(PassUserEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                TempData["alertMessage"] = "Invalid email format.";
+                return RedirectToPage();
+            }
+
+            // Validate phone number format
+            if (!Regex.IsMatch(PassUserPhone, @"^\d{9}$"))
+            {
+                TempData["alertMessage"] = "Phone number must be exactly 9 digits.";
+                return RedirectToPage();
+            }
+
             var usr = _context.Users.Find(id);
 
             if (usr != null)
             {
-                // Aktualizacja danych u�ytkownika
-                usr.Name = PassUserName;
+                try
+                {
+                    // Aktualizacja danych u�ytkownika
+                    usr.Name = PassUserName;
                 usr.Surname = PassUserSurName;
                 usr.DeclaredGender = PassUserGender;
                 usr.PhoneNumber = PassUserPhone;
@@ -578,8 +670,14 @@ namespace ProjectIO.Pages
                     usr.Password = passwordHasher.HashPassword(null, PassUserPassword);
                 }
 
-                // Zapis zmian w bazie danych
-                _context.SaveChanges();
+                    // Save changes to the database
+                    _context.SaveChanges();
+                    TempData["confirmMessage"] = "User details have been successfully updated.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while updating user details. Please try again.";
+                }
             }
 
             return RedirectToPage();
@@ -587,25 +685,46 @@ namespace ProjectIO.Pages
 
         public IActionResult OnPostAddUser(string PassUserName, string PassUserSurName, Gender PassUserGender, string PassUserPhone, string PassUserEmail, string PassUserPassword)
         {
-            // Utw�rz instancj� PasswordHasher
-            var passwordHasher = new PasswordHasher<User>();
-
-            // Tworzenie u�ytkownika
-            var usr = new User
+            if (!Regex.IsMatch(PassUserEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
-                Name = PassUserName,
-                Surname = PassUserSurName,
-                DeclaredGender = PassUserGender,
-                PhoneNumber = PassUserPhone,
-                Email = PassUserEmail,
-                // Haszowanie has�a
-                Password = passwordHasher.HashPassword(null, PassUserPassword),
-                IsActive = true
-            };
+                TempData["alertMessage"] = "Invalid email format.";
+                return RedirectToPage();
+            }
 
-            // Dodanie u�ytkownika do bazy danych
-            _context.Users.Add(usr);
-            _context.SaveChanges();
+            // Validate phone number format
+            if (!Regex.IsMatch(PassUserPhone, @"^\d{9}$"))
+            {
+                TempData["alertMessage"] = "Phone number must be exactly 9 digits.";
+                return RedirectToPage();
+            }
+
+            try
+            {
+                // Create an instance of PasswordHasher
+                var passwordHasher = new PasswordHasher<User>();
+
+                // Create the user
+                var usr = new User
+                {
+                    Name = PassUserName,
+                    Surname = PassUserSurName,
+                    DeclaredGender = PassUserGender,
+                    PhoneNumber = PassUserPhone,
+                    Email = PassUserEmail,
+                    // Hash password
+                    Password = passwordHasher.HashPassword(null, PassUserPassword),
+                    IsActive = true
+                };
+
+                // Add the user to the database
+                _context.Users.Add(usr);
+                _context.SaveChanges();
+                TempData["confirmMessage"] = "User has been successfully added.";
+            }
+            catch (Exception ex)
+            {
+                TempData["alertMessage"] = "An error occurred while adding the user. Please try again.";
+            }
 
             return RedirectToPage();
         }
@@ -616,10 +735,23 @@ namespace ProjectIO.Pages
             var wrk = _context.Workers.Find(id);
             if (wrk != null)
             {
-                _context.Workers.Remove(wrk);
-                _context.SaveChanges();
+                try
+                {
+                    _context.Workers.Remove(wrk);
+                    _context.SaveChanges();
+                    TempData["confirmMessage"] = "Worker has been successfully deleted.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while deleting the worker. Please try again.";
+                }
             }
-            return RedirectToPage(); // Przekierowanie po usuni�ciu
+            else
+            {
+                TempData["alertMessage"] = "Worker not found.";
+            }
+
+            return RedirectToPage(); // Redirect after deletion
         }
 
         public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurName, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
@@ -630,24 +762,48 @@ namespace ProjectIO.Pages
 
             if (wrk != null)
             {
-                // Aktualizacja danych pracownika
-                wrk.AssignedWorkerFunction = functionId;
-                wrk.Name = workerName;
-                wrk.Surname = workerSurName;
-                wrk.DeclaredGender = workerGender;
-                wrk.PhoneNumber = workerPhone;
-                wrk.Email = workerEmail;
 
-                // Sprawdzenie, czy has�o zosta�o podane
-                if (!string.IsNullOrWhiteSpace(workerPassword))
+                // Validate email format
+                if (!Regex.IsMatch(workerEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    // Haszowanie has�a przed zapisem
-                    var passwordHasher = new PasswordHasher<Worker>();
-                    wrk.Password = passwordHasher.HashPassword(null, workerPassword);
+                    TempData["alertMessage"] = "Invalid email format.";
+                    return RedirectToPage();
                 }
 
-                // Zapis zmian w bazie danych
-                _context.SaveChanges();
+                // Validate phone number format
+                if (!Regex.IsMatch(workerPhone, @"^\d{9}$"))
+                {
+                    TempData["alertMessage"] = "Phone number must be exactly 9 digits.";
+                    return RedirectToPage();
+                }
+
+                try
+                {
+
+                    // Aktualizacja danych pracownika
+                    wrk.AssignedWorkerFunction = functionId;
+                    wrk.Name = workerName;
+                    wrk.Surname = workerSurName;
+                    wrk.DeclaredGender = workerGender;
+                    wrk.PhoneNumber = workerPhone;
+                    wrk.Email = workerEmail;
+
+                    // Sprawdzenie, czy has�o zosta�o podane
+                    if (!string.IsNullOrWhiteSpace(workerPassword))
+                    {
+                        // Haszowanie has�a przed zapisem
+                        var passwordHasher = new PasswordHasher<Worker>();
+                        wrk.Password = passwordHasher.HashPassword(null, workerPassword);
+                    }
+
+                        // Zapis zmian w bazie danych
+                        _context.SaveChanges();
+                        TempData["confirmMessage"] = "Worker details have been successfully updated.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while updating worker details. Please try again.";
+                }
             }
 
             return RedirectToPage();
@@ -660,23 +816,43 @@ namespace ProjectIO.Pages
 
             // Utw�rz hasher hase�
             var passwordHasher = new PasswordHasher<Worker>();
-
-            // Utw�rz nowego pracownika
-            var wrk = new Worker
+            if (!Regex.IsMatch(workerEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
-                AssignedWorkerFunction = functionId,
-                Name = workerName,
-                Surname = workerSurName,
-                DeclaredGender = workerGender,
-                PhoneNumber = workerPhone,
-                Email = workerEmail,
-                // Zhashowanie has�a przed zapisem
-                Password = passwordHasher.HashPassword(null, workerPassword)
-            };
+                TempData["alertMessage"] = "Invalid email format.";
+                return RedirectToPage();
+            }
 
-            // Dodanie pracownika do bazy danych
-            _context.Workers.Add(wrk);
-            _context.SaveChanges();
+            // Validate phone number format
+            if (!Regex.IsMatch(workerPhone, @"^\d{9}$"))
+            {
+                TempData["alertMessage"] = "Phone number must be exactly 9 digits.";
+                return RedirectToPage();
+            }
+
+
+            try
+            {
+                var wrk = new Worker
+                {
+                    AssignedWorkerFunction = functionId,
+                    Name = workerName,
+                    Surname = workerSurName,
+                    DeclaredGender = workerGender,
+                    PhoneNumber = workerPhone,
+                    Email = workerEmail,
+                    // Zhashowanie has�a przed zapisem
+                    Password = passwordHasher.HashPassword(null, workerPassword)
+                };
+
+                // Dodanie pracownika do bazy danych
+                _context.Workers.Add(wrk);
+                _context.SaveChanges();
+                TempData["confirmMessage"] = "Worker has been successfully added.";
+            }
+            catch (Exception ex)
+            {
+                TempData["alertMessage"] = "An error occurred while adding the worker. Please try again.";
+            }
 
             return RedirectToPage();
         }
@@ -685,23 +861,41 @@ namespace ProjectIO.Pages
         {
             // Pobierz odpowiedni� funkcj� pracownika
             var passtypeId = _context.PassTypes.FirstOrDefault(fc => fc.PassTypeId == passType);
+            if (passtypeId == null)
+            {
+                TempData["alertMessage"] = "Pass type not found.";
+                return RedirectToPage();
+            }
 
             var passUserId = _context.Users.FirstOrDefault(fc => fc.UserId == selectedUser);
+            if (passUserId == null)
+            {
+                TempData["alertMessage"] = "User not found.";
+                return RedirectToPage();
+            }
 
             Enum.TryParse(statusPass, out Status statusS);
 
-            // Utw�rz nowego pracownika
-            var pass = new Pass
+            try
             {
-                PassType = passtypeId,
-                PassUser = passUserId,
-                PassEntriesLeft = passEntriesLeft,
-                CurrentStatus = statusS
-            };
+                // Utwórz nowy karnet
+                var pass = new Pass
+                {
+                    PassType = passtypeId,
+                    PassUser = passUserId,
+                    PassEntriesLeft = passEntriesLeft,
+                    CurrentStatus = statusS
+                };
 
-            // Dodanie pracownika do bazy danych
-            _context.Passes.Add(pass);
-            _context.SaveChanges();
+                // Dodanie karnetu do bazy danych
+                _context.Passes.Add(pass);
+                _context.SaveChanges();
+                TempData["confirmMessage"] = "Pass has been successfully added.";
+            }
+            catch (Exception ex)
+            {
+                TempData["alertMessage"] = "An error occurred while adding the pass. Please try again.";
+            }
 
             return RedirectToPage();
 
@@ -711,18 +905,34 @@ namespace ProjectIO.Pages
         {
 
             var pss = _context.Passes.Find(id);
+            if (pss == null)
+            {
+                TempData["alertMessage"] = "Pass not found.";
+                return RedirectToPage();
+            }
 
             // Pobierz odpowiedni� funkcj� pracownika
             var passtypeId = _context.PassTypes.FirstOrDefault(fc => fc.PassTypeId == passType);
+            if (passtypeId == null)
+            {
+                TempData["alertMessage"] = "Pass type not found.";
+                return RedirectToPage();
+            }
 
             var passUserId = _context.Users.FirstOrDefault(fc => fc.UserId == selectedUser);
+            if (passUserId == null)
+            {
+                TempData["alertMessage"] = "User not found.";
+                return RedirectToPage();
+            }
 
             Enum.TryParse(statusPass, out Status statusS);
 
 
 
-            if (pss != null)
+            try
             {
+                // Aktualizacja danych karnetu
                 pss.PassType = passtypeId;
                 pss.PassUser = passUserId;
                 pss.PassEntriesLeft = passEntriesLeft;
@@ -730,9 +940,15 @@ namespace ProjectIO.Pages
 
                 // Zapis zmian w bazie danych
                 _context.SaveChanges();
+                TempData["confirmMessage"] = "Pass details have been successfully updated.";
+            }
+            catch (Exception ex)
+            {
+                TempData["alertMessage"] = "An error occurred while updating the pass. Please try again.";
             }
 
             return RedirectToPage();
+
 
         }
 
@@ -741,10 +957,23 @@ namespace ProjectIO.Pages
             var pass = _context.Passes.Find(id);
             if (pass != null)
             {
-                _context.Passes.Remove(pass);
-                _context.SaveChanges();
+                try
+                {
+                    _context.Passes.Remove(pass);
+                    _context.SaveChanges();
+                    TempData["confirmMessage"] = "Pass has been successfully deleted.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["alertMessage"] = "An error occurred while deleting the pass. Please try again.";
+                }
             }
-            return RedirectToPage(); // Przekierowanie po usuni�ciu
+            else
+            {
+                TempData["alertMessage"] = "Pass not found.";
+            }
+
+            return RedirectToPage(); // Redirect after deletion
         }
 
 
@@ -755,6 +984,49 @@ namespace ProjectIO.Pages
             Enum.TryParse(status, out Status statusS);
 
             DateTime ReservationDateTime = DateTime.Parse($"{resDate} {resTime}");
+
+
+            SportsCenters = _context.SportsCenters.ToList();
+            Facilities = _context.Facilities.ToList();
+            Users = _context.Users.ToList();
+            Workers = _context.Workers.ToList();
+            Reservations = _context.Reservations.ToList();
+            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
+            selectedObject = Facilities.FirstOrDefault(f => f.FacilityId == facilityId);
+            SelectedObjectId = facilityId;
+            SelectedCenterId = selectedObject.FacilitySportsCenter.SportsCenterId;
+            SelectedDay = resDate;
+            Facility newFac = _context.Facilities.Find(facilityId);
+
+            updateTakenSlots(resDate);
+            if (TakenSlots != null && TakenSlots.Any())
+            {
+                foreach (var slot in TakenSlots)
+                {
+                    Console.WriteLine(slot);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No taken slots available.");
+            }
+
+            string slotToCheck = $"{newFac.FacilitySportsCenter.SportsCenterId} {newFac.FacilityId} {ReservationDateTime:yyyy-MM-dd HH} U";
+
+            if (TakenSlots.Contains(slotToCheck))
+            {
+                TempData["alertMessage"] = "The selected date and time are already taken by User.";
+                return RedirectToPage();
+            }
+
+            string slotToCheckW = $"{newFac.FacilitySportsCenter.SportsCenterId} {newFac.FacilityId} {ReservationDateTime:yyyy-MM-dd HH} W";
+            if (TakenSlots.Contains(slotToCheckW))
+            {
+                TempData["alertMessage"] = "The selected date and time are already taken by Worker.";
+                return RedirectToPage();
+            }
+
 
             // Tworzenie nowej rezerwacji
             var reservation = new Reservation
@@ -770,6 +1042,7 @@ namespace ProjectIO.Pages
             // Dodanie do bazy danych
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
+            TempData["confirmMessage"] = "reservation added successfully";
 
             return RedirectToPage();
         }
@@ -780,7 +1053,46 @@ namespace ProjectIO.Pages
             var reservation = _context.Reservations.Find(id);
             Enum.TryParse(status, out Status statusS);
 
+            SportsCenters = _context.SportsCenters.ToList();
+            Facilities = _context.Facilities.ToList();
+            Users = _context.Users.ToList();
+            Workers = _context.Workers.ToList();
+            Reservations = _context.Reservations.ToList();
+            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
+            selectedObject = Facilities.FirstOrDefault(f => f.FacilityId == facilityId);
+            SelectedObjectId = facilityId;
+            SelectedCenterId = selectedObject.FacilitySportsCenter.SportsCenterId;
+            SelectedDay = $"{reservationDate:yyyy-MM-dd}"; ;
+            Facility newFac = _context.Facilities.Find(facilityId);
 
+            updateTakenSlots(SelectedDay);
+            if (TakenSlots != null && TakenSlots.Any())
+            {
+                foreach (var slot in TakenSlots)
+                {
+                    Console.WriteLine(slot);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No taken slots available.");
+            }
+
+            string slotToCheck = $"{newFac.FacilitySportsCenter.SportsCenterId} {newFac.FacilityId} {reservationDate:yyyy-MM-dd HH} U";
+
+            if (TakenSlots.Contains(slotToCheck))
+            {
+                TempData["alertMessage"] = "The selected date and time are already taken by User.";
+                return RedirectToPage();
+            }
+
+            string slotToCheckW = $"{newFac.FacilitySportsCenter.SportsCenterId} {newFac.FacilityId} {reservationDate:yyyy-MM-dd HH} W";
+            if (TakenSlots.Contains(slotToCheckW))
+            {
+                TempData["alertMessage"] = "The selected date and time are already taken by Worker.";
+                return RedirectToPage();
+            }
 
             if (reservation != null)
             {
@@ -793,6 +1105,7 @@ namespace ProjectIO.Pages
 
                 // Zapisanie zmian
                 _context.SaveChanges();
+                TempData["confirmMessage"] = "reservation updated successfully";
             }
 
             return RedirectToPage();
@@ -807,6 +1120,7 @@ namespace ProjectIO.Pages
                 // Usunięcie rezerwacji
                 _context.Reservations.Remove(reservation);
                 _context.SaveChanges();
+                TempData["confirmMessage"] = "reservation deleted successfully";
             }
 
             return RedirectToPage();
@@ -852,6 +1166,7 @@ namespace ProjectIO.Pages
             _context.TrainingSessions.Add(aaa);
             _context.WorkerTrainingSessions.Add(trainingSession);
             _context.SaveChanges();
+            TempData["confirmMessage"] = "Tarining session added successfully";
 
             return RedirectToPage();
         }
@@ -881,10 +1196,51 @@ namespace ProjectIO.Pages
             {
                 return NotFound("WorkerTrainingSession not found.");
             }
+            Facility newFac = _context.Facilities.FirstOrDefault(f => f.FacilityId == FacilityId)
+                                        ?? throw new InvalidOperationException("Facility not found.");
+            SportsCenters = _context.SportsCenters.ToList();
+            Facilities = _context.Facilities.ToList();
+            Users = _context.Users.ToList();
+            Workers = _context.Workers.ToList();
+            Reservations = _context.Reservations.ToList();
+            WorkerTrainingSessions = _context.WorkerTrainingSessions.ToList();
+            TrainingSessions = _context.TrainingSessions.ToList();
+            selectedObject = Facilities.FirstOrDefault(f => f.FacilityId == FacilityId);
+            SelectedObjectId = FacilityId;
+            SelectedCenterId = selectedObject.FacilitySportsCenter.SportsCenterId;
+            SelectedDay = $"{Date:yyyy-MM-dd}";
+
+
+            updateTakenSlots($"{Date:yyyy-MM-dd}");
+            if (TakenSlots != null && TakenSlots.Any())
+            {
+                foreach (var slot in TakenSlots)
+                {
+                    Console.WriteLine(slot);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No taken slots available.");
+            }
+
+            string slotToCheck = $"{newFac.FacilitySportsCenter.SportsCenterId} {newFac.FacilityId} {Date:yyyy-MM-dd HH} U";
+
+            if (TakenSlots.Contains(slotToCheck))
+            {
+                TempData["alertMessage"] = "The selected date and time are already taken by User.";
+                return RedirectToPage();
+            }
+
+            string slotToCheckW = $"{trainingSession.Facility.FacilitySportsCenter.SportsCenterId} {FacilityId} {Date:yyyy-MM-dd HH} W";
+            if (TakenSlots.Contains(slotToCheckW))
+            {
+                TempData["alertMessage"] = "The selected date and time are already taken by Worker.";
+                return RedirectToPage();
+            }
 
             // Aktualizacja danych sesji treningowej
-            trainingSession.Facility = _context.Facilities.FirstOrDefault(f => f.FacilityId == FacilityId)
-                                        ?? throw new InvalidOperationException("Facility not found.");
+            trainingSession.Facility = newFac;
             trainingSession.Name = Name;
             trainingSession.Date = Date;
             trainingSession.GroupCapacity = GroupCapacity;
@@ -897,6 +1253,7 @@ namespace ProjectIO.Pages
 
             // Zapisz zmiany w bazie danych
             _context.SaveChanges();
+            TempData["confirmMessage"] = "Tarining session updated successfully";
 
             // Przekierowanie po zapisaniu zmian
             return RedirectToPage();
@@ -922,6 +1279,7 @@ namespace ProjectIO.Pages
             {
                 _context.TrainingSessions.Remove(TrainingSession);
                 _context.SaveChanges();
+                TempData["confirmMessage"] = "Tarining session deleted successfully";
             }
 
             return RedirectToPage(); // Przekierowanie po usunięciu

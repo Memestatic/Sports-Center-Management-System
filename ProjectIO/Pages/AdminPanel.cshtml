@@ -500,7 +500,7 @@
                 <div class="form-group">
                     <label>Function Type:</label>
                     <select name="workerFunction" class="form-control" required>
-                        @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                        <option value="">Select worker function</option> 
                         @if (Model.WorkerFunctions != null && Model.WorkerFunctions.Count > 0)
                         {
                             @foreach (var func in Model.WorkerFunctions)
@@ -671,7 +671,7 @@
                 <div class="form-group">
                     <label>Pass Type:</label>
                     <select name="passType" class="form-control" required>
-                        @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                        <option value="">Select pass type</option> 
                         @if (Model.PassTypes != null && Model.PassTypes.Count > 0)
                         {
                             @foreach (var func in Model.PassTypes)
@@ -684,7 +684,7 @@
                 <div class="form-group">
                     <label>User:</label>
                     <select name="selectedUser" class="form-control" required>
-                        @* <option value="">Select worker AssignedAssignedWorkerFunction</option> *@
+                        <option value="">Select user </option> 
                         @if (Model.Users != null && Model.Users.Count > 0)
                         {
                             @foreach (var user in Model.Users)
@@ -950,7 +950,7 @@
                         <div class="form-group">
                             <label>Facility:</label>
                             <select name="facilityId" class="form-control" required>
-                                    <option value="res.ReservationFacility?.FacilityId">@res.ReservationFacility.FacilityName</option>
+                                    <option value="@res.ReservationFacility.FacilityId">@res.ReservationFacility.FacilityName</option>
                                 @if (Model.Facilities != null && Model.Facilities.Count > 0)
                                 {
                                     @foreach (var facility in Model.Facilities)
@@ -1240,7 +1240,7 @@
                                         <label for="FacilityId">Facility:</label>
                                             <select name="FacilityId" id="FacilityId" class="form-control" required>
                                             <!-- Domyślna wartość -->
-                                            <option value="@Model.EditingWorkerSession.TrainingSession.Facility.FacilityId" selected>
+                                            <option value="@Model.EditingWorkerSession.TrainingSession.Facility.FacilityId" >
                                                                         @Model.EditingWorkerSession.TrainingSession.Facility.FacilityName
                                             </option>
                                             <!-- Inne dostępne opcje -->
