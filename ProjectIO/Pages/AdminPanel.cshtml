@@ -36,7 +36,7 @@
 <div class="tab-content" id="nav-tabContent">
     <!--SPORTSCENTER-TAB------------------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-sportscenter" role="tabpanel" aria-labelledby="nav-sportscenter-tab" tabindex="0">
-        <div class="text-center mb-3">
+        <div class="d-flex justify-content-center my-3">
             <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.SportsCenterId">Add New Record</button>
         </div>
         <div id="addForm-Model.SportsCenterId" class="collapse">
@@ -99,10 +99,10 @@
                             <td>@center.ZipCode</td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <!-- Edit button -->
-                                    <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@center.SportsCenterId">Edit</button>
                                     <!-- Delete button -->
                                     <button type="button" class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@center.SportsCenterId">Delete</button>
+                                    <!-- Edit button -->
+                                    <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@center.SportsCenterId">Edit</button>
                                 </div>
                             </td>
                         </tr>
@@ -169,14 +169,14 @@
             <p class="text-muted text-center">Brak danych o obiektach.</p>
         }
     </div>
-
-
     <!--SPORTSOBJECT/FACILITY-TAB---------------------------------------------------------------------------------------->
     <div class="tab-pane fade" id="nav-sportsobject" role="tabpanel" aria-labelledby="nav-sportsobject-tab" tabindex="0">
 
         <!-- ADD NEW RECORD FORM -->
-        <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.FacilityId">Add New Record</button>
-        <div id="addForm-Model.FacilityId" class="collapse">
+        <div class="d-flex justify-content-center my-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.FacilityId">Add New Record</button>
+        </div>
+        <div id="addForm-Model.FacilityId" class="collapse text-center">
                     <form method="post" asp-page-handler="AddF">
                         <div class="form-group">
                             <label>Nazwa Obiektu:</label>
@@ -240,22 +240,44 @@
         <br>
         @if (Model.Facilities != null && Model.Facilities.Count > 0)
         {
-            @foreach (var facility in Model.Facilities)
-            {
-                <tr>
-                    <td>@facility.FacilityId</td>
-                    <td>@facility.FacilityName</td>
-                    <td>@facility.FacilityType.TypeName</td>
-                    <td>@facility.FacilitySportsCenter.Name</td>
-                    <td>@facility.Price</td>
-                    <td>@facility.IsChangingRoom</td>
-                    <td>@facility.IsEquipment</td>
-                    <td>@facility.PromoStart</td>
-                    <td>@facility.PromoEnd</td>
-                    <td>@facility.PromoRate</td>
-                
-                <!-- DELETE BUTTON -->
-                <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalF-@facility.FacilityId">Delete</button>
+        <table class="table table-striped table-bordered table-hover text-center">
+          <thead class="thead-dark">
+           <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Sports Center</th>
+            <th>Price</th>
+            <th>Changing Room</th>
+            <th>Equipment</th>
+            <th>Promo Start</th>
+            <th>Promo End</th>
+            <th>Promo Rate (%)</th>
+            <th>Actions</th>
+           </tr>
+          </thead>
+    <tbody>
+        @foreach (var facility in Model.Facilities)
+        {
+            <tr>
+                <td>@facility.FacilityId</td>
+                <td>@facility.FacilityName</td>
+                <td>@facility.FacilityType.TypeName</td>
+                <td>@facility.FacilitySportsCenter.Name</td>
+                <td>@facility.Price</td>
+                <td>@facility.IsChangingRoom</td>
+                <td>@facility.IsEquipment</td>
+                <td>@facility.PromoStart</td>
+                <td>@facility.PromoEnd</td>
+                <td>@facility.PromoRate</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <!-- Delete button -->
+                        <button type="button" class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModalF-@facility.FacilityId">Delete</button>
+                        <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@facility.FacilityId">Edit</button>
+                    </div>
+                </td>
+            </tr>
 
                 <!-- POPUP CONFIRM MENU -->
                 <div class="modal fade" id="confirmDeleteModalF-@facility.FacilityId" tabindex="-1" aria-labelledby="confirmDeleteModalLabelF-@facility.FacilityId" aria-hidden="true">
@@ -278,8 +300,9 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@facility.FacilityId">Edit</button>
-                <div id="editForm-@facility.FacilityId" class="collapse">
+               
+             <tr id="editForm-@facility.FacilityId" class="collapse">
+                            <td colspan="11" class="text-center">
                     <form method="post" asp-page-handler="EditF" asp-route-id="@facility.FacilityId">
                         <div class="form-group">
                             <label>Nazwa Obiektu:</label>
@@ -346,10 +369,13 @@
                         </div>
                         <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                     </form>
-                </div>
-                    <br />
+                    </td>
                 </tr>
-            }
+            <br/>
+         }
+    </tbody>
+</table>
+            
         }
         else
         {
@@ -362,8 +388,10 @@
     <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-PassUsers-tab" tabindex="0">
 
         <!-- ADD NEW RECORD FORM -->
+        <div class="d-flex justify-content-center my-3">
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.PassUserId">Add New Record</button>
-        <div id="addForm-Model.PassUserId" class="collapse">
+        </div>
+        <div id="addForm-Model.PassUserId" class="collapse text-center">
             <form method="post" asp-page-handler="AddUser">
                 <div class="form-group">
                     <label>Name:</label>
@@ -375,7 +403,7 @@
                 </div>
                 <div class="form-group">
                     <label>Gender:</label>
-                    <select name="PassUserGender" class="form-control" required>
+                    <select name="PassUserGender" class="form-control text-center" required>
                         <option value="77">Male</option>
                         <option value="70">Female</option>
                     </select>
@@ -400,20 +428,40 @@
         <!--LIST-VALUES-->
         @if (Model.Users != null && Model.Users.Count > 0)
         {
-            @foreach (var user in Model.Users)
-            {
-                <tr>
-                    <td>@user.UserId</td>
-                    <td>@user.Name</td>
-                    <td>@user.Surname</td>
-                    <td>@user.DeclaredGender</td>
-                    <td>@user.PhoneNumber</td>
-                    <td>@user.Email</td>
-                    <td>@user.Password</td>
-
-                    <!-- DELETE BUTTON -->
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalU-@user.UserId">Delete</button>
-
+    <table class="table table-striped table-bordered table-hover text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Declared Gender</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.UserId</td>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.DeclaredGender</td>
+                <td>@user.PhoneNumber</td>
+                <td>@user.Email</td>
+                <td>@user.Password</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <!-- DELETE BUTTON -->
+                        <button type="button" class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModalU-@user.UserId">Delete</button>
+                        
+                        <!-- EDIT BUTTON -->
+                        <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@user.UserId">Edit</button>
+                    </div>
+                </td>
+            </tr>
                     <!-- POPUP CONFIRM MENU -->
                     <div class="modal fade" id="confirmDeleteModalU-@user.UserId" tabindex="-1" aria-labelledby="confirmDeleteModalLabelU-@user.UserId" aria-hidden="true">
                         <div class="modal-dialog">
@@ -435,11 +483,9 @@
                         </div>
                     </div>
 
-                    <!--EDIT BUTTON-->
-                    <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@user.UserId">Edit</button>
-
                     <!--POPUP-EDIT-FORM-->
-                    <div id="editForm-@user.UserId" class="collapse">
+                    <tr id="editForm-@user.UserId" class="collapse">
+                            <td colspan="11" class="text-center">
                         <form method="post" asp-page-handler="EditUser" asp-route-id="@user.UserId">
                             <div class="form-group">
                                 <label>Name:</label>
@@ -479,11 +525,14 @@
 
                             <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                         </form>
-                    </div>
+                        </td>
+                    </tr>
 
                     <br>
-                </tr>
-            }
+                
+                    }
+                </tbody>
+            </table>
         }
         else
         {
@@ -494,12 +543,14 @@
     <div class="tab-pane fade" id="nav-workers" role="tabpanel" aria-labelledby="nav-workers-tab" tabindex="0">
 
         <!--ADD NEW RECORD FORM-->
+        <div class="d-flex justify-content-center my-3">
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.WorkerId">Add New Record</button>
-        <div id="addForm-Model.WorkerId" class="collapse">
+        </div>
+        <div id="addForm-Model.WorkerId" class="collapse text-center">
             <form method="post" asp-page-handler="AddWorker">
                 <div class="form-group">
                     <label>Function Type:</label>
-                    <select name="workerFunction" class="form-control" required>
+                    <select name="workerFunction" class="form-control text-center" required>
                         <option value="">Select worker function</option> 
                         @if (Model.WorkerFunctions != null && Model.WorkerFunctions.Count > 0)
                         {
@@ -520,7 +571,7 @@
                 </div>
                 <div class="form-group">
                     <label>Gender:</label>
-                    <select name="workerGender" class="form-control" required>
+                    <select name="workerGender" class="form-control text-center" required>
                         <option value="77">Male</option>
                         <option value="70">Female</option>
                     </select>
@@ -545,21 +596,42 @@
         <!--LIST VALUES-->
         @if (Model.Workers != null && Model.Workers.Count > 0)
         {
-            @foreach (var worker in Model.Workers)
-            {
-                <tr>
-                    <td>@worker.WorkerId</td>
-                    <td>@worker.AssignedWorkerFunction.WorkerFunctionName</td> 
-                    <td>@worker.Name</td>
-                    <td>@worker.Surname</td>
-                    <td>@worker.DeclaredGender</td>
-                    <td>@worker.PhoneNumber</td>
-                    <td>@worker.Email</td>
-                    <td>@worker.Password</td>
-
-                    <!-- DELETE BUTTON -->
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalW-@worker.WorkerId">Delete</button>
-
+<table class="table table-striped table-bordered table-hover text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Function</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Declared Gender</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var worker in Model.Workers)
+        {
+            <tr>
+                <td>@worker.WorkerId</td>
+                <td>@worker.AssignedWorkerFunction.WorkerFunctionName</td>
+                <td>@worker.Name</td>
+                <td>@worker.Surname</td>
+                <td>@worker.DeclaredGender</td>
+                <td>@worker.PhoneNumber</td>
+                <td>@worker.Email</td>
+                <td>@worker.Password</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <!-- DELETE BUTTON -->
+                        <button type="button" class="btn btn-danger btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModalW-@worker.WorkerId">Delete</button>
+                        
+                        <!-- EDIT BUTTON -->
+                        <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@worker.WorkerId">Edit</button>
+                    </div>
+                </td>
+            </tr>
                     <!-- POPUP CONFIRM MENU -->
                     <div class="modal fade" id="confirmDeleteModalW-@worker.WorkerId" tabindex="-1" aria-labelledby="confirmDeleteModalLabelW-@worker.WorkerId" aria-hidden="true">
                         <div class="modal-dialog">
@@ -581,11 +653,9 @@
                         </div>
                     </div>
 
-                    <!--EDIT BUTTON-->
-                    <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@worker.WorkerId">Edit</button>
-
                     <!--POPUP-EDIT-FORM-->
-                    <div id="editForm-@worker.WorkerId" class="collapse">
+                    <tr id="editForm-@worker.WorkerId" class="collapse">
+                            <td colspan="11" class="text-center">
                         <form method="post" asp-page-handler="EditWorker" asp-route-id="@worker.WorkerId">
                             <div class="form-group">
                                 <label>Function Type:</label>
@@ -605,9 +675,6 @@
                                     }
                                 </select>
                             </div>
-
-                            
-
                             <div class="form-group">
                                 <label>Name:</label>
                                 <input type="text" name="workerName" value="@worker.Name" class="form-control" required />
@@ -646,11 +713,15 @@
 
                             <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                         </form>
-                    </div>
+                        </td>
+                    </tr>
 
                     <br>
-                </tr>
-            }
+               
+                    }
+                </tbody>
+            </table>
+            
         }
         else
         {
@@ -665,12 +736,14 @@
     <div class="tab-pane fade" id="nav-passes" role="tabpanel" aria-labelledby="nav-passes-tab" tabindex="0">
 
         <!--ADD NEW RECORD FORM-->
+        <div class="d-flex justify-content-center my-3">
         <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addForm-Model.PassId">Add New Record</button>
-        <div id="addForm-Model.PassId" class="collapse">
+        </div>
+        <div id="addForm-Model.PassId" class="collapse text-center">
             <form method="post" asp-page-handler="AddPass">
                 <div class="form-group">
                     <label>Pass Type:</label>
-                    <select name="passType" class="form-control" required>
+                    <select name="passType" class="form-control text-center" required>
                         <option value="">Select pass type</option> 
                         @if (Model.PassTypes != null && Model.PassTypes.Count > 0)
                         {
@@ -683,7 +756,7 @@
                 </div>
                 <div class="form-group">
                     <label>User:</label>
-                    <select name="selectedUser" class="form-control" required>
+                    <select name="selectedUser" class="form-control text-center" required>
                         <option value="">Select user </option> 
                         @if (Model.Users != null && Model.Users.Count > 0)
                         {
@@ -700,7 +773,7 @@
                 </div>
                 <div class="form-group">
                     <label>Status:</label>
-                    <select name="statusPass" class="form-control" required>
+                    <select name="statusPass" class="form-control text-center" required>
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
                         <option value="Denied">Denied</option>
@@ -712,19 +785,38 @@
 
         @if (Model.Passes != null && Model.Passes.Count > 0)
         {
-            @foreach (var pass in Model.Passes)
-            {
-                <tr>
-                    <td>@pass.PassId</td>
-                    <td>@pass.PassType</td>
-                    <td>@pass.PassUser.Name</td>
-                    <td>@pass.PassUser.Surname</td>
-                    <td>@pass.PassEntriesLeft</td>
-                    <td>@pass.CurrentStatus</td>
+<table class="table table-striped table-bordered table-hover text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Pass Type</th>
+            <th>User Name</th>
+            <th>User Surname</th>
+            <th>Entries Left</th>
+            <th>Current Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pass in Model.Passes)
+        {
+            <tr>
+                <td>@pass.PassId</td>
+                <td>@pass.PassType</td>
+                <td>@pass.PassUser.Name</td>
+                <td>@pass.PassUser.Surname</td>
+                <td>@pass.PassEntriesLeft</td>
+                <td>@pass.CurrentStatus</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <!-- DELETE BUTTON -->
+                        <button type="button" class="btn btn-danger btn-sm mx-1" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalPass-@pass.PassId">Delete</button>
 
-                    <!-- DELETE BUTTON -->
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalPass-@pass.PassId">Delete</button>
-
+                        <!-- EDIT BUTTON -->
+                        <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@pass.PassId">Edit</button>
+                    </div>
+                </td>
+            </tr>
                     <!-- POPUP CONFIRM MENU -->
                     <div class="modal fade" id="confirmDeleteModalPass-@pass.PassId" tabindex="-1" aria-labelledby="confirmDeleteModalLabelPass-@pass.PassId" aria-hidden="true">
                         <div class="modal-dialog">
@@ -746,11 +838,9 @@
                         </div>
                     </div>
 
-                    <!--EDIT BUTTON-->
-                    <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@pass.PassId">Edit</button>
-
                     <!--POPUP-EDIT-FORM-->
-                    <div id="editForm-@pass.PassId" class="collapse">
+                    <tr id="editForm-@pass.PassId" class="collapse">
+                            <td colspan="11" class="text-center">
                         <form method="post" asp-page-handler="EditPass" asp-route-id="@pass.PassId">
                             <div class="form-group">
                                 <label>Pass Type:</label>
@@ -817,12 +907,15 @@
 
                             <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                         </form>
-                    </div>
+                        </td>
+                    </tr>
 
-                </tr>
 
+                    }
+                </tbody>
+            </table>
                 
-            }
+            
         }
         else
         {
@@ -833,12 +926,14 @@
     <div class="tab-pane fade" id="nav-reservations" role="tabpanel" aria-labelledby="nav-reservations-tab" tabindex="0">
 
     <!-- ADD NEW RESERVATION FORM -->
+        <div class="d-flex justify-content-center my-3">
     <button type="button" class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#addReservationForm">Add New Reservation</button>
-    <div id="addReservationForm" class="collapse">
+    </div>
+    <div id="addReservationForm" class="collapse text-center">
         <form method="post" asp-page-handler="AddReservation">
                 <div class="form-group">
                     <label>Facility:</label>
-                    <select name="facilityId" class="form-control" required>
+                    <select name="facilityId" class="form-control text-center" required>
                         <option value="">Select Facility</option>
                         @if (Model.Facilities != null && Model.Facilities.Count > 0)
                         {
@@ -851,7 +946,7 @@
                 </div>
                 <div class="form-group">
                     <label>User:</label>
-                    <select name="userId" class="form-control" required>
+                    <select name="userId" class="form-control text-center" required>
                         <option value="">Select User</option>
                         @if (Model.Users != null && Model.Users.Count > 0)
                         {
@@ -864,8 +959,8 @@
                 </div>
                 <div class="form-group">
                     <label>Reservation Date:</label>
-                    <input type="date" name="resDate" id="reservationDateDay" class="form-control" required />
-                    <select id="reservationTime" name="resTime" class="form-control" required>
+                    <input type="date" name="resDate" id="reservationDateDay" class="form-control text-center" required />
+                    <select id="reservationTime" name="resTime" class="form-control text-center" required>
                         <option value="09:00">09:00</option>
                         <option value="10:00">10:00</option>
                         <option value="11:00">11:00</option>
@@ -883,7 +978,7 @@
                 </div>
                 <div class="form-group">
                     <label>Status:</label>
-                    <select name="status" class="form-control" required>
+                    <select name="status" class="form-control text-center" required>
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
                         <option value="Denied">Denied</option>
@@ -907,19 +1002,38 @@
     <!-- LIST RESERVATIONS -->
     @if (Model.Reservations != null && Model.Reservations.Count > 0)
     {
+<table class="table table-striped table-bordered table-hover text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Facility ID</th>
+            <th>User ID</th>
+            <th>Reservation Date</th>
+            <th>Current Status</th>
+            <th>Cost</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var res in Model.Reservations)
         {
             <tr>
                 <td>@res.ReservationId</td>
                 <td>@res.ReservationFacility.FacilityId</td>
                 <td>@res.ReservationUser.UserId</td>
-                <td>@res.ReservationDate</td>
+                <td>@res.ReservationDate.ToString("yyyy-MM-dd")</td> <!-- Format daty -->
                 <td>@res.CurrentStatus</td>
                 <td>@res.Cost.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <!-- DELETE BUTTON -->
+                        <button type="button" class="btn btn-danger btn-sm mx-1" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalR-@res.ReservationId">Delete</button>
 
-                    <!-- DELETE BUTTON -->
-                    <button type="button" class="btn btn-danger" data-mdb-ripple-init data-bs-toggle="modal" data-bs-target="#confirmDeleteModalR-@res.ReservationId">Delete</button>
-
+                        <!-- EDIT BUTTON -->
+                        <button type="button" class="btn btn-warning btn-sm mx-1" data-toggle="collapse" data-target="#editForm-@res.ReservationId">Edit</button>
+                    </div>
+                </td>
+            </tr>
                     <!-- POPUP CONFIRM MENU -->
                     <div class="modal fade" id="confirmDeleteModalR-@res.ReservationId" tabindex="-1" aria-labelledby="confirmDeleteModalLabelR-@res.ReservationId" aria-hidden="true">
                         <div class="modal-dialog">
@@ -941,11 +1055,9 @@
                         </div>
                     </div>
 
-                <!-- EDIT BUTTON -->
-                <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@res.ReservationId">Edit</button>
-
                 <!-- EDIT FORM -->
-                <div id="editForm-@res.ReservationId" class="collapse">
+                <tr id="editForm-@res.ReservationId" class="collapse">
+                            <td colspan="11" class="text-center">
                     <form method="post" asp-page-handler="EditReservation" asp-route-id="@res.ReservationId">
                         <div class="form-group">
                             <label>Facility:</label>
@@ -1011,11 +1123,13 @@
                         </div>
                         <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                     </form>
-                </div>
+                    </td>
+                </tr>
 
                 <br>
-            </tr>
-        }
+                    }
+                </tbody>
+            </table>
     }
     else
     {
