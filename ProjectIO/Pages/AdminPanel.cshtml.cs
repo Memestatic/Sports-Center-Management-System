@@ -754,7 +754,7 @@ namespace ProjectIO.Pages
             return RedirectToPage(); // Redirect after deletion
         }
 
-        public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurName, Gender workerGender, string workerPhone, string workerEmail, string workerPassword)
+        public IActionResult OnPostEditWorker(int id, int workerFunction, string workerName, string workerSurName, Gender workerGender, string workerPhone, string workerEmail)
         {
             // Pobranie funkcji pracownika
             var functionId = _context.WorkerFunctions.FirstOrDefault(fc => fc.WorkerFunctionId == workerFunction);
@@ -787,14 +787,6 @@ namespace ProjectIO.Pages
                     wrk.DeclaredGender = workerGender;
                     wrk.PhoneNumber = workerPhone;
                     wrk.Email = workerEmail;
-
-                    // Sprawdzenie, czy has�o zosta�o podane
-                    if (!string.IsNullOrWhiteSpace(workerPassword))
-                    {
-                        // Haszowanie has�a przed zapisem
-                        var passwordHasher = new PasswordHasher<Worker>();
-                        wrk.Password = passwordHasher.HashPassword(null, workerPassword);
-                    }
 
                         // Zapis zmian w bazie danych
                         _context.SaveChanges();

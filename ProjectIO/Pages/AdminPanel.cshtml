@@ -416,11 +416,11 @@
                     <label>Email:</label>
                     <input type="text" name="PassUserEmail" value="" class="form-control" required />
                 </div>
-                <div class="form-group">
+               <div class="form-group">
                     <label>Password:</label>
                     <input type="text" name="PassUserPassword" value="" class="form-control" required />
                 </div>
-
+ 
                 <button type="submit" class="btn btn-success">Add</button>
             </form>
         </div>
@@ -437,7 +437,7 @@
             <th>Declared Gender</th>
             <th>Phone Number</th>
             <th>Email</th>
-            <th>Password</th>
+@*             <th>Password</th> *@
             <th>Actions</th>
         </tr>
     </thead>
@@ -451,7 +451,7 @@
                 <td>@user.DeclaredGender</td>
                 <td>@user.PhoneNumber</td>
                 <td>@user.Email</td>
-                <td>@user.Password</td>
+                @* <td>@user.Password</td> *@
                 <td>
                     <div class="d-flex justify-content-center">
                         <!-- DELETE BUTTON -->
@@ -518,10 +518,10 @@
                                 <label>Email:</label>
                                 <input type="text" name="PassUserEmail" value="@user.Email" class="form-control" required />
                             </div>
-                            <div class="form-group">
+@*                             <div class="form-group">
                                 <label>Password:</label>
                                 <input type="text" name="PassUserPassword" value="@user.Password" class="form-control" required />
-                            </div>
+                            </div> *@
 
                             <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                         </form>
@@ -584,10 +584,10 @@
                     <label>Email:</label>
                     <input type="text" name="workerEmail" value="" class="form-control" required />
                 </div>
-                <div class="form-group">
+                 <div class="form-group">
                     <label>Password:</label>
                     <input type="text" name="workerPassword" value="" class="form-control" required />
-                </div>
+                </div> 
                 <button type="submit" class="btn btn-success">Add</button>
             </form>
         </div>
@@ -606,7 +606,7 @@
             <th>Declared Gender</th>
             <th>Phone Number</th>
             <th>Email</th>
-            <th>Password</th>
+@*             <th>Password</th> *@
             <th>Actions</th>
         </tr>
     </thead>
@@ -621,7 +621,7 @@
                 <td>@worker.DeclaredGender</td>
                 <td>@worker.PhoneNumber</td>
                 <td>@worker.Email</td>
-                <td>@worker.Password</td>
+                @* <td>@worker.Password</td> *@
                 <td>
                     <div class="d-flex justify-content-center">
                         <!-- DELETE BUTTON -->
@@ -706,10 +706,10 @@
                                 <label>Email:</label>
                                 <input type="text" name="workerEmail" value="@worker.Email" class="form-control" required />
                             </div>
-                            <div class="form-group">
+@*                             <div class="form-group">
                                 <label>Password:</label>
                                 <input type="text" name="workerPassword" value="@worker.Password" class="form-control" required />
-                            </div>
+                            </div> *@
 
                             <button type="submit" class="btn btn-primary-warning">Save Changes</button>
                         </form>
@@ -802,7 +802,7 @@
         {
             <tr>
                 <td>@pass.PassId</td>
-                <td>@pass.PassType</td>
+                <td>@pass.PassType.PassTypeName</td>
                 <td>@pass.PassUser.Name</td>
                 <td>@pass.PassUser.Surname</td>
                 <td>@pass.PassEntriesLeft</td>

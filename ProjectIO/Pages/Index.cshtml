@@ -103,7 +103,10 @@
                     {
                         <div class="swiper-slide">
                             <div class="card" style="width: 100%; max-width: 350px; margin: auto;">
-                                <img src="https://via.placeholder.com/350x300"
+                                @{
+									string image = $"{center.SportsCenterId}.jpg";
+                                }
+                                <img src="~/assets/facilities/@image"
                                      class="card-img-top"
                                      alt="@center.Name"
                                      style="object-fit: cover; height: 300px; width: 100%;">
