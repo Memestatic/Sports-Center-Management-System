@@ -36,9 +36,6 @@
                             <a class="nav-link active" href="/Account/BuyPass">Passes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/About">About</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link active" href="/Contact">Contact</a>
                         </li>
                         @if (ViewContext.HttpContext.Session.GetInt32("userID") == null && ViewContext.HttpContext.Session.GetInt32("workerID") == null) // Brak zalogowanego użytkownika

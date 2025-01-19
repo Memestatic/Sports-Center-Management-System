@@ -55,9 +55,6 @@ namespace ProjectIO.Pages
                     .Include(p => p.PassType)
                     .FirstOrDefault(p => p.PassId == passId);
 
-                if (reservation == null)
-                    return RedirectToPage("/Account/ClientPanel");
-
                 this.Price = pass.PassType.Price;
                 return Page();
             }
