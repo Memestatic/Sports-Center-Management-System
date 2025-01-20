@@ -24,10 +24,17 @@ namespace ProjectIO.Pages
         // Komunikat o b��dzie
         public string ErrorMessage { get; set; }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (HttpContext.Session.GetInt32("workerID") != null)
+            {
+                return RedirectToPage("/AdminPanel");
+            }
+
             // Wyczyszczenie komunikatu o b��dzie przy za�adowaniu strony
             ErrorMessage = string.Empty;
+
+            return Page();
         }
 
         public IActionResult OnPost()

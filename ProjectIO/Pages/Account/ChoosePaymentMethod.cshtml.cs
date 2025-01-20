@@ -71,9 +71,10 @@ public class ChoosePaymentMethod : PageModel
         
         reservation.CurrentStatus = Status.Approved;
         
-        if (pass.PassEntriesLeft <= 1)
+        if (pass.PassEntriesLeft < 1)
         {
-            _context.Passes.Remove(pass);
+            //_context.Passes.Remove(pass);
+            pass.CurrentStatus = Status.Denied;
         }
         else
         {

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.IdentityModel.Tokens;
 using ProjectIO.model;
 using System.Data;
 
@@ -33,6 +34,11 @@ namespace ProjectIO.Pages
         public IActionResult OnGet(string orderId)
         {
             OrderId = orderId;
+
+            if (orderId.IsNullOrEmpty())
+            {
+                return RedirectToPage("/Index");
+            }
 
             if (OrderId.StartsWith('r'))
             {
