@@ -311,7 +311,7 @@
                             <label for="facilityType">Typ Obiektu:</label>
                                 <select name="TypeName" id="facilityType" value="@facility.FacilityType.TypeName" class="form-control" required>
 
-                                    <option value="@facility.FacilityType.TypeId" selected>
+                                    <option value="@facility.FacilityType.TypeName" selected>
                                         @facility.FacilityType.TypeName
                                     </option>
 
@@ -319,7 +319,6 @@
                                     {
                                         @foreach (var type in Model.FacilityTypes)
                                         {
-                                            <option value="@type.TypeName">@type.TypeName</option>
                                             <option value="@type.TypeName">@type.TypeName</option>
                                         }
                                     }
@@ -329,7 +328,7 @@
                             <label for="centerName">Nazwa Ośrodka:</label>
                             <select name="Name" id="centerName" value="@facility.FacilitySportsCenter.Name" class="form-control" required>
 
-                                    <option value="@facility.FacilitySportsCenter.SportsCenterId" selected>
+                                    <option value="@facility.FacilitySportsCenter.Name" selected>
                                         @facility.FacilitySportsCenter.Name
                                     </option>
 
