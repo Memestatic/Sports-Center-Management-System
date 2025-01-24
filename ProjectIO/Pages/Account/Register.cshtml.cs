@@ -64,7 +64,7 @@ namespace ProjectIO.Pages.Account
                 PhoneNumber = Input.PhoneNumber,
                 Email = Input.Email,
                 Password = Input.Password,
-                IsActive = false
+                IsActive = true
             };
 
             // Hashowanie hasła
@@ -74,28 +74,28 @@ namespace ProjectIO.Pages.Account
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            string token = Guid.NewGuid().ToString();
+            //string token = Guid.NewGuid().ToString();
 
-            // Zapis tokena w bazie
-            VerificationToken verificationToken = new VerificationToken
-            {
-                VerifiedUser = user,
-                Token = token,
-                ExpirationDate = DateTime.UtcNow.AddHours(24) // Token ważny 24 godziny
-            };
+            //// Zapis tokena w bazie
+            //VerificationToken verificationToken = new VerificationToken
+            //{
+            //    VerifiedUser = user,
+            //    Token = token,
+            //    ExpirationDate = DateTime.UtcNow.AddHours(24) // Token ważny 24 godziny
+            //};
 
-            _context.VerificationTokens.Add(verificationToken);
-            await _context.SaveChangesAsync();
+            //_context.VerificationTokens.Add(verificationToken);
+            //await _context.SaveChangesAsync();
 
-            // Wysyłanie e-maila weryfikacyjnego
-            var verificationUrl = Url.Page(
-                "/Account/Verify",
-                null,
-                new { token = token },
-                Request.Scheme);
+            //// Wysyłanie e-maila weryfikacyjnego
+            //var verificationUrl = Url.Page(
+            //    "/Account/Verify",
+            //    null,
+            //    new { token = token },
+            //    Request.Scheme);
 
-            var marketing = new Marketing(_context, _configuration);
-            await marketing.SendVerificationEmail(user.Name, user.Email, verificationUrl);
+            //var marketing = new Marketing(_context, _configuration);
+            //await marketing.SendVerificationEmail(user.Name, user.Email, verificationUrl);
 
 
             return RedirectToPage("/Account/Login"); // Przekierowanie po sukcesie

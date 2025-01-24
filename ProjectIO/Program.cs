@@ -17,8 +17,8 @@ builder.Services.AddDbContext<SportCenterContext>(options =>
 
     // Computer Name (default local database Name)
     String machineName = Environment.MachineName;
-    var your_password = "Laptop12345!@#xd";
-    options.UseSqlServer($"Server=tcp:ioproject.database.windows.net,1433;Initial Catalog=ioproject;Persist Security Info=False;User ID=CloudSAe1559317;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+    var your_password = ""; // SQL Connection String Password
+    options.UseSqlServer($"Server={machineName};Database=SportCenterDB;Trusted_Connection=True;TrustServerCertificate=True;");
 });
 
 builder.Services.AddDistributedMemoryCache(); // Wymagane dla sesji
