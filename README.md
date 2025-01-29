@@ -4,7 +4,7 @@
 ### You can check project's documentation and usage examples in [Raport.pdf](https://github.com/Memestatic/Sports-Center-Management-System/blob/main/Raport.pdf) file.
 
 <details>
-  <summary>### Contributors and Their Work</summary>
+  <summary> Contributors and Their Work</summary>
 
 [Memestatic](https://github.com/Memestatic), [MichalWalus](https://github.com/MichalWalusPOLSL)
 
