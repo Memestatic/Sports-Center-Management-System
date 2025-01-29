@@ -1,6 +1,8 @@
 # Sports Center Management System
 ## The Sports Center Management System is designed to help manage and organize sports center activities. It provides features for scheduling, member management, and and resource allocation.
 
+### You can check project's documentation and usage examples in [Raport.pdf](https://github.com/Memestatic/Sports-Center-Management-System/blob/main/Raport.pdf) file.
+
 <details>
   <summary>### Contributors and Their Work</summary>
 
