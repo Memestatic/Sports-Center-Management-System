@@ -6,6 +6,9 @@
 <details>
   <summary> Contributors and Their Work</summary>
 
+[Memestatic](https://github.com/Memestatic)
+-Project Manager
+
 [Memestatic](https://github.com/Memestatic), [MichalWalus](https://github.com/MichalWalusPOLSL)
 
 -Client Panel Functionalities
